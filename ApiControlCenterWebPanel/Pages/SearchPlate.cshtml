@@ -1,0 +1,206 @@
+﻿@page
+@using System.Drawing.Printing;
+@using ApiControlCenterWebPanel.Models;
+@using ApiControlCenterWebPanel.Models.Interfaces;
+@using ApiControlCenterWebPanel.Controller;
+@using ApiControlCenterWebPanel.Pages;
+@using System.Text;
+@using System.Text.Json;
+@model ApiControlCenterWebPanel.Pages.SearchPlateModel
+@{
+    Layout = "_FilterPage";
+}
+
+<div class="container">
+    <div class="card container">
+        <div class="p-3">
+            <h5 class="card-title">
+                @SearchPlateModel.PlateNumber kodlu plakanın bütün faturaları
+            </h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table project-list-table table-nowrap align-middle table-borderless">
+                <thead>
+                    <tr>
+                        <th scope="col">Plaka</th>
+                        <th scope="col">Unvan</th>
+                        <th scope="col">Tarih</th>
+                        <th scope="col">Saat</th>
+                        <th scope="col">Fiş No</th>
+                        <th scope="col">Z no</th>
+                        <th scope="col">Ekü no</th>
+                        <th scope="col">Birim fiyat</th>
+                        <th scope="col">Litre</th>
+                        <th scope="col">Toplam fiyat</th>
+                        <th scope="col">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="tableElements">
+                    @{
+                        List<UserInvoiceContainer> allInvoices = (ApiTableModel.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent).DataContent;
+
+                        string plakaNo = SearchPlateModel.PlateNumber;
+
+                        List<UserInvoiceContainer>? filteredInvoices = allInvoices.FindAll(x => x.Invoices.Any(y => y.PlakaNo == plakaNo));
+
+                        for (int i = 0; i < filteredInvoices.Count; i++)
+                        {
+                            for (int j = 0; j < filteredInvoices[i].Invoices.Count; j++)
+                            {
+                                SuperAdmin theCash = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == allInvoices[i].TaxId).ToList()[0];
+
+                                string[] theDateFull = allInvoices[i].Invoices[j].Tarih.Value.ToString().Split(" ");
+                                string[] theDate = theDateFull[0].Split("-");
+                                string[] theHour = theDateFull[1].Split(":");
+                                string dateDisplayer = theDate[0] + "/" + theDate[1] + "/" + allInvoices[i].Invoices[j].Tarih.Value.Year;
+                                string hourDisplayer = theHour[0] + ":" + theHour[1];
+
+                                <tr id="searchPlateContent_@i">
+                                    <td id="inv_1_@(i)_@(j)">@filteredInvoices[i].Invoices[j].PlakaNo</td>
+                                    <td id="inv_2_@(i)_@(j)">@theCash.GasStationName.Aggregate((item1, item2) => item1 + "\n" + item2)</td>
+                                    <td id="inv_3_@(i)_@(j)">@dateDisplayer</td>
+                                    <td id="inv_4_@(i)_@(j)">@hourDisplayer</td>
+                                    <td id="inv_5_@(i)_@(j)">@filteredInvoices[i].Invoices[j].FisNo</td>
+                                    <td id="inv_6_@(i)_@(j)">@filteredInvoices[i].Invoices[j].ZRaporuNo</td>
+                                    <td id="inv_7_@(i)_@(j)">@filteredInvoices[i].Invoices[j].EkuNo</td>
+                                    <td id="inv_8_@(i)_@(j)">@filteredInvoices[i].Invoices[j].BirimFiyat</td>
+                                    <td id="inv_9_@(i)_@(j)">@filteredInvoices[i].Invoices[j].Litre</td>
+                                    <td id="inv_10_@(i)_@(j)">@filteredInvoices[i].Invoices[j].TotalFiyat</td>
+                                    <td>
+                                        <ul class="list-inline mb-0">
+                                            <li class="list-inline-item">
+                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@filteredInvoices[i].TaxId', @(i), @(j))" title="Print this invoice" class="px-2 text-info">
+                                                    <i class='bx bx-printer font-size-18'></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="printInvoiceModal" tabindex="-1" aria-labelledby="printInvoiceModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Fatura</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div id="page">
+                        <div class="row-texts">
+                            <div class="row-text" id="InvoiceTaxNumberSection">
+                                Firma ismi
+                            </div>
+                        </div>
+                        <div class="col-texts">
+                            <div class="row-texts">
+                                <div class="row-text text-left" id="InvoiceDateSection">00-00-0000</div>
+                                <div class="row-text text-left" id="InvoiceNoSection">FİŞ NO: 0000</div>
+                            </div>
+                            <div class="row-texts row-texts2">
+                                <div class="row-text text-right" id="InvoiceHourSection">00:00</div>
+                            </div>
+                        </div>
+                        <div class="row-texts">
+                            <div class="row-text row-texts-big" id="InvoicePlateSection">10AAA123</div>
+                        </div>
+                        <div class="col-texts">
+                            <div class="row-texts">
+                                <div class="row-text text-left"><div id="InvoiceLitreSection">1,00 LT</div> X <div id="InvoicePriceSection">1,00</div></div>
+                                <div class="row-text text-left" id="InvoiceGasTypeSection">MOT.VPRO</div>
+                            </div>
+                            <div class="row-texts row-texts2">
+                                <div class="row-text text-right">%18</div>
+                            </div>
+                            <div class="row-texts row-texts2">
+                                <div class="row-text text-right InvoiceTotalPriceSection">*200</div>
+                            </div>
+                        </div>
+                        <hr id="line">
+                        <div class="col-texts">
+                            <div class="row-texts">
+                                <div class="row-text text-left row-texts-big">TOPKDV</div>
+                                <div class="row-text text-left row-texts-big">TOPLAM</div>
+
+                            </div>
+                            <div class="row-texts row-texts-right">
+                                <div class="row-text text-right row-texts-big" id="InvoiceVatPriceSection">*10,00</div>
+                                <div class="row-text text-right row-texts-big InvoiceTotalPriceSection">*200,00</div>
+                            </div>
+                        </div>
+
+                        <div class="col-texts">
+                            <div class="row-texts">
+                                <div class="row-text text-left">NAKİT</div>
+                            </div>
+                            <div class="row-texts row-texts-right">
+                                <div class="row-text text-right InvoiceTotalPriceSection">*200,00</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <img id="InvoiceQRCodeSection" src="">
+                        </div>
+                        <div class="row-texts">
+                            <div class="row-text">İYİ YOLCULUKLAR DİLERİZ</div>
+                        </div>
+                        <div class="col-texts col-texts-spaced">
+                            <div class="row-texts">
+                                <div class="row-text text-left" id="InvoiceEkuSection">EKU NO: 0001</div>
+                            </div>
+                            <div class="row-texts row-texts-right">
+                                <div class="row-text text-right" id="InvoiceZReportSection">Z NO: 0001</div>
+                            </div>
+                        </div>
+                        <div class="row-texts">
+                            <div class="row-text">MFAU 000000000000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="printInvoiceFromPlate" data-bs-dismiss="modal" aria-label="Close">Ekle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/searchPlate.js"></script>
+
+<script>
+    $(document).ready(function () 
+    {
+        $("#printInvoiceFromPlate").click(function ()
+        {
+            var elements = $("#page").html();
+
+            alert(elements);
+        });
+        /**
+         * var elements = $("#page").html();
+
+            var allHtml = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content = "width=device-width,initial-scale=1.0" /><link rel="stylesheet" href="css/template.css" /></head><body>' + elements + '</body></html>';
+
+            $("#page").printThis({
+                debug: false,
+                importCSS: true,
+                importStyle: false,
+                printContainer: true,
+                loadCSS: "css/template.css",
+                pageTitle: "Invoice document",
+                removeInline: false,
+                printDelay: 100,
+                header: null,
+                formValues: true
+            });
+         */
+    });
+</script>

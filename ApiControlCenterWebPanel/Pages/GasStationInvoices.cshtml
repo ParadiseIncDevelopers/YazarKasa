@@ -1,0 +1,169 @@
+﻿@page
+@using System.Drawing.Printing;
+@using ApiControlCenterWebPanel.Models;
+@using ApiControlCenterWebPanel.Models.Interfaces;
+@using ApiControlCenterWebPanel.Controller;
+@using ApiControlCenterWebPanel.Pages;
+@model ApiControlCenterWebPanel.Pages.GasStationInvoicesModel
+@{
+    Layout = "_FilterPage";
+    string theTaxNumber = GasStationInvoicesModel.TaxNumber;
+}
+
+<div class="container">
+    <div class="card container">
+        <div class="p-3">
+            <h5 class="card-title">
+                 kodlu plakanın bütün faturaları
+            </h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table project-list-table table-nowrap align-middle table-borderless">
+                <thead>
+                    <tr>
+                        <th scope="col">Plaka</th>
+                        <th scope="col">Unvan</th>
+                        <th scope="col">Tarih</th>
+                        <th scope="col">Saat</th>
+                        <th scope="col">Fiş No</th>
+                        <th scope="col">Z no</th>
+                        <th scope="col">Ekü no</th>
+                        <th scope="col">Birim fiyat</th>
+                        <th scope="col">Litre</th>
+                        <th scope="col">Toplam fiyat</th>
+                        <th scope="col">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="tableElements">
+                    @{
+                        List<UserInvoiceContainer> allInvoices = (ApiTableModel.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent).DataContent;
+                        List<Invoice>? filteredInvoices = allInvoices.FindAll(x => x.TaxId == theTaxNumber)[0].Invoices;
+                        
+                        for (int i = 0; i < filteredInvoices.Count; i++)
+                        {
+                            SuperAdmin theCash = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == theTaxNumber).ToList()[0];
+
+                            string[] theDateFull = filteredInvoices[i].Tarih.Value.ToString().Split(" ");
+                                string[] theDate = theDateFull[0].Split("-");
+                                string[] theHour = theDateFull[1].Split(":");
+                            string dateDisplayer = theDate[0] + "/" + theDate[1] + "/" + filteredInvoices[i].Tarih.Value.Year;
+                                string hourDisplayer = theHour[0] + ":" + theHour[1];
+
+                                <tr id="searchPlateContent_@i">
+                                    <td id="inv_1_@(i)">@filteredInvoices[i].PlakaNo</td>
+                                    <td id="inv_2_@(i)">@theCash.GasStationName.Aggregate((item1, item2) => item1 + "\n" + item2)</td>
+                                    <td id="inv_3_@(i)">@dateDisplayer</td>
+                                    <td id="inv_4_@(i)">@hourDisplayer</td>
+                                    <td id="inv_5_@(i)">@filteredInvoices[i].FisNo</td>
+                                    <td id="inv_6_@(i)">@filteredInvoices[i].ZRaporuNo</td>
+                                    <td id="inv_7_@(i)">@filteredInvoices[i].EkuNo</td>
+                                    <td id="inv_8_@(i)">@filteredInvoices[i].BirimFiyat</td>
+                                    <td id="inv_9_@(i)">@filteredInvoices[i].Litre</td>
+                                    <td id="inv_10_@(i)">@filteredInvoices[i].TotalFiyat</td>
+                                    <td>
+                                        <ul class="list-inline mb-0">
+                                            <li class="list-inline-item">
+                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@theTaxNumber', @(i))" title="Print this invoice" class="px-2 text-info">
+                                                    <i class='bx bx-printer font-size-18'></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="printInvoiceModal" tabindex="-1" aria-labelledby="printInvoiceModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Plakaya göre faturalar ara</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div id="page">
+                        <div class="row-texts">
+                            <div class="row-text" id="InvoiceTaxNumberSection">
+                                Firma ismi
+                            </div>
+                        </div>
+                        <div class="col-texts">
+                            <div class="row-texts">
+                                <div class="row-text text-left" id="InvoiceDateSection">00-00-0000</div>
+                                <div class="row-text text-left" id="InvoiceNoSection">FİŞ NO: 0000</div>
+                            </div>
+                            <div class="row-texts row-texts2">
+                                <div class="row-text text-right" id="InvoiceHourSection">00:00</div>
+                            </div>
+                        </div>
+                        <div class="row-texts">
+                            <div class="row-text row-texts-big" id="InvoicePlateSection">10AAA123</div>
+                        </div>
+                        <div class="col-texts">
+                            <div class="row-texts">
+                                <div class="row-text text-left"><div id="InvoiceLitreSection">1,00 LT</div> X <div id="InvoicePriceSection">1,00</div></div>
+                                <div class="row-text text-left" id="InvoiceGasTypeSection">MOT.VPRO</div>
+                            </div>
+                            <div class="row-texts row-texts2">
+                                <div class="row-text text-right">%18</div>
+                            </div>
+                            <div class="row-texts row-texts2">
+                                <div class="row-text text-right InvoiceTotalPriceSection">*200</div>
+                            </div>
+                        </div>
+                        <hr id="line">
+                        <div class="col-texts">
+                            <div class="row-texts">
+                                <div class="row-text text-left row-texts-big">TOPKDV</div>
+                                <div class="row-text text-left row-texts-big">TOPLAM</div>
+
+                            </div>
+                            <div class="row-texts row-texts-right">
+                                <div class="row-text text-right row-texts-big" id="InvoiceVatPriceSection">*10,00</div>
+                                <div class="row-text text-right row-texts-big InvoiceTotalPriceSection">*200,00</div>
+                            </div>
+                        </div>
+
+                        <div class="col-texts">
+                            <div class="row-texts">
+                                <div class="row-text text-left">NAKİT</div>
+                            </div>
+                            <div class="row-texts row-texts-right">
+                                <div class="row-text text-right InvoiceTotalPriceSection">*200,00</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <img id="InvoiceQRCodeSection" src="">
+                        </div>
+                        <div class="row-texts">
+                            <div class="row-text">İYİ YOLCULUKLAR DİLERİZ</div>
+                        </div>
+                        <div class="col-texts col-texts-spaced">
+                            <div class="row-texts">
+                                <div class="row-text text-left" id="InvoiceEkuSection">EKU NO: 0001</div>
+                            </div>
+                            <div class="row-texts row-texts-right">
+                                <div class="row-text text-right" id="InvoiceZReportSection">Z NO: 0001</div>
+                            </div>
+                        </div>
+                        <div class="row-texts">
+                            <div class="row-text">MFAU 000000000000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="printInvoiceFromPlate" data-bs-dismiss="modal" aria-label="Close">Ekle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/gasStationInvoices.js"></script>
