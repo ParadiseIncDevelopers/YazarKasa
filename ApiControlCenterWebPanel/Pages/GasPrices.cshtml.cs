@@ -26,6 +26,7 @@ namespace ApiControlCenterWebPanel.Pages
             return ((GasPriceContent)UtilityFileAction.Create(Utilities.PATH4, "GAS_PRICES")).DataContent;
         }
 
+        //
         public IActionResult OnPostAddPriceGas()
         {
             //^(([0-3][0-9])\/([0-1][0-9])\/(20\d{2})\s\-\s([0-3][0-9])\/([0-1][0-9])\/(20\d{2}))$
@@ -93,6 +94,7 @@ namespace ApiControlCenterWebPanel.Pages
             }
         }
 
+        //
         public void OnGetUpdatePriceGas(string Date, string Price) 
         {
             List<GasPricesSystem> allPrices = RetrieveGasPrices().Where(x => x.TaxId == TaxNumber).ToList();
@@ -105,6 +107,7 @@ namespace ApiControlCenterWebPanel.Pages
             Page();
         }
 
+        //Writes gas prices data 
         public static void WriteData(List<GasPricesSystem> data)
         {
             FileAction.Write(Utilities.PATH4, data);

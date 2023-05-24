@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace ApiControlCenterWebPanel.Models
 {
     [Serializable]
-    public class Invoice : IModelElement
+    public class Invoice 
     {
         [JsonPropertyName("Litre")]
         public double Litre { get; set; }

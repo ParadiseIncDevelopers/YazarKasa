@@ -65,3 +65,7 @@ function allInputsAreTrue(labelId, count)
 
     return inputsTrue;
 }
+
+$(document).ready(function () {
+    $('.table-sort').tablesort();
+});

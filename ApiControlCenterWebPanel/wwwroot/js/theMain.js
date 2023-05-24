@@ -5,6 +5,9 @@ var q = 1;
 //The current tax number.
 var taxNumber = "";
 
+//The password regex for login.
+var passwordRegex = /^(\d){6}$/;
+
 //Input 1 regex
 var beginDateInstance = /^((([0-2][0-9])|(30)|(31))\/((0[0-9])|(11)|(12))\/(20\d{2}))$/;
 
@@ -472,16 +475,31 @@ function deleteRow(index) {
 /**
  * 
  * @param {string} taxNumber
+ * @param {string} link
  * */
-function updateApiKey(taxNumber) {
-    var obj = [zerosData].filter(x => x.TaxNumber == taxNumber)[0];
+function updateApiKey(taxNumber, link)
+{
+    $.ajax({
+        type: 'GET',
+        url: link,
+        data: {
+            TaxNumber: taxNumber
+        },
+        success: function (theData) {
+            zerosData = JSON.parse(JSON.stringify(theData));
 
-    $("#updateInput_1").val(obj.GasType);
-    $("#updateInput_2").val(obj.Password);
-    $("#updateInput_4").val(obj.ZerosInEku);
-    $("#updateInput_5").val(obj.ZerosInInvoices);
-    $("#updateInput_6").val(obj.ZerosInZReports);
-    $("#updateCashNumber").text(obj.CashTypeName);
+            var obj = [zerosData].filter(x => x.TaxNumber == taxNumber)[0];
+
+            $("#updateInput_1").val(obj.GasType);
+            $("#updateInput_2").val(obj.Password);
+            $("#updateInput_4").val(obj.ZerosInEku);
+            $("#updateInput_5").val(obj.ZerosInInvoices);
+            $("#updateInput_6").val(obj.ZerosInZReports);
+            $("#updateCashNumber").text(obj.CashTypeName);
+        }
+    });
+
+    
 }
 
 /* <div>

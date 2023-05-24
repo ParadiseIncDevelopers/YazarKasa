@@ -7,41 +7,54 @@
 @model ApiControlCenterWebPanel.Pages.GasStationInvoicesModel
 @{
     Layout = "_FilterPage";
-    string theTaxNumber = GasStationInvoicesModel.TaxNumber;
+
+    List<SuperAdmin>? db1 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent;
+    List<Admin>? db2 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH1)).DataContent_1;
+    string? theEntrepriseName = null, superAdmin = null, admin = null;
+
+    try
+    {
+        superAdmin = db1.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList()[0].GasStationName?[0];
+        admin = db2.Where(x => x.AdminModel.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList()[0].AdminModel.GasStationName?[0];
+    }
+    catch
+    {
+        theEntrepriseName = superAdmin ?? admin;
+    }
 }
 
 <div class="container">
     <div class="card container">
         <div class="p-3">
             <h5 class="card-title">
-                 kodlu plakanın bütün faturaları
+                @theEntrepriseName kodlu plakanın bütün faturaları
             </h5>
         </div>
         <div class="table-responsive">
-            <table class="table project-list-table table-nowrap align-middle table-borderless">
+            <table class="table-sort table-sort-search table project-list-table table-nowrap align-middle table-borderless">
                 <thead>
                     <tr>
-                        <th scope="col">Plaka</th>
-                        <th scope="col">Unvan</th>
-                        <th scope="col">Tarih</th>
-                        <th scope="col">Saat</th>
-                        <th scope="col">Fiş No</th>
-                        <th scope="col">Z no</th>
-                        <th scope="col">Ekü no</th>
-                        <th scope="col">Birim fiyat</th>
-                        <th scope="col">Litre</th>
-                        <th scope="col">Toplam fiyat</th>
-                        <th scope="col">İşlem</th>
+                        <th scope="col" class="table-sort">Plaka</th>
+                        <th scope="col" class="table-sort">Unvan</th>
+                        <th scope="col" class="table-sort">Tarih</th>
+                        <th scope="col" class="table-sort">Saat</th>
+                        <th scope="col" class="table-sort">Fiş No</th>
+                        <th scope="col" class="table-sort">Z no</th>
+                        <th scope="col" class="table-sort">Ekü no</th>
+                        <th scope="col" class="table-sort">Birim fiyat</th>
+                        <th scope="col" class="table-sort">Litre</th>
+                        <th scope="col" class="table-sort">Toplam fiyat</th>
+                        <th scope="col" class="table-sort">İşlem</th>
                     </tr>
                 </thead>
                 <tbody id="tableElements">
                     @{
                         List<UserInvoiceContainer> allInvoices = (ApiTableModel.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent).DataContent;
-                        List<Invoice>? filteredInvoices = allInvoices.FindAll(x => x.TaxId == theTaxNumber)[0].Invoices;
+                        List<Invoice>? filteredInvoices = allInvoices.FindAll(x => x.TaxId == GasStationInvoicesModel.TaxNumber)[0].Invoices;
                         
                         for (int i = 0; i < filteredInvoices.Count; i++)
                         {
-                            SuperAdmin theCash = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == theTaxNumber).ToList()[0];
+                            SuperAdmin theCash = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList()[0];
 
                             string[] theDateFull = filteredInvoices[i].Tarih.Value.ToString().Split(" ");
                                 string[] theDate = theDateFull[0].Split("-");
@@ -63,7 +76,7 @@
                                     <td>
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item">
-                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@theTaxNumber', @(i))" title="Print this invoice" class="px-2 text-info">
+                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@GasStationInvoicesModel.TaxNumber', @(i))" title="Print this invoice" class="px-2 text-info">
                                                     <i class='bx bx-printer font-size-18'></i>
                                                 </a>
                                             </li>

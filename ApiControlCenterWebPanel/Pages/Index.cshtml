@@ -74,7 +74,7 @@
                                                                 }
                                                             }
                                                             <li class="list-inline-item">
-                                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updateApiModal" onclick="updateApiKey('@elements[i].TaxNumber')" title="Update the cash info." class="px-2 text-success">
+                                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updateApiModal" onclick="updateApiKey('@elements[i].TaxNumber', '@Url.Page("index", "cashzerosforinvoice")')" title="Update the cash info." class="px-2 text-success">
                                                                     <i class='bx bxs-comment-edit font-size-18'></i>
                                                                 </a>
                                                             </li>
@@ -195,14 +195,7 @@
                         <div class="modal-body">
                             <form method="get">
                             @{
-                                /*
-                                 * 
-                                 * Z raporu 10^3 (bunlarin yeri belli degil) 
-                                 * Fis 10^3 (bunlarin yeri belli degil)
-                                 * Eku 1
-                                 * Gas prices sirket adi
-                                 * Benzin istasyonu ekle parola kalksin
-                                 * */
+
                             }
                                 <div class="mb-3">
                                     <label class="form-label" id="label_1">Z raporu başlangıç tarih</label>
@@ -623,6 +616,8 @@
     var chosenTaxNumber;
 
     $(document).ready(function () {
+
+
 
         $("#addInvoice").click(function () {
             var litre = $("#invoiceText_1").val();
