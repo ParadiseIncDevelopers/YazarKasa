@@ -26,7 +26,7 @@
                     <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCashModal">
                         <i class="bx bx-plus me-1"></i> Yeni firma ekle
                     </a>
-                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchInvoiceModal">
+                    <a class="btn btn-primary" id="invoiceModalOpener" data-bs-toggle="modal" data-bs-target="#searchInvoiceModal">
                         <i class="bx bx-search me-1"></i> Plaka ara
                     </a>
                 </div>
@@ -106,7 +106,7 @@
                                                             
                                                             <li class="list-inline-item">
                                                                 <a asp-page="/GasPrices" asp-route-taxnumber="@allElements[i].TaxNumber" title="Benzin fiyatlarını düzenler" class="px-2 text-warning">
-                                                                    <i class='bx bxs-comment-edit font-size-18'></i>
+                                                                    <i class='bx bx-money font-size-18'></i>
                                                                 </a>
                                                             </li>
                                                             <li class="list-inline-item">
@@ -455,7 +455,8 @@
     }
 }
 <script>
-    function deleteApiKey(index) {
+    function deleteApiKey(index)
+    {
         $.ajax({
             type: 'GET',
             url: '@Url.Page("index", "deleteadmin")',
@@ -473,7 +474,7 @@
     var chosenTaxNumber;
 
     $(document).ready(function () {
-
+        //Adds invoice.
         $("#addInvoice").click(function () {
             var litre = $("#invoiceText_1").val();
             var birimFiyat = $("#invoiceText_2").val();
@@ -509,6 +510,7 @@
             });
         });
 
+        //Adds the cash.
         $("#addCash").click(function () {
             var baslangicTarih = $("#input_1").val();
             var taxNumber = $("#input_2").val();
@@ -555,6 +557,7 @@
             });
         });
 
+        //Updates the cash.
         $("#updateCash").click(function () {
             var gasType = $("#updateInput_1").val();
             var password = $("#updateInput_2").val();
@@ -583,6 +586,7 @@
             });
         });
 
+        //Updates other cash.
         $("#updateCash2").click(function () {
             var gasType = $("#updateInput_1").val();
             var cashNumber = $("#updateCashNumber").text();
@@ -607,6 +611,10 @@
 
                 }
             });
+        });
+
+        $("#invoiceModalOpener").click(function () {
+            addTextDanger_0("searchPlateLabel");
         });
     });
 </script>

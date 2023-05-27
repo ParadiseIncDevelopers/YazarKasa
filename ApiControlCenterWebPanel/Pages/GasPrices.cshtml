@@ -5,12 +5,34 @@
 @model ApiControlCenterWebPanel.Pages.GasPricesModel
 @{
     Layout = null;
-
     string theTaxNumber = GasPricesModel.TaxNumber;
 
     if (AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber == null)
     {
         Response.Redirect("Login", true);
+    }
+
+    List<SuperAdmin>? db1 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent;
+    List<Admin>? db2 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH1)).DataContent_1;
+    string? theEntrepriseName = null, superAdmin = null, admin = null;
+
+    try
+    {
+        var supAdm = db1?.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList();
+        var adm = db2?.Where(x => x.AdminModel.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList();
+
+        if (supAdm != null && supAdm.Count != 0)
+        {
+            theEntrepriseName = supAdm[0].GasStationName[0];
+        }
+        else if (adm != null && adm.Count != 0)
+        {
+            theEntrepriseName = adm[0].AdminModel.GasStationName[0];
+        }
+    }
+    catch
+    {
+
     }
 }
 <!DOCTYPE html>

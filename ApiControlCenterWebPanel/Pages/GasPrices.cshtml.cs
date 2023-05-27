@@ -45,10 +45,20 @@ namespace ApiControlCenterWebPanel.Pages
             {
                 List<GasPricesSystem> gasPricesGetter = RetrieveGasPrices();
                 DateTime initDate = firstDate;
-                GasPricesSystem system = gasPricesGetter.Where(x => x.TaxId == TaxNumber).ToList()[0];
-                var gasPricesDict = system.GasPrices.ToDictionary(x => x.Date, y => y.Price);
+                List<GasPricesSystem> system = gasPricesGetter.Where(x => x.TaxId == TaxNumber).ToList();
 
-                while (initDate <= secondDate) 
+                Dictionary<DateTime?, double?> gasPricesDict;
+
+                if (system.Count != 0)
+                {
+                    gasPricesDict = system[0].GasPrices.ToDictionary(x => x.Date, y => y.Price);
+                }
+                else 
+                {
+                    gasPricesDict = new();
+                }
+
+                while (initDate <= secondDate)
                 {
                     GasPrice priceContent = new()
                     {
@@ -60,7 +70,7 @@ namespace ApiControlCenterWebPanel.Pages
                     {
                         gasPricesDict[priceContent.Date] = priceContent.Price;
                     }
-                    else 
+                    else
                     {
                         gasPricesDict.Add(priceContent.Date, priceContent.Price);
                     }
@@ -80,11 +90,30 @@ namespace ApiControlCenterWebPanel.Pages
                     allPrices.Add(price);
                 }
 
-                system.GasPrices = allPrices;
-                system.GasPrices = system.GasPrices.OrderBy(x => x.Date).ToList();
-                gasPricesGetter.Where(x => x.TaxId == TaxNumber).ToList()[0] = system;
-                string serializedGasPrices = JsonSerializer.Serialize(gasPricesGetter);
-                WriteData(gasPricesGetter);
+                if (system.Count != 0)
+                {
+                    system[0].GasPrices = allPrices;
+                    system[0].GasPrices = system[0].GasPrices.OrderBy(x => x.Date).ToList();
+                    gasPricesGetter.Where(x => x.TaxId == TaxNumber).ToList()[0] = system[0];
+                    string serializedGasPrices = JsonSerializer.Serialize(gasPricesGetter);
+                    WriteData(gasPricesGetter);
+                }
+                else
+                {
+                    allPrices = allPrices.OrderBy(x => x.Date).ToList();
+
+                    GasPricesSystem theSystem = new()
+                    {
+                        TaxId = TaxNumber,
+                        GasPrices = allPrices
+                    };
+
+                    gasPricesGetter.Add(theSystem);
+                    string serializedGasPrices = JsonSerializer.Serialize(gasPricesGetter);
+                    WriteData(gasPricesGetter);
+                }
+
+                
 
                 return Page();
             }

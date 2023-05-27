@@ -34,6 +34,22 @@
 
 <div class="container">
     <div class="card container">
+        <div class="row g-0 align-items-center">
+            <div class="p-3">
+                <!-- Buradan devam bunlar yapilmali -->
+                <a  class="btn btn-success">
+                    <i class="bx bx-search me-1"></i> Ekü no ekle ve görüntüle
+                </a>
+                <a class="btn btn-success">
+                    <i class="bx bx-search me-1"></i> Z raporlarını görüntüle
+                </a>
+                <a class="btn btn-success">
+                    <i class="bx bx-stats me-1"></i> İstatistikleri görüntüle
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card container">
         <div class="p-3">
             <h5 class="card-title">
                 @theEntrepriseName kodlu plakanın bütün faturaları
@@ -43,7 +59,6 @@
             <table class="table-sort table-sort-search table project-list-table table-nowrap align-middle table-borderless">
                 <thead>
                     <tr>
-                        <th scope="col" class="table-sort">Plaka</th>
                         <th scope="col" class="table-sort">Unvan</th>
                         <th scope="col" class="table-sort">Tarih</th>
                         <th scope="col" class="table-sort">Saat</th>
@@ -75,16 +90,15 @@
                                     string hourDisplayer = theHour[0] + ":" + theHour[1];
 
                                     <tr id="searchPlateContent_@i">
-                                        <td id="inv_1_@(i)">@filteredInvoices[i].PlakaNo</td>
-                                        <td id="inv_2_@(i)">@theCash.GasStationName.Aggregate((item1, item2) => item1 + "\n" + item2)</td>
-                                        <td id="inv_3_@(i)">@dateDisplayer</td>
-                                        <td id="inv_4_@(i)">@hourDisplayer</td>
-                                        <td id="inv_5_@(i)">@filteredInvoices[i].FisNo</td>
-                                        <td id="inv_6_@(i)">@filteredInvoices[i].ZRaporuNo</td>
-                                        <td id="inv_7_@(i)">@filteredInvoices[i].EkuNo</td>
-                                        <td id="inv_8_@(i)">@filteredInvoices[i].BirimFiyat</td>
-                                        <td id="inv_9_@(i)">@filteredInvoices[i].Litre</td>
-                                        <td id="inv_10_@(i)">@filteredInvoices[i].TotalFiyat</td>
+                                        <td id="inv_1_@(i)">@theCash.GasStationName.Aggregate((item1, item2) => item1 + "\n" + item2)</td>
+                                        <td id="inv_2_@(i)">@dateDisplayer</td>
+                                        <td id="inv_3_@(i)">@hourDisplayer</td>
+                                        <td id="inv_4_@(i)">@filteredInvoices[i].FisNo</td>
+                                        <td id="inv_5_@(i)">@filteredInvoices[i].ZRaporuNo</td>
+                                        <td id="inv_6_@(i)">@filteredInvoices[i].EkuNo</td>
+                                        <td id="inv_7_@(i)">@filteredInvoices[i].BirimFiyat</td>
+                                        <td id="inv_8_@(i)">@filteredInvoices[i].Litre</td>
+                                        <td id="inv_9_@(i)">@filteredInvoices[i].TotalFiyat</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">

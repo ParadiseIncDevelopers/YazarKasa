@@ -44,13 +44,27 @@
                         alert("Please choose a Gas Station.");
                     }
                     else {
-                        var price = theJsonData[0][0].GasPrices.filter(r => r.Date.includes(str2))[0].Price;
-                        $("#invoiceText_2").val(price);
-                        $("#InvoiceDateSection").text(str.replace('/', '-').replace('/', '-'));
-                        $("#InvoicePriceSection").text(price);
+                        console.log(theJsonData[0][0]);
+                        var datePriceContent = theJsonData[0][0].GasPrices.filter(r => r.Date.includes(str2))[0];
+
+                        if (datePriceContent == null)
+                        {
+                            alert("Bu tarihte bir fiyat yok. Lütfen bu tarihe fiyat yazınız.");
+                        }
+                        else
+                        {
+                            var price = datePriceContent.Price;
+
+                            $("#invoiceText_2").val(price);
+                            $("#invoiceText_2").prop("disabled", true);
+                            $("#InvoiceDateSection").text(str.replace('/', '-').replace('/', '-'));
+                            $("#InvoicePriceSection").text(price);
+
+                            inputAreTrue("#invoiceLabel_3");
+                            inputAreTrue("#invoiceLabel_2");
+                        }
+
                         
-                        inputAreTrue("#invoiceLabel_3");
-                        inputAreTrue("#invoiceLabel_2");
                     }
                 }
             }

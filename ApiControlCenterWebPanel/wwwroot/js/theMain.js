@@ -121,6 +121,7 @@ $(document).ready(function () {
 
     for (var i = 1; i <= 6; i++) {
         inputAreTrue("#updateLabel_" + i);
+        inputAreTrue("#updateLabel2_" + i);
     }
     addTextDanger("gasDateLabel", 11);
     addTextDanger("gasPriceLabel", 11);
@@ -527,36 +528,47 @@ function getTheTaxNumber(zerosUrl, url, taxNumber, index) {
         data: {
             TaxNumber: taxNumber
         },
-        success: function (theData) {
-            $("#InvoiceCreatorContainer input").prop("disabled", false);
-
-            if (document.getElementById("DraftInvoiceSection").children.length == 0) {
-                $("#DraftInvoiceSection").append('<div id="page"><div class="row-texts"><div class="row-text" id="InvoiceTaxNumberSection">Firma ismi</div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left" id="InvoiceDateSection">00-00-0000</div><div class="row-text text-left" id="InvoiceNoSection">FİŞ NO: 0000</div></div><div class="row-texts row-texts2"><div class="row-text text-right" id="InvoiceHourSection">00:00</div></div></div><div class="row-texts"><div class="row-text row-texts-big" id="InvoicePlateSection">10AAA123</div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left"><div id="InvoiceLitreSection">1,00 LT</div> X <div id="InvoicePriceSection">1,00</div></div><div class="row-text text-left" id="InvoiceGasTypeSection">MOT.VPRO</div></div><div class="row-texts row-texts2"><div class="row-text text-right">%18</div></div><div class="row-texts row-texts2"><div class="row-text text-right InvoiceTotalPriceSection">*200</div></div></div><hr id="line"><div class="col-texts"><div class="row-texts"><div class="row-text text-left row-texts-big">TOPKDV</div><div class="row-text text-left row-texts-big">TOPLAM</div></div><div class="row-texts row-texts-right"><div class="row-text text-right row-texts-big" id="InvoiceVatPriceSection">*10,00</div><div class="row-text text-right row-texts-big InvoiceTotalPriceSection">*200,00</div></div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left">NAKİT</div></div><div class="row-texts row-texts-right"><div class="row-text text-right InvoiceTotalPriceSection">*200,00</div></div></div><div><img id="InvoiceQRCodeSection" src=""></div><div class="row-texts"><div class="row-text">İYİ YOLCULUKLAR DİLERİZ</div></div><div class="col-texts col-texts-spaced"><div class="row-texts"><div class="row-text text-left" id="InvoiceEkuSection">EKU NO: 0001</div></div><div class="row-texts row-texts-right"><div class="row-text text-right" id="InvoiceZReportSection">Z NO: 0001</div></div></div><div class="row-texts"><div class="row-text">MFAU 000000000000</div></div></div>');
+        success: function (theData)
+        {
+            if (theData.includes("Benzin istasyonu"))
+            {
+                alert(theData);
             }
+            else
+            {
+                $("#InvoiceCreatorContainer input").prop("disabled", false);
 
-            var allElements = document.getElementById("tableElements").children.length;
-            $("#adminPanelContent_" + index).css({ "background-color": "#39991C" });
-            $("#taxNumber_" + index).removeClass("text-dark");
-            $("#taxNumber_" + index).addClass("text-white");
-
-            for (var i = 0; i < allElements; i++) {
-                if (i != index) {
-                    $("#adminPanelContent_" + i).css({ "background-color": "#FFFFFF" });
-                    $("#taxNumber_" + index).removeClass("text-white");
-                    $("#taxNumber_" + index).addClass("text-dark");
+                if (document.getElementById("DraftInvoiceSection").children.length == 0) {
+                    $("#DraftInvoiceSection").append('<div id="page"><div class="row-texts"><div class="row-text" id="InvoiceTaxNumberSection">Firma ismi</div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left" id="InvoiceDateSection">00-00-0000</div><div class="row-text text-left" id="InvoiceNoSection">FİŞ NO: 0000</div></div><div class="row-texts row-texts2"><div class="row-text text-right" id="InvoiceHourSection">00:00</div></div></div><div class="row-texts"><div class="row-text row-texts-big" id="InvoicePlateSection">10AAA123</div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left"><div id="InvoiceLitreSection">1,00 LT</div> X <div id="InvoicePriceSection">1,00</div></div><div class="row-text text-left" id="InvoiceGasTypeSection">MOT.VPRO</div></div><div class="row-texts row-texts2"><div class="row-text text-right">%18</div></div><div class="row-texts row-texts2"><div class="row-text text-right InvoiceTotalPriceSection">*200</div></div></div><hr id="line"><div class="col-texts"><div class="row-texts"><div class="row-text text-left row-texts-big">TOPKDV</div><div class="row-text text-left row-texts-big">TOPLAM</div></div><div class="row-texts row-texts-right"><div class="row-text text-right row-texts-big" id="InvoiceVatPriceSection">*10,00</div><div class="row-text text-right row-texts-big InvoiceTotalPriceSection">*200,00</div></div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left">NAKİT</div></div><div class="row-texts row-texts-right"><div class="row-text text-right InvoiceTotalPriceSection">*200,00</div></div></div><div><img id="InvoiceQRCodeSection" src=""></div><div class="row-texts"><div class="row-text">İYİ YOLCULUKLAR DİLERİZ</div></div><div class="col-texts col-texts-spaced"><div class="row-texts"><div class="row-text text-left" id="InvoiceEkuSection">EKU NO: 0001</div></div><div class="row-texts row-texts-right"><div class="row-text text-right" id="InvoiceZReportSection">Z NO: 0001</div></div></div><div class="row-texts"><div class="row-text">MFAU 000000000000</div></div></div>');
                 }
+
+                var allElements = document.getElementById("tableElements").children.length;
+                $("#adminPanelContent_" + index).css({ "background-color": "#39991C" });
+                $("#taxNumber_" + index).removeClass("text-dark");
+                $("#taxNumber_" + index).addClass("text-white");
+
+                for (var i = 0; i < allElements; i++) {
+                    if (i != index) {
+                        $("#adminPanelContent_" + i).css({ "background-color": "#FFFFFF" });
+                        $("#taxNumber_" + index).removeClass("text-white");
+                        $("#taxNumber_" + index).addClass("text-dark");
+                    }
+                }
+
+                taxNumber = $("#taxNumber_" + index).text();
+                $("#invoiceModalLabel").text("Yeni Fatura - " + taxNumber);
+                jsonData = JSON.parse(JSON.stringify(theData));
+
+                $("#InvoiceTaxNumberSection").text(zerosData.GasStationName.join("\n"));
+
+
+                var size = 200;
+                var qrCodeData = generateQRCode(theTaxNumber, size);
+
+                document.getElementById("InvoiceQRCodeSection").src = qrCodeData;
+                document.getElementById("InvoiceQRCodeSection").style.width = "100%";
+                document.getElementById("InvoiceQRCodeSection").style.height = "100%";
             }
-
-            taxNumber = $("#taxNumber_" + index).text();
-            $("#invoiceModalLabel").text("Yeni Fatura - " + taxNumber);
-            jsonData = JSON.parse(JSON.stringify(theData));
-            $("#InvoiceTaxNumberSection").text(zerosData.GasStationName.join("\n"));
-            var size = 200;
-            var qrCodeData = generateQRCode(theTaxNumber, size);
-
-            document.getElementById("InvoiceQRCodeSection").src = qrCodeData;
-            document.getElementById("InvoiceQRCodeSection").style.width = "100%";
-            document.getElementById("InvoiceQRCodeSection").style.height = "100%";
         }
     });
 
@@ -567,7 +579,7 @@ function getTheTaxNumber(zerosUrl, url, taxNumber, index) {
             TaxNumber: taxNumber
         },
         success: function (theData) {
-            zerosData = JSON.parse(JSON.stringify(theData));
+            zerosData = JSON.parse(JSON.parse(JSON.stringify(theData)));
             $("#InvoiceGasTypeSection").text(zerosData.GasType);
         }
     });
@@ -598,8 +610,10 @@ function updateApiKey(taxNumber, link)
         data: {
             TaxNumber: taxNumber
         },
-        success: function (theData) {
-            zerosData = JSON.parse(JSON.stringify(theData));
+        success: function (theData)
+        {
+            zerosData = JSON.parse(JSON.parse(JSON.stringify(theData)));
+            alert(zerosData);
 
             var obj = [zerosData].filter(x => x.TaxNumber == taxNumber)[0];
 
@@ -626,8 +640,10 @@ function updateApiKey_2(taxNumber, link)
         data: {
             TaxNumber: taxNumber
         },
-        success: function (theData) {
-            zerosData = JSON.parse(JSON.stringify(theData));
+        success: function (theData)
+        {
+            zerosData = JSON.parse(JSON.parse(JSON.stringify(theData)));
+            alert(zerosData);
 
             var obj = [zerosData].filter(x => x.TaxNumber == taxNumber)[0];
 

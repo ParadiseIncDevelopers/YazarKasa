@@ -3,6 +3,7 @@ using ApiControlCenterWebPanel.Models;
 using ApiControlCenterWebPanel.Models.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace ApiControlCenterWebPanel.Pages
@@ -340,16 +341,33 @@ namespace ApiControlCenterWebPanel.Pages
         {
             ViewData["TaxNumberGetter"] = taxNumber;
 
-            ViewData["GasPricesList"] = GasPricesModel.RetrieveGasPrices().Where(x => x.TaxId == taxNumber).ToList();
+            List<GasPricesSystem> allPrices = GasPricesModel.RetrieveGasPrices().Where(x => x.TaxId == taxNumber).ToList();
 
-            return new JsonResult(JsonSerializer.Serialize(ViewData["GasPricesList"]));
+            if (allPrices.Count == 0)
+            {
+                return new JsonResult("Benzin istasyonu için fiyatlar bulunamadı. Lütfen fiyatları güncelleyiniz.");
+            }
+            else 
+            {
+                return new JsonResult(JsonSerializer.Serialize(allPrices));
+            }
         }
 
         public IActionResult OnGetCashZerosForInvoice(string taxNumber) 
         {
-            var theCashZeros = (RetrieveTables(Utilities.PATH) as CashContent).DataContent.Where(x => x.TaxNumber == taxNumber).ToList()[0];
-            string theCashInJson = JsonSerializer.Serialize(theCashZeros);
-            return new JsonResult(theCashZeros);
+            var theCashZeros = (RetrieveTables(Utilities.PATH) as CashContent).DataContent;
+            var theOtherZeros = (RetrieveTables(Utilities.PATH1) as CashContent).DataContent_1.Select(x => x.AdminModel).ToList();
+
+
+
+            List<IModelElement> elements = new();
+            elements.AddRange(theCashZeros);
+            elements.AddRange(theOtherZeros);
+
+            IModelElement theElement = elements.Where(x => x.TaxNumber == taxNumber).ToList()[0];
+
+            string theCashInJson = JsonSerializer.Serialize(theElement);
+            return new JsonResult(theCashInJson);
         }
 
         public IActionResult OnPostSearchPlate() 

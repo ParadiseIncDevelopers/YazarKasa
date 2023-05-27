@@ -15,6 +15,15 @@ function addTextDanger(labels, index)
     }
 }
 
+/** 
+ * Adds text danger
+ * @param labels {string}
+ * */
+function addTextDanger_0(labels)
+{
+    $("#" + labels).addClass(danger);
+}
+
 /**
  * If input is false
  * @param s {string}
@@ -22,6 +31,7 @@ function addTextDanger(labels, index)
 var inputAreFalse = (s) => {
     $(s).addClass(danger);
     $(s).removeClass(success);
+    
 };
 
 /**
