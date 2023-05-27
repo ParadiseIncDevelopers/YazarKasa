@@ -51,10 +51,10 @@ var listElementsRegex = (array, text) => {
 };
 
 //Input 4 regex
-var gasStationNameRegex = /^([a-zA-Z0-9ğüşöçıİĞÜŞÖÇ\s]){5,}$/;
+var gasStationNameRegex = /^(.){10,}$/;
 
 //Input 5 regex
-var gasTypeRegex = /^([^<>!?#\^$/\\&|]){5,}$/;
+var gasTypeRegex = /^(.){5,}$/;
 
 //Input 6 regex
 var cashLettersRegex = /^([A-Z]){1,3}$/;
@@ -77,6 +77,9 @@ function hideOtherInputs() {
 
 //Input 8, 9, 10 regex
 var zerosRegex = /^(\d){1}$/;
+
+//Input 11 regex
+var zReportIndex = /^(\d){1,5}$/;
 
 $(document).ready(function () {
 
@@ -114,13 +117,13 @@ $(document).ready(function () {
     })
 
     $("#addCash").prop("disabled", true);
-    addTextDanger("label", 10);
+    addTextDanger("label", 11);
 
     for (var i = 1; i <= 6; i++) {
         inputAreTrue("#updateLabel_" + i);
     }
-    addTextDanger("gasDateLabel", 10);
-    addTextDanger("gasPriceLabel", 10);
+    addTextDanger("gasDateLabel", 11);
+    addTextDanger("gasPriceLabel", 11);
     $("#InvoiceCreatorContainer input").prop("disabled", true);
 
     //Input 1 Regex check
@@ -128,7 +131,7 @@ $(document).ready(function () {
         var inp = $(this).val();
         if (beginDateInstance.test(inp)) {
             inputAreTrue("#label_1");
-            var inputsAreTrue = allInputsAreTrue("label", 10);
+            var inputsAreTrue = allInputsAreTrue("label", 11);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
                 $("#login").prop("disabled", false);
@@ -146,7 +149,7 @@ $(document).ready(function () {
         if (vergikimlik(inp)) {
             inputAreTrue("#label_2");
 
-            var inputsAreTrue = allInputsAreTrue("label", 10);
+            var inputsAreTrue = allInputsAreTrue("label", 11);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -165,7 +168,7 @@ $(document).ready(function () {
 
         if (listElementsRegex(["Beko", "Mepsan", "Arçelik"], $("#cashNumber").text())) {
             inputAreTrue("#label_3");
-            var inputsAreTrue = allInputsAreTrue("label", 10);
+            var inputsAreTrue = allInputsAreTrue("label", 11);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -178,7 +181,7 @@ $(document).ready(function () {
         if (gasStationNameRegex.test(inp)) {
             inputAreTrue("#label_4");
 
-            var inputsAreTrue = allInputsAreTrue("label", 10);
+            var inputsAreTrue = allInputsAreTrue("label", 11);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -190,12 +193,12 @@ $(document).ready(function () {
     });
 
     //Input 5 Regex check
-    $("#input_3").click(function () {
+    $("#input_3").keyup(function () {
         var inp = $(this).val();
         if (gasTypeRegex.test(inp)) {
             inputAreTrue("#label_5");
 
-            var inputsAreTrue = allInputsAreTrue("label", 10);
+            var inputsAreTrue = allInputsAreTrue("label", 11);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -212,7 +215,7 @@ $(document).ready(function () {
         if (cashLettersRegex.test(inp)) {
             inputAreTrue("#label_6");
 
-            var inputsAreTrue = allInputsAreTrue("label", 10);
+            var inputsAreTrue = allInputsAreTrue("label", 11);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -229,7 +232,7 @@ $(document).ready(function () {
         if (cashIdRegex.test(inp)) {
             inputAreTrue("#label_7");
 
-            var inputsAreTrue = allInputsAreTrue("label", 10);
+            var inputsAreTrue = allInputsAreTrue("label", 11);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -245,7 +248,7 @@ $(document).ready(function () {
         if (zerosRegex.test(inp)) {
             inputAreTrue("#label_8");
 
-            var inputsAreTrue = allInputsAreTrue("label", 10);
+            var inputsAreTrue = allInputsAreTrue("label", 11);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -261,7 +264,7 @@ $(document).ready(function () {
         if (zerosRegex.test(inp)) {
             inputAreTrue("#label_9");
 
-            var inputsAreTrue = allInputsAreTrue("label", 10);
+            var inputsAreTrue = allInputsAreTrue("label", 11);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -277,13 +280,29 @@ $(document).ready(function () {
         if (zerosRegex.test(inp)) {
             inputAreTrue("#label_10");
 
-            var inputsAreTrue = allInputsAreTrue("label", 10);
+            var inputsAreTrue = allInputsAreTrue("label", 11);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
         }
         else {
             inputAreFalse("#label_10");
+            $("#addCash").prop("disabled", true);
+        }
+    });
+
+    $("#input_9").keyup(function () {
+        var inp = $(this).val();
+        if (zReportIndex.test(inp)) {
+            inputAreTrue("#label_11");
+
+            var inputsAreTrue = allInputsAreTrue("label", 11);
+            if (inputsAreTrue) {
+                $("#addCash").prop("disabled", false);
+            }
+        }
+        else {
+            inputAreFalse("#label_11");
             $("#addCash").prop("disabled", true);
         }
     });
@@ -381,6 +400,100 @@ $(document).ready(function () {
             $("#updateCash").prop("disabled", true);
         }
     });
+
+    $("#updateInput2_1").keyup(function () {
+        var inp = $(this).val();
+        if (gasStationNameRegex.test(inp)) {
+            inputAreTrue("#updateLabel2_1");
+
+            var inputsAreTrue = allInputsAreTrue("updateLabel2", 6);
+            if (inputsAreTrue) {
+                $("#updateCash2").prop("disabled", false);
+            }
+        }
+        else {
+            inputAreFalse("#updateLabel2_1");
+            $("#updateCash2").prop("disabled", true);
+        }
+    });
+
+    $("#updateInput2_2").keyup(function () {
+        var inp = $(this).val();
+        if (passwordRegex.test(inp)) {
+            inputAreTrue("#updateLabel_2");
+
+            var inputsAreTrue = allInputsAreTrue("updateLabel2", 6);
+            if (inputsAreTrue) {
+                $("#updateCash2").prop("disabled", false);
+            }
+        }
+        else {
+            inputAreFalse("#updateLabel2_2");
+            $("#updateCash2").prop("disabled", true);
+        }
+    });
+
+    $("#updateCashNumberMenu2 li a").click(function () {
+        var item = $(this).attr("id");
+        var itemText = $("#" + item).text();
+        $("#updateCashNumber2").text(itemText);
+
+        if (listElementsRegex(["Beko", "Mepsan", "Arçelik"], $("#updateCashNumber2").text())) {
+            inputAreTrue("#updateLabel2_3");
+            var inputsAreTrue = allInputsAreTrue("updateLabel2", 6);
+            if (inputsAreTrue) {
+                $("#updateCash2").prop("disabled", false);
+            }
+        }
+    });
+
+    $("#updateInput2_4").keyup(function () {
+        var inp = $(this).val();
+        if (zerosRegex.test(inp)) {
+            inputAreTrue("#updateLabel2_4");
+
+            var inputsAreTrue = allInputsAreTrue("updateLabel2", 6);
+            if (inputsAreTrue) {
+                $("#updateCash2").prop("disabled", false);
+            }
+        }
+        else {
+            inputAreFalse("#updateLabel2_4");
+            $("#updateCash2").prop("disabled", true);
+        }
+    });
+
+    $("#updateInput2_5").keyup(function () {
+        var inp = $(this).val();
+        if (zerosRegex.test(inp)) {
+            inputAreTrue("#updateLabel2_5");
+
+            var inputsAreTrue = allInputsAreTrue("updateLabel2", 6);
+            if (inputsAreTrue) {
+                $("#updateCash2").prop("disabled", false);
+            }
+        }
+        else {
+            inputAreFalse("#updateLabel2_5");
+            $("#updateCash2").prop("disabled", true);
+        }
+    });
+
+    $("#updateInput2_6").keyup(function () {
+        var inp = $(this).val();
+        if (zerosRegex.test(inp)) {
+            inputAreTrue("#updateLabel2_6");
+
+            var inputsAreTrue = allInputsAreTrue("updateLabel2", 6);
+            if (inputsAreTrue) {
+                $("#updateCash2").prop("disabled", false);
+            }
+        }
+        else {
+            inputAreFalse("#updateLabel2_6");
+            $("#updateCash2").prop("disabled", true);
+        }
+    });
 });
 
 /**
@@ -393,7 +506,7 @@ function createRow(theCashZeros, taxNumberInvoiceMaker, theData) {
     var index = document.getElementById("tableElements").children.length;
     var obj = JSON.parse(theData);
 
-    var elements = '<tr id="adminPanelContent_' + index + '"><td><a class="mb-0 taxNumberLink text-dark" id="taxNumber_' + index + '" onclick="getTheTaxNumber(' + theCashZeros + ', ' + taxNumberInvoiceMaker + ', ' + obj[index].TaxNumber + ', ' + index + ')"> ' + obj[i].GasStationName[0] + '</a></td><td><ul class="list-inline mb-0"><li class="list-inline-item"><a href="javascript: void (0); " id="deleteApiKey" onclick="deleteApiKey(' + index + ' + 1)" title="Delete" class="px-2 text-danger"><i class="bx bx-trash-alt font-size-18"></i></a></li><li class="list-inline-item"><a href="javascript: void (0); " data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#exampleModal2" id="updateApiKey" onclick="updateApiKey(' + index + ' + 1) " title="Update" class="px-2 text-info"><i class="bx bxs-comment-edit font-size-18"></i></a></li><li class="list-inline-item"><a href="javascript: void (0); " data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#exampleModal2" id="updateApiKey" onclick="" title="Update" class="px-2 text-success"><i class="bx bx-search font-size-18"></i></a></li></ul></td></tr>';
+    var elements = '<tr id="adminPanelContent_' + index + '"><td><a class="mb-0 taxNumberLink text-dark" id="taxNumber_' + index + '" onclick="getTheTaxNumber(' + theCashZeros + ', ' + taxNumberInvoiceMaker + ', ' + obj[index].TaxNumber + ', ' + index + ')"> ' + obj[index].GasStationName[0] + '</a></td><td><ul class="list-inline mb-0"><li class="list-inline-item"><a href="javascript: void (0); " id="deleteApiKey" onclick="deleteApiKey(' + index + ' + 1)" title="Delete" class="px-2 text-danger"><i class="bx bx-trash-alt font-size-18"></i></a></li><li class="list-inline-item"><a href="javascript: void (0); " data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#exampleModal2" id="updateApiKey" onclick="updateApiKey(' + index + ' + 1) " title="Update" class="px-2 text-info"><i class="bx bxs-comment-edit font-size-18"></i></a></li><li class="list-inline-item"><a href="javascript: void (0); " data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#exampleModal2" id="updateApiKey" onclick="" title="Update" class="px-2 text-success"><i class="bx bx-search font-size-18"></i></a></li></ul></td></tr>';
     $("#tableElements").append(elements);
 }
 
@@ -497,9 +610,34 @@ function updateApiKey(taxNumber, link)
             $("#updateInput_6").val(obj.ZerosInZReports);
             $("#updateCashNumber").text(obj.CashTypeName);
         }
-    });
+    });   
+}
 
-    
+/**
+ * 
+ * @param {string} taxNumber
+ * @param {string} link
+ * */
+function updateApiKey_2(taxNumber, link)
+{
+    $.ajax({
+        type: 'GET',
+        url: link,
+        data: {
+            TaxNumber: taxNumber
+        },
+        success: function (theData) {
+            zerosData = JSON.parse(JSON.stringify(theData));
+
+            var obj = [zerosData].filter(x => x.TaxNumber == taxNumber)[0];
+
+            $("#updateInput2_1").val(obj.GasType);
+            $("#updateInput2_4").val(obj.ZerosInEku);
+            $("#updateInput2_5").val(obj.ZerosInInvoices);
+            $("#updateInput2_6").val(obj.ZerosInZReports);
+            $("#updateCashNumber2").text(obj.CashTypeName);
+        }
+    });
 }
 
 /* <div>

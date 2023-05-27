@@ -14,12 +14,21 @@
 
     try
     {
-        superAdmin = db1.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList()[0].GasStationName?[0];
-        admin = db2.Where(x => x.AdminModel.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList()[0].AdminModel.GasStationName?[0];
+        var supAdm = db1?.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList();
+        var adm = db2?.Where(x => x.AdminModel.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList();
+
+        if (supAdm != null && supAdm.Count != 0)
+        {
+            theEntrepriseName = supAdm[0].GasStationName[0];
+        }
+        else if (adm != null && adm.Count != 0)
+        {
+            theEntrepriseName = adm[0].AdminModel.GasStationName[0];
+        }
     }
     catch
     {
-        theEntrepriseName = superAdmin ?? admin;
+        
     }
 }
 
@@ -49,41 +58,46 @@
                 </thead>
                 <tbody id="tableElements">
                     @{
-                        List<UserInvoiceContainer> allInvoices = (ApiTableModel.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent).DataContent;
-                        List<Invoice>? filteredInvoices = allInvoices.FindAll(x => x.TaxId == GasStationInvoicesModel.TaxNumber)[0].Invoices;
-                        
-                        for (int i = 0; i < filteredInvoices.Count; i++)
+                        List<UserInvoiceContainer>? allInvoices = (ApiTableModel.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent)?.DataContent.FindAll(x => x.TaxId == GasStationInvoicesModel.TaxNumber);
+
+                        if (allInvoices != null && allInvoices.Count != 0)
                         {
-                            SuperAdmin theCash = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList()[0];
+                            List<Invoice>? filteredInvoices = allInvoices[0].Invoices;
+                            if (filteredInvoices != null)
+                            {
+                                for (int i = 0; i < filteredInvoices.Count; i++)
+                                {
+                                    SuperAdmin theCash = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList()[0];
+                                    string[] theDateFull = filteredInvoices[i].Tarih.Value.ToString().Split(" ");
+                                    string[] theDate = theDateFull[0].Split("-");
+                                    string[] theHour = theDateFull[1].Split(":");
+                                    string dateDisplayer = theDate[0] + "/" + theDate[1] + "/" + filteredInvoices[i].Tarih.Value.Year;
+                                    string hourDisplayer = theHour[0] + ":" + theHour[1];
 
-                            string[] theDateFull = filteredInvoices[i].Tarih.Value.ToString().Split(" ");
-                                string[] theDate = theDateFull[0].Split("-");
-                                string[] theHour = theDateFull[1].Split(":");
-                            string dateDisplayer = theDate[0] + "/" + theDate[1] + "/" + filteredInvoices[i].Tarih.Value.Year;
-                                string hourDisplayer = theHour[0] + ":" + theHour[1];
-
-                                <tr id="searchPlateContent_@i">
-                                    <td id="inv_1_@(i)">@filteredInvoices[i].PlakaNo</td>
-                                    <td id="inv_2_@(i)">@theCash.GasStationName.Aggregate((item1, item2) => item1 + "\n" + item2)</td>
-                                    <td id="inv_3_@(i)">@dateDisplayer</td>
-                                    <td id="inv_4_@(i)">@hourDisplayer</td>
-                                    <td id="inv_5_@(i)">@filteredInvoices[i].FisNo</td>
-                                    <td id="inv_6_@(i)">@filteredInvoices[i].ZRaporuNo</td>
-                                    <td id="inv_7_@(i)">@filteredInvoices[i].EkuNo</td>
-                                    <td id="inv_8_@(i)">@filteredInvoices[i].BirimFiyat</td>
-                                    <td id="inv_9_@(i)">@filteredInvoices[i].Litre</td>
-                                    <td id="inv_10_@(i)">@filteredInvoices[i].TotalFiyat</td>
-                                    <td>
-                                        <ul class="list-inline mb-0">
-                                            <li class="list-inline-item">
-                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@GasStationInvoicesModel.TaxNumber', @(i))" title="Print this invoice" class="px-2 text-info">
-                                                    <i class='bx bx-printer font-size-18'></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </td>
-                                </tr>
+                                    <tr id="searchPlateContent_@i">
+                                        <td id="inv_1_@(i)">@filteredInvoices[i].PlakaNo</td>
+                                        <td id="inv_2_@(i)">@theCash.GasStationName.Aggregate((item1, item2) => item1 + "\n" + item2)</td>
+                                        <td id="inv_3_@(i)">@dateDisplayer</td>
+                                        <td id="inv_4_@(i)">@hourDisplayer</td>
+                                        <td id="inv_5_@(i)">@filteredInvoices[i].FisNo</td>
+                                        <td id="inv_6_@(i)">@filteredInvoices[i].ZRaporuNo</td>
+                                        <td id="inv_7_@(i)">@filteredInvoices[i].EkuNo</td>
+                                        <td id="inv_8_@(i)">@filteredInvoices[i].BirimFiyat</td>
+                                        <td id="inv_9_@(i)">@filteredInvoices[i].Litre</td>
+                                        <td id="inv_10_@(i)">@filteredInvoices[i].TotalFiyat</td>
+                                        <td>
+                                            <ul class="list-inline mb-0">
+                                                <li class="list-inline-item">
+                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@GasStationInvoicesModel.TaxNumber', @(i))" title="Print this invoice" class="px-2 text-info">
+                                                        <i class='bx bx-printer font-size-18'></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                }
                             }
+                        }
                     }
                 </tbody>
             </table>

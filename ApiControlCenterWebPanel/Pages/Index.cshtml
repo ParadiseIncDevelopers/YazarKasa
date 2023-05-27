@@ -1,4 +1,5 @@
 ﻿@page
+@using ApiControlCenterWebPanel.Models.Interfaces;
 @using Models;
 @using ApiControlCenterWebPanel.Controller;
 @model ApiTableModel
@@ -47,12 +48,21 @@
                                     </thead>
                                     <tbody id="tableElements">
                                         @{
-                                            List<Models.SuperAdmin> elements = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent;
+                                            List<Models.SuperAdmin> superAdmin = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber).ToList();
 
-                                            for (int i = 0; i < elements.Count; i++)
+                                            List<IModelElement> allElements = new() 
+                                            {
+                                                superAdmin[0]
+                                            };
+
+                                            List<Admin> theSubAdmins = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH1)).DataContent_1.Where(x => x.AdminTaxNumber == AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber).ToList();
+                                            List<AdminModel> groupedAdminModels = theSubAdmins.Select(admin => admin.AdminModel).ToList();
+                                            allElements.AddRange(groupedAdminModels);
+
+                                            for (int i = 0; i < allElements.Count; i++)
                                             {
                                                 <tr id="adminPanelContent_@i">
-                                                    <td><a class="mb-0 taxNumberLink text-dark" id="taxNumber_@i" onclick="getTheTaxNumber('@Url.Page("index", "cashzerosforinvoice")', '@Url.Page("index", "taxnumberinvoicemaker")', '@elements[i].TaxNumber', @i)">@elements[i].GasStationName[0]</a></td>
+                                                    <td><a class="mb-0 taxNumberLink text-dark" id="taxNumber_@i" onclick="getTheTaxNumber('@Url.Page("index", "cashzerosforinvoice")', '@Url.Page("index", "taxnumberinvoicemaker")', '@allElements[i].TaxNumber', @i)">@allElements[i].GasStationName[0]</a></td>
                                                     <td>
                                                         <ul class="list-inline mb-0">
                                                             @{
@@ -73,18 +83,34 @@
                                                                     </li>
                                                                 }
                                                             }
+
+                                                            @{
+                                                                if(i != 0)
+                                                                {
+                                                                    <li class="list-inline-item">
+                                                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updateApiModal2" onclick="updateApiKey_2('@allElements[i].TaxNumber', '@Url.Page("index", "cashzerosforinvoice")')" title="Update the cash info." class="px-2 text-success">
+                                                                            <i class='bx bxs-comment-edit font-size-18'></i>
+                                                                        </a>
+                                                                    </li>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <li class="list-inline-item">
+                                                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updateApiModal" onclick="updateApiKey('@allElements[i].TaxNumber', '@Url.Page("index", "cashzerosforinvoice")')" title="Update the cash info." class="px-2 text-success">
+                                                                            <i class='bx bxs-comment-edit font-size-18'></i>
+                                                                        </a>
+                                                                    </li>
+                                                                }
+                                                            }
+
+                                                            
                                                             <li class="list-inline-item">
-                                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updateApiModal" onclick="updateApiKey('@elements[i].TaxNumber', '@Url.Page("index", "cashzerosforinvoice")')" title="Update the cash info." class="px-2 text-success">
+                                                                <a asp-page="/GasPrices" asp-route-taxnumber="@allElements[i].TaxNumber" title="Benzin fiyatlarını düzenler" class="px-2 text-warning">
                                                                     <i class='bx bxs-comment-edit font-size-18'></i>
                                                                 </a>
                                                             </li>
                                                             <li class="list-inline-item">
-                                                                <a asp-page="/GasPrices" asp-route-taxnumber="@elements[i].TaxNumber" title="Benzin fiyatlarını düzenler" class="px-2 text-warning">
-                                                                    <i class='bx bxs-comment-edit font-size-18'></i>
-                                                                </a>
-                                                            </li>
-                                                            <li class="list-inline-item">
-                                                                <a asp-page="/GasStationInvoices" asp-route-taxnumber="@elements[i].TaxNumber" title="Bütün firmanın faturalarına bakar." class="px-2 text-info">
+                                                                <a asp-page="/GasStationInvoices" asp-route-taxnumber="@allElements[i].TaxNumber" title="Bütün firmanın faturalarına bakar." class="px-2 text-info">
                                                                     <i class='bx bx-search-alt font-size-18'></i>
                                                                 </a>
                                                             </li>
@@ -184,7 +210,7 @@
                 </div>
             </div>
 
-            <!-- Add API key Modal -->
+            <!-- Add cash Modal -->
             <div class="modal fade" id="addCashModal" tabindex="-1" aria-labelledby="addCashModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -194,9 +220,6 @@
                         </div>
                         <div class="modal-body">
                             <form method="get">
-                            @{
-
-                            }
                                 <div class="mb-3">
                                     <label class="form-label" id="label_1">Z raporu başlangıç tarih</label>
                                     <input class="js-datepicker form-control" type="text" name="tarih" id="input_1">
@@ -298,6 +321,10 @@
                                     <label class="form-label" id="label_10">Fiş no sayı hanesi</label>
                                     <input type="text" maxlength="1" name="zerosInInvoice" class="form-control" id="input_8">
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label" id="label_11">En son Z raporu sayısı</label>
+                                    <input type="text" name="zReportIndex" class="form-control" id="input_9">
+                                </div>
                                 <button type="button" class="btn btn-primary" id="addCash" data-bs-dismiss="modal" aria-label="Close">Ekle</button>
                             </form>
                         </div>
@@ -305,7 +332,7 @@
                 </div>
             </div>
 
-            <!-- Update API key Modal -->
+            <!-- Update cash Modal -->
             <div class="modal fade" id="updateApiModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -355,174 +382,8 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="searchInvoiceModal" tabindex="-1" aria-labelledby="searchInvoiceModal" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Plakaya göre faturalar ara</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form method="post" asp-page-handler="searchplate">
-                                <div class="mb-3">
-                                    <label class="form-label" id="searchPlateLabel">Plaka no</label>
-                                    <input type="text" name="plateNumber" class="form-control" id="searchPlateInput">
-                                </div>
-                                <button type="submit" class="btn btn-primary" id="searchPlateButton" aria-label="Close">Ara</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-    else if (AuthType.TheCurrentAuth != null && AuthType.TheCurrentAuth.IsAdmin)
-    {
-        <div class="p-5">
-            <div class="row g-0 align-items-center">
-                <div class="p-3">
-                    <h5 class="card-title">
-                        Admin paneli
-                    </h5>
-                </div>
-                <div class="p-3 row">
-                    <div class="col-md-4">
-                        <div class="card p-2">
-                            <div class="table-responsive">
-                                <table class="table project-list-table table-nowrap align-middle table-borderless">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Benzin istasyonu adı</th>
-                                            <th scope="col" style="width: 200px;">İşlemler</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tableElements">
-                                        @{
-                                            Models.SuperAdmin elements = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber).ToList()[0];
-                                        }
-
-                                        <tr id="adminPanelContent_0">
-                                            <td><a class="mb-0 taxNumberLink text-dark" id="taxNumber_0" onclick="getTheTaxNumber('@Url.Page("index", "cashzerosforinvoice")', '@Url.Page("index", "taxnumberinvoicemaker")', '@elements.TaxNumber', 0)">@elements.GasStationName[0]</a></td>
-                                            <td>
-                                                <ul class="list-inline mb-0">
-
-                                                    <li class="list-inline-item">
-                                                        <a href="javascript:void(0);" id="deleteApiKey" onclick="deleteApiKey(1)" title="Delete" class="px-2 text-danger">
-                                                            <i class="bx bx-trash-alt font-size-18"></i>
-                                                        </a>
-                                                    </li>
-
-                                                    <li class="list-inline-item">
-                                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updateApiModal" onclick="updateApiKey('@elements.TaxNumber')" title="Update the cash info." class="px-2 text-success">
-                                                            <i class='bx bxs-comment-edit font-size-18'></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="list-inline-item">
-                                                        <a asp-page="/GasPrices" asp-route-taxnumber="@elements.TaxNumber" title="Benzin fiyatlarını düzenler" class="px-2 text-warning">
-                                                            <i class='bx bxs-comment-edit font-size-18'></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="list-inline-item">
-                                                        <a asp-page="/GasStationInvoices" asp-route-taxnumber="@elements.TaxNumber" title="Bütün firmanın faturalarına bakar." class="px-2 text-info">
-                                                            <i class='bx bx-search-alt font-size-18'></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card p-2">
-                            <div class="p-3" id="InvoiceCreatorContainer">
-                                <h5 class="modal-title" id="invoiceModalLabel">Fatura Ekle</h5>
-                                <div class="card-body">
-                                    <form method="get">
-                                        <div class="row">
-                                            <div class="row mb-3">
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label" id="invoiceLabel_1">Litre</label>
-                                                        <input type="text" name="litre" class="form-control" id="invoiceText_1">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label" id="invoiceLabel_2">Birim Fiyat</label>
-                                                        <input type="text" maxlength="6" name="birimFiyat" class="form-control" id="invoiceText_2">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-md-6 form-group input-group-icon">
-                                                    <label class="form-label" id="invoiceLabel_3">Tarih</label>
-                                                    <input class="js-datepicker form-control" type="text" name="tarih" id="invoiceText_3">
-                                                    <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
-                                                </div>
-                                                <div class="col-md-6 form-group">
-                                                    <label class="form-label" id="invoiceLabel_4">Saat</label>
-                                                    <input type="text" name="saat" class="form-control" id="invoiceText_4">
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label" id="invoiceLabel_9">Plaka no</label>
-                                                    <input type="text" name="plakaNo" class="form-control" id="invoiceText_9">
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <div class="form-group">
-                                                    <label class="form-label" id="invoiceLabel_7">Fiş no</label>
-                                                    <input type="text" maxlength="6" name="fisNo" class="form-control" id="invoiceText_7">
-                                                </div>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label" id="invoiceLabel_5">Z raporu no</label>
-                                                        <input type="text" name="zRaporuNo" maxlength="6" class="form-control" id="invoiceText_5">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label" id="invoiceLabel_6">Ekü no</label>
-                                                        <input type="text" name="ekuNo" maxlength="6" class="form-control" id="invoiceText_6">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label" id="invoiceLabel_10">Pompa no</label>
-                                                        <input type="text" maxlength="6" name="pompaNo" class="form-control" id="invoiceText_10">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label" id="invoiceLabel_8">Tabanca no</label>
-                                                        <input type="text" maxlength="6" name="tabancaNo" class="form-control" id="invoiceText_8">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button type="button" class="btn btn-primary" id="addInvoice">Ekle</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card" id="DraftInvoiceSection">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Update API key Modal -->
-            <div class="modal fade" id="updateApiModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <!-- Update other cash Modal -->
+            <div class="modal fade" id="updateApiModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -532,39 +393,35 @@
                         <div class="modal-body">
                             <form method="get">
                                 <div class="mb-3">
-                                    <label class="form-label" id="updateLabel_1">Benzin Türü</label>
-                                    <input type="text" name="gasType" class="form-control" id="updateInput_1">
+                                    <label class="form-label" id="updateLabel2_1">Benzin Türü</label>
+                                    <input type="text" name="gasType" class="form-control" id="updateInput2_1">
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" id="updateLabel_2">Parola</label>
-                                    <input type="password" maxlength="6" name="password" class="form-control" id="updateInput_2">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label" id="updateLabel_3">Kasa türü</label>
+                                    <label class="form-label" id="updateLabel2_3">Kasa türü</label>
                                     <div class="dropdown">
-                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="updateCashNumber" name="updateCashNumber" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="updateCashNumber2" name="updateCashNumber" data-bs-toggle="dropdown" aria-expanded="false">
                                             Choose
                                         </a>
                                         <ul class="dropdown-menu" id="updateCashNumberMenu" aria-labelledby="updateCashNumber">
-                                            <li><a class="dropdown-item" id="updateCashNumber_1" href="#">Beko</a></li>
-                                            <li><a class="dropdown-item" id="updateCashNumber_2" href="#">Mepsan</a></li>
-                                            <li><a class="dropdown-item" id="updateCashNumber_3" href="#">Arçelik</a></li>
+                                            <li><a class="dropdown-item" id="updateCashNumber2_1" href="#">Beko</a></li>
+                                            <li><a class="dropdown-item" id="updateCashNumber2_2" href="#">Mepsan</a></li>
+                                            <li><a class="dropdown-item" id="updateCashNumber2_3" href="#">Arçelik</a></li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" id="updateLabel_4">Ekü no sayı hanesi</label>
-                                    <input type="text" maxlength="1" name="zerosInEku" class="form-control" id="updateInput_4">
+                                    <label class="form-label" id="updateLabel2_4">Ekü no sayı hanesi</label>
+                                    <input type="text" maxlength="1" name="zerosInEku" class="form-control" id="updateInput2_4">
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" id="updateLabel_5">Z no sayı hanesi</label>
-                                    <input type="text" maxlength="1" name="zerosInZReport" class="form-control" id="updateInput_5">
+                                    <label class="form-label" id="updateLabel2_5">Z no sayı hanesi</label>
+                                    <input type="text" maxlength="1" name="zerosInZReport" class="form-control" id="updateInput2_5">
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" id="updateLabel_6">Fiş no sayı hanesi</label>
-                                    <input type="text" maxlength="1" name="zerosInInvoice" class="form-control" id="updateInput_6">
+                                    <label class="form-label" id="updateLabel2_6">Fiş no sayı hanesi</label>
+                                    <input type="text" maxlength="1" name="zerosInInvoice" class="form-control" id="updateInput2_6">
                                 </div>
-                                <button type="button" class="btn btn-primary" id="updateCash" data-bs-dismiss="modal" aria-label="Close">Güncelle</button>
+                                <button type="button" class="btn btn-primary" id="updateCash2" data-bs-dismiss="modal" aria-label="Close">Güncelle</button>
                             </form>
                         </div>
                     </div>
@@ -601,7 +458,7 @@
     function deleteApiKey(index) {
         $.ajax({
             type: 'GET',
-            url: '@Url.Page("index", "deletesuperadmin")',
+            url: '@Url.Page("index", "deleteadmin")',
             data: {
                 Index: index
             },
@@ -616,8 +473,6 @@
     var chosenTaxNumber;
 
     $(document).ready(function () {
-
-
 
         $("#addInvoice").click(function () {
             var litre = $("#invoiceText_1").val();
@@ -661,19 +516,20 @@
             var gasStationName = $("#input_31").val() + "-" + $("#input_32").val() + "-" + $("#input_33").val() +
                 $("#input_34").val() + "-" + $("#input_35").val() + "-" + $("#input_36").val() + "-" + $("#input_37").val() + "-" +
                 $("#input_38").val() + "-" + $("#input_39").val() + "-" + $("#input_310").val();
-            var gasType = $("#input_3").text();
+            var gasType = $("#input_3").val();
             var cashLetters = $("#input_4").val();
             var cashId = $("#input_5").val();
             var zerosInInvoice = $("#input_6").val();
             var zerosInEku = $("#input_7").val();
             var zerosInZReport = $("#input_8").val();
+            var zReportIndex = $("#input_9").val();
 
             $.ajax({
                 type: 'GET',
                 url: '@Url.Page("index", "addcash")',
                 data: {
+                    StartDate: baslangicTarih,
                     TaxNumber: taxNumber,
-                    Password: password,
                     CashNumber: cashNumber,
                     GasStationName: gasStationName,
                     GasType: gasType,
@@ -681,9 +537,19 @@
                     CashId: cashId,
                     ZerosInInvoice: zerosInInvoice,
                     ZerosInEku: zerosInEku,
-                    ZerosInZReport: zerosInZReport
+                    ZerosInZReport: zerosInZReport,
+                    ZReportIndex: zReportIndex
                 },
-                success: function (theData) {
+                success: function (theData) 
+                {
+                    if(theData instanceof string)
+                    {
+                        if(theData == "")
+                        {
+                            alert(theData);
+                        }
+                    }
+
                     createRow('@Url.Page("index", "cashzerosforinvoice")', '@Url.Page("index", "taxnumberinvoicemaker")', JSON.stringify(theData));
                 }
             });
@@ -705,6 +571,32 @@
                 data: {
                     GasType: gasType,
                     Password: password,
+                    CashType: cashNumber,
+                    ZerosInInvoices: zerosInInvoice,
+                    ZerosInEku: zerosInEku,
+                    ZerosInZReports: zerosInZReport,
+                    taxNumber: chosenTaxNumber
+                },
+                success: function (theData) {
+
+                }
+            });
+        });
+
+        $("#updateCash2").click(function () {
+            var gasType = $("#updateInput_1").val();
+            var cashNumber = $("#updateCashNumber").text();
+            var zerosInEku = $("#updateInput_4").val();
+            var zerosInInvoice = $("#updateInput_5").val();
+            var zerosInZReport = $("#updateInput_6").val();
+
+            alert(cashNumber);
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Page("index", "updateadmin")',
+                data: {
+                    GasType: gasType,
                     CashType: cashNumber,
                     ZerosInInvoices: zerosInInvoice,
                     ZerosInEku: zerosInEku,

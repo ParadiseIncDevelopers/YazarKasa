@@ -118,7 +118,27 @@ namespace ApiControlCenterWebPanel.Controller
             }
         }
 
+        public static void Write(string path, List<InvoiceZReportSystem> data)
+        {
+            JsonSerializerOptions options = new()
+            {
+                WriteIndented = true
+            };
+            string writeLine = JsonSerializer.Serialize(data, options);
+            File.WriteAllText(path, writeLine);
+        }
+
         public static void Write(string path, List<GasPricesSystem> data)
+        {
+            JsonSerializerOptions options = new()
+            {
+                WriteIndented = true
+            };
+            string writeLine = JsonSerializer.Serialize(data, options);
+            File.WriteAllText(path, writeLine);
+        }
+
+        public static void Write(string path, List<Admin> data)
         {
             JsonSerializerOptions options = new()
             {

@@ -34,24 +34,30 @@
             var theElement = $(this);
             var str = picker.startDate.format('DD/MM/YYYY');
             var str2 = picker.startDate.format("YYYY-MM-DD");
-            var theJsonData = [JSON.parse(jsonData)];
-            if (theElement.attr("id") == "invoiceText_3")
-            {
-                var getTaxNumber = chosenTaxNumber;
+            var theJsonData;
+            if (jsonData != null) {
+                theJsonData = [JSON.parse(jsonData)];
+                if (theElement.attr("id") == "invoiceText_3") {
+                    var getTaxNumber = chosenTaxNumber;
 
-                if (getTaxNumber == "" || getTaxNumber == null)
-                {
-                    alert("Please choose a Gas Station.");
-                }
-                else
-                {
-                    var price = theJsonData[0][0].GasPrices.filter(r => r.Date.includes(str2))[0].Price;
-                    $("#invoiceText_2").val(price);
-                    $("#InvoiceDateSection").text(str.replace('/', '-').replace('/', '-'));
-                    $("#InvoicePriceSection").text(price);
+                    if (getTaxNumber == "" || getTaxNumber == null) {
+                        alert("Please choose a Gas Station.");
+                    }
+                    else {
+                        var price = theJsonData[0][0].GasPrices.filter(r => r.Date.includes(str2))[0].Price;
+                        $("#invoiceText_2").val(price);
+                        $("#InvoiceDateSection").text(str.replace('/', '-').replace('/', '-'));
+                        $("#InvoicePriceSection").text(price);
+                        
+                        inputAreTrue("#invoiceLabel_3");
+                        inputAreTrue("#invoiceLabel_2");
+                    }
                 }
             }
-
+            else
+            {
+                inputAreTrue("#label_1");
+            }
             $(this).val(str);
         });
 

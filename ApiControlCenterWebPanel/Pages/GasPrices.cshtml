@@ -6,6 +6,8 @@
 @{
     Layout = null;
 
+    string theTaxNumber = GasPricesModel.TaxNumber;
+
     if (AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber == null)
     {
         Response.Redirect("Login", true);
@@ -71,26 +73,30 @@
                     <tbody id="tableElements">
                         @{
                             List<GasPricesSystem> allPrices = GasPricesModel.RetrieveGasPrices();
-                            List<GasPrice> allPricesFiltered = allPrices.Where(x => x.TaxId == AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber).ToList()[0].GasPrices;
-
-                            for (int i = 0; i < allPricesFiltered.Count; i++)
+                            List<GasPricesSystem> taxNumberPrices = allPrices.Where(x => x.TaxId == theTaxNumber).ToList();
+                            if (taxNumberPrices.Count != 0)
                             {
-                                DateTime valueDate = allPricesFiltered[i].Date.Value;
-                                string theDate = valueDate.Day + "/" + valueDate.Month + "/" + valueDate.Year;
+                                List<GasPrice> allPricesFiltered = taxNumberPrices[0].GasPrices;
 
-                                <tr id="pricesPanelRow_@i">
-                                    <td id="date_@i">@theDate</td>
-                                    <td id="price_@i">@allPricesFiltered[i].Price</td>
-                                    <td>
-                                        <ul class="list-inline mb-0">
-                                            <li class="list-inline-item">
-                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updatePriceApiModal" onclick="pricesUpdater(@i)" title="Update" class="px-2 text-info">
-                                                    <i class='bx bxs-comment-edit font-size-18'></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </td>
-                                </tr>
+                                for (int i = 0; i < allPricesFiltered.Count; i++)
+                                {
+                                    DateTime valueDate = allPricesFiltered[i].Date.Value;
+                                    string theDate = valueDate.Day + "/" + valueDate.Month + "/" + valueDate.Year;
+
+                                    <tr id="pricesPanelRow_@i">
+                                        <td id="date_@i">@theDate</td>
+                                        <td id="price_@i">@allPricesFiltered[i].Price</td>
+                                        <td>
+                                            <ul class="list-inline mb-0">
+                                                <li class="list-inline-item">
+                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updatePriceApiModal" onclick="pricesUpdater(@i)" title="Update" class="px-2 text-info">
+                                                        <i class='bx bxs-comment-edit font-size-18'></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                }
                             }
                         }
                     </tbody>

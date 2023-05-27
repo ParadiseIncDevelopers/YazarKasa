@@ -9,7 +9,7 @@ namespace ApiControlCenterWebPanel.Pages
     [BindProperties]
     public class GasPricesModel : PageModel
     {
-        private static string? TaxNumber 
+        public static string? TaxNumber 
         {
             get; set;
         }

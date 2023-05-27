@@ -6,7 +6,7 @@ namespace ApiControlCenterWebPanel.Models
     public class AuthType
     {
         public bool IsAdmin { get; set; }
-        public bool IsSuperAdmin { get; set; }  
+        public bool IsSuperAdmin { get; set; }
         public bool IsUser { get; set; }
         public IModelElement? UserCredentialsForInvoice { get; set; }
 

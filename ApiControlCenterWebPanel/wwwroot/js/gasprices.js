@@ -34,6 +34,7 @@
             isClick = 0;
             var str = picker.startDate.format('DD/MM/YYYY');
             $(this).val(str);
+            inputAreTrue("#updatePricesLabel_1");
         });
 
         $(myCalendar).on('click', function (e) {

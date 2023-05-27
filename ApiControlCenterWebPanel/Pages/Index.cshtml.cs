@@ -3,7 +3,6 @@ using ApiControlCenterWebPanel.Models;
 using ApiControlCenterWebPanel.Models.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Text.Json;
 
 namespace ApiControlCenterWebPanel.Pages
@@ -29,18 +28,21 @@ namespace ApiControlCenterWebPanel.Pages
             return ((ZReportContent) UtilityFileAction.Create(Utilities.PATH3)).DataContent;
         }
 
-        //Writes data
-        public static void WriteData(List<SuperAdmin> data, int index = 1)
+        public static void WriteData(List<InvoiceZReportSystem> data) 
         {
-            switch (index) 
-            {
-                case 1:
-                    FileAction.Write(Utilities.PATH, data);
-                    break;
-                case 2: 
-                    FileAction.Write(Utilities.PATH1, data);
-                    break;
-            }
+            FileAction.Write(Utilities.PATH3, data);
+        }
+
+        //Writes data
+        public static void WriteData(List<Admin> data, int index = 1)
+        {
+            FileAction.Write(Utilities.PATH1, data);
+        }
+
+        //Writes data in superadmin list
+        public static void WriteData(List<SuperAdmin> data) 
+        {
+            FileAction.Write(Utilities.PATH, data);
         }
 
         //Writes user invoices in a list
@@ -202,12 +204,11 @@ namespace ApiControlCenterWebPanel.Pages
             }
         }
 
-        public IActionResult OnGetAddCash(string taxNumber, string password, string cashNumber, string gasStationName, string gasType, string cashLetters, string cashId, int zerosInInvoice, int zerosInZReport, int zerosInEku)
+        public IActionResult OnGetAddCash(string StartDate, string taxNumber, string cashNumber, string gasStationName, string gasType, string cashLetters, string cashId, int zerosInInvoice, int zerosInZReport, int zerosInEku, int zReportIndex)
         {
-            SuperAdmin cash = new()
+            AdminModel cash = new()
             {
                 TaxNumber = taxNumber,
-                Password = password,
                 CashId = cashId,
                 GasStationName = gasStationName.Split("-").ToList(),
                 GasType = gasType,
@@ -218,16 +219,61 @@ namespace ApiControlCenterWebPanel.Pages
                 ZerosInZReports = zerosInZReport
             };
 
+            Admin admin = new()
+            {
+                AdminTaxNumber = AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber,
+                AdminModel = cash
+            };
+
             JsonSerializerOptions options = new()
             {
                 WriteIndented = true
             };
-            string serialized = JsonSerializer.Serialize(cash, options);
-            List<SuperAdmin> table = (RetrieveTables(Utilities.PATH) as CashContent).DataContent;
 
-            if (!table.Any(x => x.TaxNumber == taxNumber))
+            string[] theDate = StartDate.Split("/");
+            int z = zReportIndex;
+
+            DateTime time = new(Convert.ToInt32(theDate[2]), Convert.ToInt32(theDate[1]), Convert.ToInt32(theDate[0]));
+
+            InvoiceZReportSystem system = new()
             {
-                table.Add(cash);
+                TaxId = taxNumber,
+                UserZReports = new()
+            };
+
+            while (z >= 0) 
+            {
+                UserZReport report = new()
+                {
+                    Index = z,
+                    DateOfTheIndex = time
+                };
+                system.UserZReports.Add(report);
+                z--;
+                time = time.AddDays(-1);
+            }
+
+            //Writes the z report numbers in the z report system.
+            List<InvoiceZReportSystem> allZreports = RetrieveZReports();
+            allZreports.Add(system);
+            WriteData(allZreports);
+
+            string serialized = JsonSerializer.Serialize(cash, options);
+            List<Admin>? table = (RetrieveTables(Utilities.PATH1) as CashContent)?.DataContent_1;
+
+            if (table == null) 
+            {
+                table = new()
+                {
+                    admin
+                };
+                WriteData(table);
+                return new JsonResult(serialized);
+            }
+
+            if (!table.Any(x => x.AdminTaxNumber == taxNumber))
+            {
+                table.Add(admin);
                 WriteData(table);
                 return new JsonResult(serialized);
             }
@@ -237,7 +283,7 @@ namespace ApiControlCenterWebPanel.Pages
             }
         }
 
-        public void OnGetDeleteSuperAdmin(int index)
+        public void OnGetDeleteAdmin(int index)
         {
             List<SuperAdmin> table = (RetrieveTables(Utilities.PATH) as CashContent).DataContent;
             table.RemoveAt(index - 1);
@@ -268,6 +314,23 @@ namespace ApiControlCenterWebPanel.Pages
             theCash.ZerosInZReports = Convert.ToInt32(ZerosInZReports);
 
             table.Where(x => x.TaxNumber == TaxNumber).ToList()[0] = theCash;
+            WriteData(table);
+
+            return new JsonResult(JsonSerializer.Serialize(table));
+        }
+
+        public IActionResult OnGetUpdateAdmin(string GasType, string CashType, string ZerosInEku, string ZerosInInvoices, string ZerosInZReports, string TaxNumber)
+        {
+            List<Admin> table = (RetrieveTables(Utilities.PATH1) as CashContent).DataContent_1;
+            Admin theCash = table.Where(x => x.AdminTaxNumber == TaxNumber).ToList()[0];
+
+            theCash.AdminModel.GasType = GasType;
+            theCash.AdminModel.CashTypeName = CashType;
+            theCash.AdminModel.ZerosInEku = Convert.ToInt32(ZerosInEku);
+            theCash.AdminModel.ZerosInInvoices = Convert.ToInt32(ZerosInInvoices);
+            theCash.AdminModel.ZerosInZReports = Convert.ToInt32(ZerosInZReports);
+
+            table.Where(x => x.AdminModel.TaxNumber == TaxNumber).ToList()[0] = theCash;
             WriteData(table);
 
             return new JsonResult(JsonSerializer.Serialize(table));

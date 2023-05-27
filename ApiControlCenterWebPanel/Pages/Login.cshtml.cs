@@ -16,7 +16,6 @@ namespace ApiControlCenterWebPanel.Pages
         public IActionResult OnPostAuthenticate(string taxNumber, string password)
         {
             List<SuperAdmin>? db1 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent;
-            List<Admin>? db2 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH1)).DataContent_1;
 
             if (db1.Any(x => x.TaxNumber == taxNumber && x.Password == password))
             {
@@ -26,20 +25,6 @@ namespace ApiControlCenterWebPanel.Pages
                     IsSuperAdmin = true,
                     IsUser = false,
                     UserCredentialsForInvoice = db1.Find(x => x.TaxNumber == taxNumber)
-                };
-
-                auth.CreateAuth();
-
-                return RedirectToPage("Index");
-            }
-            else if (db2.Any(x => x.AdminModel.TaxNumber == taxNumber))
-            {
-                AuthType auth = new()
-                {
-                    IsAdmin = true,
-                    IsSuperAdmin = false,
-                    IsUser = true,
-                    UserCredentialsForInvoice = db2.Find(x => x.AdminModel.TaxNumber == taxNumber).AdminModel
                 };
 
                 auth.CreateAuth();
@@ -78,7 +63,7 @@ namespace ApiControlCenterWebPanel.Pages
             if (!table.Any(x => x.TaxNumber == TaxNumber))
             {
                 table.Add(cash);
-                ApiTableModel.WriteData(table, 2);
+                ApiTableModel.WriteData(table);
                 return new JsonResult(serialized);
             }
             else
