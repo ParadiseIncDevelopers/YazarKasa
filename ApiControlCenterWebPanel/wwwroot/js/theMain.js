@@ -79,7 +79,10 @@ function hideOtherInputs() {
 var zerosRegex = /^(\d){1}$/;
 
 //Input 11 regex
-var zReportIndex = /^(\d){1,5}$/;
+var zReportIndexRegex = /^(\d){1,5}$/;
+
+//Input 12, 13, 14 regex
+var miscIndexRegex = /^(\d){1}$/;
 
 $(document).ready(function () {
 
@@ -117,14 +120,14 @@ $(document).ready(function () {
     })
 
     $("#addCash").prop("disabled", true);
-    addTextDanger("label", 11);
+    addTextDanger("label", 14);
 
     for (var i = 1; i <= 6; i++) {
         inputAreTrue("#updateLabel_" + i);
         inputAreTrue("#updateLabel2_" + i);
     }
-    addTextDanger("gasDateLabel", 11);
-    addTextDanger("gasPriceLabel", 11);
+    addTextDanger("gasDateLabel", 14);
+    addTextDanger("gasPriceLabel", 14);
     $("#InvoiceCreatorContainer input").prop("disabled", true);
 
     //Input 1 Regex check
@@ -132,7 +135,7 @@ $(document).ready(function () {
         var inp = $(this).val();
         if (beginDateInstance.test(inp)) {
             inputAreTrue("#label_1");
-            var inputsAreTrue = allInputsAreTrue("label", 11);
+            var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
                 $("#login").prop("disabled", false);
@@ -150,7 +153,7 @@ $(document).ready(function () {
         if (vergikimlik(inp)) {
             inputAreTrue("#label_2");
 
-            var inputsAreTrue = allInputsAreTrue("label", 11);
+            var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -169,7 +172,7 @@ $(document).ready(function () {
 
         if (listElementsRegex(["Beko", "Mepsan", "Arçelik"], $("#cashNumber").text())) {
             inputAreTrue("#label_3");
-            var inputsAreTrue = allInputsAreTrue("label", 11);
+            var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -182,7 +185,7 @@ $(document).ready(function () {
         if (gasStationNameRegex.test(inp)) {
             inputAreTrue("#label_4");
 
-            var inputsAreTrue = allInputsAreTrue("label", 11);
+            var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -199,7 +202,7 @@ $(document).ready(function () {
         if (gasTypeRegex.test(inp)) {
             inputAreTrue("#label_5");
 
-            var inputsAreTrue = allInputsAreTrue("label", 11);
+            var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -216,7 +219,7 @@ $(document).ready(function () {
         if (cashLettersRegex.test(inp)) {
             inputAreTrue("#label_6");
 
-            var inputsAreTrue = allInputsAreTrue("label", 11);
+            var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -233,7 +236,7 @@ $(document).ready(function () {
         if (cashIdRegex.test(inp)) {
             inputAreTrue("#label_7");
 
-            var inputsAreTrue = allInputsAreTrue("label", 11);
+            var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -249,7 +252,7 @@ $(document).ready(function () {
         if (zerosRegex.test(inp)) {
             inputAreTrue("#label_8");
 
-            var inputsAreTrue = allInputsAreTrue("label", 11);
+            var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -265,7 +268,7 @@ $(document).ready(function () {
         if (zerosRegex.test(inp)) {
             inputAreTrue("#label_9");
 
-            var inputsAreTrue = allInputsAreTrue("label", 11);
+            var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -281,7 +284,7 @@ $(document).ready(function () {
         if (zerosRegex.test(inp)) {
             inputAreTrue("#label_10");
 
-            var inputsAreTrue = allInputsAreTrue("label", 11);
+            var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
@@ -294,16 +297,64 @@ $(document).ready(function () {
 
     $("#input_9").keyup(function () {
         var inp = $(this).val();
-        if (zReportIndex.test(inp)) {
+        if (zReportIndexRegex.test(inp)) {
             inputAreTrue("#label_11");
 
-            var inputsAreTrue = allInputsAreTrue("label", 11);
+            var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
                 $("#addCash").prop("disabled", false);
             }
         }
         else {
             inputAreFalse("#label_11");
+            $("#addCash").prop("disabled", true);
+        }
+    });
+
+    $("#input_10").keyup(function () {
+        var inp = $(this).val();
+        if (miscIndexRegex.test(inp)) {
+            inputAreTrue("#label_12");
+
+            var inputsAreTrue = allInputsAreTrue("label", 14);
+            if (inputsAreTrue) {
+                $("#addCash").prop("disabled", false);
+            }
+        }
+        else {
+            inputAreFalse("#label_12");
+            $("#addCash").prop("disabled", true);
+        }
+    });
+
+    $("#input_11").keyup(function () {
+        var inp = $(this).val();
+        if (miscIndexRegex.test(inp)) {
+            inputAreTrue("#label_13");
+
+            var inputsAreTrue = allInputsAreTrue("label", 14);
+            if (inputsAreTrue) {
+                $("#addCash").prop("disabled", false);
+            }
+        }
+        else {
+            inputAreFalse("#label_13");
+            $("#addCash").prop("disabled", true);
+        }
+    });
+
+    $("#input_12").keyup(function () {
+        var inp = $(this).val();
+        if (miscIndexRegex.test(inp)) {
+            inputAreTrue("#label_14");
+
+            var inputsAreTrue = allInputsAreTrue("label", 14);
+            if (inputsAreTrue) {
+                $("#addCash").prop("disabled", false);
+            }
+        }
+        else {
+            inputAreFalse("#label_14");
             $("#addCash").prop("disabled", true);
         }
     });
@@ -536,7 +587,13 @@ function getTheTaxNumber(zerosUrl, url, taxNumber, index) {
             }
             else
             {
-                $("#InvoiceCreatorContainer input").prop("disabled", false);
+                $("#invoiceText_1").prop("disabled", false);
+                $("#invoiceText_2").prop("disabled", false);
+                $("#invoiceText_3").prop("disabled", false);
+                $("#invoiceText_4").prop("disabled", false);
+                $("#invoiceText_9").prop("disabled", false);
+                $("#invoiceText_7").prop("disabled", false);
+                $("#invoiceText_11").prop("disabled", false);
 
                 if (document.getElementById("DraftInvoiceSection").children.length == 0) {
                     $("#DraftInvoiceSection").append('<div id="page"><div class="row-texts"><div class="row-text" id="InvoiceTaxNumberSection">Firma ismi</div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left" id="InvoiceDateSection">00-00-0000</div><div class="row-text text-left" id="InvoiceNoSection">FİŞ NO: 0000</div></div><div class="row-texts row-texts2"><div class="row-text text-right" id="InvoiceHourSection">00:00</div></div></div><div class="row-texts"><div class="row-text row-texts-big" id="InvoicePlateSection">10AAA123</div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left"><div id="InvoiceLitreSection">1,00 LT</div> X <div id="InvoicePriceSection">1,00</div></div><div class="row-text text-left" id="InvoiceGasTypeSection">MOT.VPRO</div></div><div class="row-texts row-texts2"><div class="row-text text-right">%18</div></div><div class="row-texts row-texts2"><div class="row-text text-right InvoiceTotalPriceSection">*200</div></div></div><hr id="line"><div class="col-texts"><div class="row-texts"><div class="row-text text-left row-texts-big">TOPKDV</div><div class="row-text text-left row-texts-big">TOPLAM</div></div><div class="row-texts row-texts-right"><div class="row-text text-right row-texts-big" id="InvoiceVatPriceSection">*10,00</div><div class="row-text text-right row-texts-big InvoiceTotalPriceSection">*200,00</div></div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left">NAKİT</div></div><div class="row-texts row-texts-right"><div class="row-text text-right InvoiceTotalPriceSection">*200,00</div></div></div><div><img id="InvoiceQRCodeSection" src=""></div><div class="row-texts"><div class="row-text">İYİ YOLCULUKLAR DİLERİZ</div></div><div class="col-texts col-texts-spaced"><div class="row-texts"><div class="row-text text-left" id="InvoiceEkuSection">EKU NO: 0001</div></div><div class="row-texts row-texts-right"><div class="row-text text-right" id="InvoiceZReportSection">Z NO: 0001</div></div></div><div class="row-texts"><div class="row-text">MFAU 000000000000</div></div></div>');
@@ -559,7 +616,7 @@ function getTheTaxNumber(zerosUrl, url, taxNumber, index) {
                 $("#invoiceModalLabel").text("Yeni Fatura - " + taxNumber);
                 jsonData = JSON.parse(JSON.stringify(theData));
 
-                $("#InvoiceTaxNumberSection").text(zerosData.GasStationName.join("\n"));
+                $("#InvoiceTaxNumberSection").text(cashData.GasStationName.join("\n"));
 
 
                 var size = 200;
@@ -579,8 +636,8 @@ function getTheTaxNumber(zerosUrl, url, taxNumber, index) {
             TaxNumber: taxNumber
         },
         success: function (theData) {
-            zerosData = JSON.parse(JSON.parse(JSON.stringify(theData)));
-            $("#InvoiceGasTypeSection").text(zerosData.GasType);
+            cashData = JSON.parse(JSON.parse(JSON.stringify(theData)));
+            $("#InvoiceGasTypeSection").text(cashData.GasType);
         }
     });
 }
@@ -612,10 +669,10 @@ function updateApiKey(taxNumber, link)
         },
         success: function (theData)
         {
-            zerosData = JSON.parse(JSON.parse(JSON.stringify(theData)));
-            alert(zerosData);
+            cashData = JSON.parse(JSON.parse(JSON.stringify(theData)));
+            alert(cashData);
 
-            var obj = [zerosData].filter(x => x.TaxNumber == taxNumber)[0];
+            var obj = [cashData].filter(x => x.TaxNumber == taxNumber)[0];
 
             $("#updateInput_1").val(obj.GasType);
             $("#updateInput_2").val(obj.Password);
@@ -642,10 +699,10 @@ function updateApiKey_2(taxNumber, link)
         },
         success: function (theData)
         {
-            zerosData = JSON.parse(JSON.parse(JSON.stringify(theData)));
-            alert(zerosData);
+            cashData = JSON.parse(JSON.parse(JSON.stringify(theData)));
+            alert(cashData);
 
-            var obj = [zerosData].filter(x => x.TaxNumber == taxNumber)[0];
+            var obj = [cashData].filter(x => x.TaxNumber == taxNumber)[0];
 
             $("#updateInput2_1").val(obj.GasType);
             $("#updateInput2_4").val(obj.ZerosInEku);

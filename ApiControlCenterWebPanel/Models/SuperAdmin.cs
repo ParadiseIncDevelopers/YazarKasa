@@ -29,6 +29,10 @@ namespace ApiControlCenterWebPanel.Models
         public int? ZerosInEku { get; set; }
         [JsonPropertyName("ZerosInZReports")]
         public int? ZerosInZReports { get; set; }
+        [JsonPropertyName("WeaponNumber")]
+        public string? WeaponNumber { get; set; }
+        [JsonPropertyName("PumpNumber")]
+        public string? PumpNumber { get; set; }
 
         public SuperAdmin EncryptAll()
         {

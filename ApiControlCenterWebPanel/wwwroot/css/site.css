@@ -87,3 +87,7 @@ a {
 .taxNumberLink {
     cursor: pointer;
 }
+
+.modal-dialog-container {
+    max-width: 1250px;
+}

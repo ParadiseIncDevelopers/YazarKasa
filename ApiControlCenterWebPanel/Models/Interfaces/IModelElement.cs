@@ -13,5 +13,7 @@ namespace ApiControlCenterWebPanel.Models.Interfaces
         public int? ZerosInInvoices { get; set; }
         public int? ZerosInEku { get; set; }
         public int? ZerosInZReports { get; set; }
+        public string? WeaponNumber { get; set; }
+        public string? PumpNumber { get; set; }
     }
 }

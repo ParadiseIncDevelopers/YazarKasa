@@ -18,6 +18,8 @@ var tabancaRegex = /^(\d){1,4}$/;
 var plateRegex = /^([A-Z0-9\s]){5,12}$/;
 //pompa no
 var pumpRegex = /^(\d){1,4}$/;
+//total fiyat
+var totalPriceRegex = /^(\d)+(\.){1}(\d){2,4}$/;
 
 //If the main page has input
 var hasInput = () => document.getElementById("invoiceModalLabel").innerHTML.includes(" - ");
@@ -25,47 +27,64 @@ var hasInput = () => document.getElementById("invoiceModalLabel").innerHTML.incl
 //If in the main page gas prices management has not "choose".
 var hasGasPriceInput = () => $("#gasPriceUsers").text() != "choose";
 
-//Calculates the prices in the invoice.
-function CalculateInvoicePrice()
+
+
+/**
+ * 
+ * @param {string} element
+ */
+function CalculateIf(element)
 {
-    var invoiceLitre = $("#invoiceText_1").val();
+    var addPoint = (numberString) => {
+        let [integerPart, decimalPart] = numberString.split(",");
+        let formattedIntegerPart = "";
+
+        while (integerPart.length > 3) {
+            formattedIntegerPart = "." + integerPart.slice(-3) + formattedIntegerPart;
+            integerPart = integerPart.slice(0, -3);
+        }
+
+        return integerPart + formattedIntegerPart + "," + decimalPart;
+    }
+
     var invoicePrice = $("#invoiceText_2").val();
-    var totalPrice, totalVat;
+    var calculate = 0;
 
-    if (invoiceLitre != "" || invoiceLitre != null)
+    if (invoicePrice != "")
     {
-        if (invoicePrice != "" || invoicePrice != null)
+        if (element.includes("_11"))
         {
-            invoiceLitre = parseFloat(invoiceLitre);
-            invoicePrice = parseFloat(invoicePrice);
+            var invoiceTotalPrice = $(element).val();
+            calculate = parseFloat(invoiceTotalPrice) / parseFloat(invoicePrice);
+            calculate = Math.round((calculate + Number.EPSILON) * 100) / 100;
+            var totalVat = parseFloat(invoiceTotalPrice) / 100 * 18;
 
-            totalPrice = invoiceLitre * (invoicePrice + (invoicePrice / 100 * 18));
-            totalVat = totalPrice / 100 * 18;
-            totalPrice = Math.round((totalPrice + Number.EPSILON) * 100) / 100;
-            totalVat = Math.round((totalVat + Number.EPSILON) * 100) / 100;
+            calculate = calculate.toFixed(2);
+            totalVat = totalVat.toFixed(2);
 
-            $(".InvoiceTotalPriceSection").text("*" + totalPrice.toString().replace(".", ","));
-            $("#InvoiceVatPriceSection").text("*" + totalVat.toString().replace(".", ","));
+            $("#invoiceText_1").val(calculate.toString());
+            $("#InvoiceLitreSection").text(addPoint($("#invoiceText_1").val().toString().replace(".", ",")));
+            $("#InvoicePriceSection").text(addPoint(invoicePrice.toString().replace(".", ",")));
+            $(".InvoiceTotalPriceSection").text(addPoint($("#invoiceText_11").val().toString().replace(".",",")));
+            $("#InvoiceVatPriceSection").text("* " + addPoint(totalVat.toString().replace(".", ",")));
+        }
+        else if (element.includes("_1"))
+        {
+            var invoiceLitre = $(element).val();
+            calculate = parseFloat(invoiceLitre) * parseFloat(invoicePrice);
+            calculate = Math.round((calculate + Number.EPSILON) * 100) / 100;
+            var totalVat = (calculate / 100 * 18);
+
+            calculate = calculate.toFixed(2);
+            totalVat = totalVat.toFixed(2);
+
+            $("#invoiceText_11").val(calculate.toString());
+            $("#InvoiceLitreSection").text(addPoint($("#invoiceText_1").val().toString().replace(".", ",")));
+            $("#InvoicePriceSection").text(addPoint(invoicePrice.toString().replace(".", ",")));
+            $(".InvoiceTotalPriceSection").text("* " + addPoint($("#invoiceText_11").val().toString().replace(".", ",")));
+            $("#InvoiceVatPriceSection").text("* " + addPoint(totalVat.toString().replace(".", ",")));
         }
     }
-    else if (invoicePrice != "" || invoicePrice != null)
-    {
-        if (invoiceLitre != "" || invoiceLitre != null)
-        {
-            invoiceLitre = parseFloat(invoiceLitre);
-            invoicePrice = parseFloat(invoicePrice);
-
-            totalPrice = invoiceLitre * (invoicePrice + (invoicePrice / 100 * 18));
-            totalVat = totalPrice - (totalPrice / 100 * 18);
-            totalPrice = Math.round((totalPrice + Number.EPSILON) * 100) / 100;
-            totalVat = Math.round((totalVat + Number.EPSILON) * 100) / 100;
-
-            $(".InvoiceTotalPriceSection").text("*" + totalPrice.toString().replace(".", ","));
-            $("#InvoiceVatPriceSection").text("*" + totalVat.toString().replace(".", ","));
-        }
-    }
-
-    
 }
 
 /**
@@ -80,13 +99,13 @@ function UpdateZeros(output, index)
     switch (index)
     {
         case 0:
-            theZeros = zerosData.ZerosInInvoices;
+            theZeros = cashData.ZerosInInvoices;
             break;
         case 1:
-            theZeros = zerosData.ZerosInEku;
+            theZeros = cashData.ZerosInEku;
             break;
         case 2:
-            theZeros = zerosData.ZerosInZReports;
+            theZeros = cashData.ZerosInZReports;
             break;
     }
 
@@ -114,7 +133,7 @@ function UpdateZeros(output, index)
 
 $(document).ready(function ()
 {
-    addTextDanger("invoiceLabel", 10);
+    addTextDanger("invoiceLabel", 11);
 
     disableButton("addInvoice");
     disableButton("gasPriceUpdate");
@@ -125,10 +144,10 @@ $(document).ready(function ()
         if (invoiceInput1Reg.test(theInput))
         {
             inputAreTrue("#invoiceLabel_1");
-            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 10) && hasInput();
+            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
 
             $("#InvoiceLitreSection").text(theInput.replace(".", ","));
-            CalculateInvoicePrice();
+            CalculateIf("#invoiceText_1");
 
             if (inputsAreTrue) {
                 enableButton("addInvoice");
@@ -139,16 +158,16 @@ $(document).ready(function ()
             disableButton("addInvoice");
         }
     });
+
     $("#invoiceText_2").keyup(function ()
     {
         var theInput = $(this).val();
         if (invoiceInput2Reg.test(theInput))
         {
             inputAreTrue("#invoiceLabel_2");
-            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 10) && hasInput();
+            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
 
             $("#InvoicePriceSection").text(theInput.replace(".", ","));
-            CalculateInvoicePrice();
 
             if (inputsAreTrue) {
                 enableButton("addInvoice");
@@ -159,6 +178,27 @@ $(document).ready(function ()
             disableButton("addInvoice");
         }
     });
+
+    $("#invoiceText_11").keyup(function ()
+    {
+        var theInput = $(this).val();
+        if (totalPriceRegex.test(theInput))
+        {
+            inputAreTrue("#invoiceLabel_11");
+            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
+
+            CalculateIf("#invoiceText_11");
+
+            if (inputsAreTrue) {
+                enableButton("addInvoice");
+            }
+        }
+        else {
+            inputAreFalse("#invoiceLabel_11");
+            disableButton("addInvoice");
+        }
+    });
+
     $("#invoiceText_3").keyup(function ()
     {
         var theInput = $(this).val();
@@ -166,7 +206,7 @@ $(document).ready(function ()
         if (instanceOfDate.test(theInput))
         {
             inputAreTrue("#invoiceLabel_3");
-            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 10) && hasInput();
+            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
 
             $("#InvoiceDateSection").text(theInput.replace("/", "-").replace("/", "-"));
 
@@ -185,7 +225,7 @@ $(document).ready(function ()
         if (hourRegex.test(theInput))
         {
             inputAreTrue("#invoiceLabel_4");
-            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 10) && hasInput();
+            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
 
             $("#InvoiceHourSection").text(theInput);
 
@@ -204,7 +244,7 @@ $(document).ready(function ()
         if (zReportRegex.test(theInput))
         {
             inputAreTrue("#invoiceLabel_5");
-            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 10) && hasInput();
+            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
             var UpdatedInput = UpdateZeros(parseFloat(theInput), 2);
             $("#InvoiceZReportSection").text("Z NO : " + UpdatedInput);
 
@@ -222,7 +262,7 @@ $(document).ready(function ()
         var theInput = $(this).val();
         if (ekuNoRegex.test(theInput)) {
             inputAreTrue("#invoiceLabel_6");
-            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 10) && hasInput();
+            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
             var UpdatedInput = UpdateZeros(parseFloat(theInput), 1);
             $("#InvoiceEkuSection").text("EKU NO : " + UpdatedInput);
 
@@ -240,7 +280,7 @@ $(document).ready(function ()
         var theInput = $(this).val();
         if (fisRegex.test(theInput)) {
             inputAreTrue("#invoiceLabel_7");
-            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 10) && hasInput();
+            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
             var UpdatedInput = UpdateZeros(parseFloat(theInput), 0);
             $("#InvoiceNoSection").text("FIS NO : " + UpdatedInput);
 
@@ -258,7 +298,7 @@ $(document).ready(function ()
         var theInput = $(this).val();
         if (tabancaRegex.test(theInput)) {
             inputAreTrue("#invoiceLabel_8");
-            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 10) && hasInput();
+            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
 
             //$("#").text();
 
@@ -277,7 +317,7 @@ $(document).ready(function ()
         var theInput = $(this).val();
         if (plateRegex.test(theInput)) {
             inputAreTrue("#invoiceLabel_9");
-            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 10) && hasInput();
+            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
 
             $("#InvoicePlateSection").text(theInput.toUpperCase().replace(' ','').replace(' ',''));
 
@@ -297,7 +337,7 @@ $(document).ready(function ()
         if (pumpRegex.test(theInput))
         {
             inputAreTrue("#invoiceLabel_10");
-            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 10) && hasInput();
+            var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
 
             //$("#").text();
 

@@ -13,7 +13,7 @@ namespace zReportDateAdder
 
         private static void Main(string[] args) 
         {
-            UpdateZReportSystem("7210849484");
+            UpdateZReportSystem("6045409307");
         }
 
         public static void CreateGasPricesSystem(string taxId) 
@@ -82,6 +82,7 @@ namespace zReportDateAdder
             }
 
             list.Where(x => x.TaxId == taxId).ToList()[0] = filteredList;
+            list.Where(x => x.TaxId == taxId).ToList()[0].UserZReports.OrderBy(y => y.Index);
             string serializedContent = JsonSerializer.Serialize(list, options);
             File.WriteAllText(@"C:\YazarKasa\zReportSystem.json", serializedContent);
         }

@@ -7,6 +7,7 @@
         public static readonly string PATH2 = @"C:\YazarKasa\invoiceDb.json";
         public static readonly string PATH3 = @"C:\YazarKasa\zReportSystem.json";
         public static readonly string PATH4 = @"C:\YazarKasa\gasPricesSystem.json";
+        public static readonly string PATH5 = @"C:\YazarKasa\ekuList.json";
         public static readonly string PRINTING_PATH = @"C:\YazarKasa\";
     }
 }

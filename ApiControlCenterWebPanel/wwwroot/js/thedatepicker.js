@@ -35,16 +35,19 @@
             var str = picker.startDate.format('DD/MM/YYYY');
             var str2 = picker.startDate.format("YYYY-MM-DD");
             var theJsonData;
-            if (jsonData != null) {
+            if (jsonData != null)
+            {
                 theJsonData = [JSON.parse(jsonData)];
-                if (theElement.attr("id") == "invoiceText_3") {
+                if (theElement.attr("id") == "invoiceText_3")
+                {
                     var getTaxNumber = chosenTaxNumber;
 
-                    if (getTaxNumber == "" || getTaxNumber == null) {
+                    if (getTaxNumber == "" || getTaxNumber == null)
+                    {
                         alert("Please choose a Gas Station.");
                     }
-                    else {
-                        console.log(theJsonData[0][0]);
+                    else
+                    {
                         var datePriceContent = theJsonData[0][0].GasPrices.filter(r => r.Date.includes(str2))[0];
 
                         if (datePriceContent == null)
@@ -54,17 +57,49 @@
                         else
                         {
                             var price = datePriceContent.Price;
+                            var taxNumberFunc = (x) => x.TaxId == getTaxNumber;
+                            var zerosIndexGetter = zerosData.filter(x => taxNumberFunc(x))[0].InvoiceZReportSystem.filter(y =>
+                            {
+                                var q = y.DateOfTheIndex.toString().split("T")[0];
+                                var r = str2.toString();
+                                return q == r;
+                            });
+                            var ekuIndexGetter = ekuData.filter(x => taxNumberFunc(x))[0].EkuList.filter(y =>
+                            {
+                                var q = y.DateOfTheIndex.toString().split("T")[0];
+                                var year = parseInt(q.substring(0, 4));
+                                var month = parseInt(q.substring(5, 7)) - 1;
+                                var day = parseInt(q.substring(8, 10));
+                                var qDate = new Date(year, month, day);
+                                var rDate = new Date(str2);
+                                return qDate >= rDate;
+                            })[0].Index;
+
+                            var weaponIndex = cashData.WeaponNumber;
+                            var pumpIndex = cashData.PumpNumber;
+                            var zero1 = cashData.ZerosInEku;
+                            var zero2 = cashData.ZerosInZReports;
+                            var zIndexNumber = zerosIndexGetter[0].Index;
 
                             $("#invoiceText_2").val(price);
                             $("#invoiceText_2").prop("disabled", true);
+                            $("#invoiceText_5").val(zIndexNumber);
+                            $("#invoiceText_6").val(ekuIndexGetter);
+                            $("#invoiceText_10").val(weaponIndex);
+                            $("#invoiceText_8").val(pumpIndex);
+
+                            $("#InvoiceZReportSection").text("Z NO :" + zIndexNumber.toString().padStart(zero2, '0'));
+                            $("#InvoiceEkuSection").text("EKU NO : " + ekuIndexGetter.toString().padStart(zero1, '0'));
                             $("#InvoiceDateSection").text(str.replace('/', '-').replace('/', '-'));
                             $("#InvoicePriceSection").text(price);
 
+                            inputAreTrue("#invoiceLabel_5");
+                            inputAreTrue("#invoiceLabel_6");
                             inputAreTrue("#invoiceLabel_3");
                             inputAreTrue("#invoiceLabel_2");
+                            inputAreTrue("#invoiceLabel_10");
+                            inputAreTrue("#invoiceLabel_8");
                         }
-
-                        
                     }
                 }
             }
@@ -86,12 +121,18 @@
         });
 
 
-    } catch (er) { console.log(er); }
+    }
+    catch (er)
+    {
+        console.log(er);
+    }
 
-    try {
+    try
+    {
         var selectSimple = $('.js-select-simple');
 
-        selectSimple.each(function () {
+        selectSimple.each(function ()
+        {
             var that = $(this);
             var selectBox = that.find('select');
             var selectDropdown = that.find('.select-dropdown');
@@ -100,7 +141,9 @@
             });
         });
 
-    } catch (err) {
+    }
+    catch (err)
+    {
         console.log(err);
     }
 

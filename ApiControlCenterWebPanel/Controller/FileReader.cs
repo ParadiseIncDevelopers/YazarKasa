@@ -52,11 +52,11 @@ namespace ApiControlCenterWebPanel.Controller
                 {
                     content.DataContent = JsonSerializer.Deserialize<List<SuperAdmin>>(lines);
                 }
-                else 
+                else
                 {
                     content.DataContent_1 = JsonSerializer.Deserialize<List<Admin>>(lines);
                 }
-                
+
             }
         }
 
@@ -118,6 +118,16 @@ namespace ApiControlCenterWebPanel.Controller
             }
         }
 
+        public static void Write(string path, List<InvoiceEkuSystem> data)
+        {
+            JsonSerializerOptions options = new()
+            {
+                WriteIndented = true
+            };
+            string writeLine = JsonSerializer.Serialize(data, options);
+            File.WriteAllText(path, writeLine);
+        }
+
         public static void Write(string path, List<InvoiceZReportSystem> data)
         {
             JsonSerializerOptions options = new()
@@ -166,7 +176,7 @@ namespace ApiControlCenterWebPanel.Controller
             };
 
             string writeLine = JsonSerializer.Serialize(data, options);
-            
+
             File.WriteAllText(path, writeLine);
         }
     }
@@ -178,7 +188,7 @@ namespace ApiControlCenterWebPanel.Controller
 
         }
 
-        private static void GasPricesContent(GasPriceContent content) 
+        private static void GasPricesContent(GasPriceContent content)
         {
             string lines = File.ReadAllText(content.Path);
 
@@ -203,6 +213,20 @@ namespace ApiControlCenterWebPanel.Controller
             else
             {
                 content.DataContent = JsonSerializer.Deserialize<List<InvoiceZReportSystem>>(lines);
+            }
+        }
+
+        private static void EkuContent(EkuContent content) 
+        {
+            string lines = File.ReadAllText(content.Path);
+
+            if (lines.Length == 0)
+            {
+                content.DataContent = new List<InvoiceEkuSystem>();
+            }
+            else
+            {
+                content.DataContent = JsonSerializer.Deserialize<List<InvoiceEkuSystem>>(lines);
             }
         }
 
@@ -248,7 +272,27 @@ namespace ApiControlCenterWebPanel.Controller
 
                 return content;
             }
-            else 
+            else if (contentTypeName == "EKU_REPORTS")
+            {
+                EkuContent content = new()
+                {
+                    Path = path
+                };
+
+                if (File.Exists(content.Path))
+                {
+                    EkuContent(content);
+                }
+                else
+                {
+                    Directory.CreateDirectory(@"C:\YazarKasa");
+                    File.Create(content.Path).Close();
+                    EkuContent(content);
+                }
+
+                return content;
+            }
+            else
             {
                 return null;
             }
@@ -265,5 +309,12 @@ namespace ApiControlCenterWebPanel.Controller
     {
         public string? Path { get; set; }
         public List<GasPricesSystem>? DataContent { get; set; }
+    }
+
+    public class EkuContent : IUtilityContent
+    {
+        public string? Path { get; set; }
+        public List<InvoiceEkuSystem>? DataContent { get; set; }
+
     }
 }

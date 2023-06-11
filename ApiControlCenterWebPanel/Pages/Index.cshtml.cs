@@ -29,13 +29,23 @@ namespace ApiControlCenterWebPanel.Pages
             return ((ZReportContent) UtilityFileAction.Create(Utilities.PATH3)).DataContent;
         }
 
+        public static List<InvoiceEkuSystem> RetrieveEkuList() 
+        {
+            return ((EkuContent) UtilityFileAction.Create(Utilities.PATH5, "EKU_REPORTS")).DataContent;
+        }
+
+        public static void WriteData(List<InvoiceEkuSystem> data)
+        {
+            FileAction.Write(Utilities.PATH5, data);
+        }
+
         public static void WriteData(List<InvoiceZReportSystem> data) 
         {
             FileAction.Write(Utilities.PATH3, data);
         }
 
         //Writes data
-        public static void WriteData(List<Admin> data, int index = 1)
+        public static void WriteData(List<Admin> data)
         {
             FileAction.Write(Utilities.PATH1, data);
         }
@@ -196,16 +206,16 @@ namespace ApiControlCenterWebPanel.Pages
 
                     table = table.Union(returnElement).ToList();
                 }
-                
-                WriteData(table);
 
                 //buradan devam. printer lib bulunacak.
+
+                WriteData(table);
 
                 return new JsonResult(serialized);
             }
         }
 
-        public IActionResult OnGetAddCash(string StartDate, string taxNumber, string cashNumber, string gasStationName, string gasType, string cashLetters, string cashId, int zerosInInvoice, int zerosInZReport, int zerosInEku, int zReportIndex)
+        public IActionResult OnGetAddCash(string StartDate, string taxNumber, string cashNumber, string gasStationName, string gasType, string cashLetters, string cashId, int zerosInInvoice, int zerosInZReport, int zerosInEku, int zReportIndex, int lastEkuNumber, int weaponNumber, int pumpNumber)
         {
             AdminModel cash = new()
             {
@@ -217,7 +227,9 @@ namespace ApiControlCenterWebPanel.Pages
                 CashTypeName = cashNumber,
                 ZerosInEku = zerosInEku,
                 ZerosInInvoices = zerosInInvoice,
-                ZerosInZReports = zerosInZReport
+                ZerosInZReports = zerosInZReport,
+                PumpNumber = pumpNumber.ToString(),
+                WeaponNumber = weaponNumber.ToString()
             };
 
             Admin admin = new()
@@ -225,17 +237,13 @@ namespace ApiControlCenterWebPanel.Pages
                 AdminTaxNumber = AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber,
                 AdminModel = cash
             };
-
             JsonSerializerOptions options = new()
             {
                 WriteIndented = true
             };
-
             string[] theDate = StartDate.Split("/");
             int z = zReportIndex;
-
             DateTime time = new(Convert.ToInt32(theDate[2]), Convert.ToInt32(theDate[1]), Convert.ToInt32(theDate[0]));
-
             InvoiceZReportSystem system = new()
             {
                 TaxId = taxNumber,
@@ -254,11 +262,28 @@ namespace ApiControlCenterWebPanel.Pages
                 time = time.AddDays(-1);
             }
 
+            system.UserZReports.Reverse();
+
+            InvoiceEkuSystem ekuSystem = new()
+            {
+                TaxId = taxNumber,
+                EkuList = new()
+            };
+            UserEku eku = new()
+            {
+                Index = lastEkuNumber,
+                DateOfTheIndex = DateTime.Now
+            };
+            ekuSystem.EkuList.Add(eku);
+
             //Writes the z report numbers in the z report system.
             List<InvoiceZReportSystem> allZreports = RetrieveZReports();
             allZreports.Add(system);
-            WriteData(allZreports);
-
+            
+            //Writes eku Number
+            List<InvoiceEkuSystem> allEkuNumbers = RetrieveEkuList();
+            allEkuNumbers.Add(ekuSystem);
+            
             string serialized = JsonSerializer.Serialize(cash, options);
             List<Admin>? table = (RetrieveTables(Utilities.PATH1) as CashContent)?.DataContent_1;
 
@@ -276,6 +301,8 @@ namespace ApiControlCenterWebPanel.Pages
             {
                 table.Add(admin);
                 WriteData(table);
+                WriteData(allZreports);
+                WriteData(allEkuNumbers);
                 return new JsonResult(serialized);
             }
             else
@@ -325,11 +352,12 @@ namespace ApiControlCenterWebPanel.Pages
             List<Admin> table = (RetrieveTables(Utilities.PATH1) as CashContent).DataContent_1;
             Admin theCash = table.Where(x => x.AdminTaxNumber == TaxNumber).ToList()[0];
 
-            theCash.AdminModel.GasType = GasType;
-            theCash.AdminModel.CashTypeName = CashType;
-            theCash.AdminModel.ZerosInEku = Convert.ToInt32(ZerosInEku);
-            theCash.AdminModel.ZerosInInvoices = Convert.ToInt32(ZerosInInvoices);
-            theCash.AdminModel.ZerosInZReports = Convert.ToInt32(ZerosInZReports);
+            AdminModel mod = theCash.AdminModel;
+            mod.GasType = GasType;
+            mod.CashTypeName = CashType;
+            mod.ZerosInEku = Convert.ToInt32(ZerosInEku);
+            mod.ZerosInInvoices = Convert.ToInt32(ZerosInInvoices);
+            mod.ZerosInZReports = Convert.ToInt32(ZerosInZReports);
 
             table.Where(x => x.AdminModel.TaxNumber == TaxNumber).ToList()[0] = theCash;
             WriteData(table);
@@ -368,6 +396,20 @@ namespace ApiControlCenterWebPanel.Pages
 
             string theCashInJson = JsonSerializer.Serialize(theElement);
             return new JsonResult(theCashInJson);
+        }
+
+        public IActionResult OnGetZReportsGetContent() 
+        {
+            var reports = RetrieveZReports();
+            string reportsConverted = JsonSerializer.Serialize(reports);
+            return new JsonResult(reportsConverted);
+        }
+
+        public IActionResult OnGetEkuGetContent()
+        {
+            var reports = RetrieveEkuList();
+            string reportsConverted = JsonSerializer.Serialize(reports);
+            return new JsonResult(reportsConverted);
         }
 
         public IActionResult OnPostSearchPlate() 

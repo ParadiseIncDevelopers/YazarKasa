@@ -1,4 +1,15 @@
-﻿(function ($) {
+﻿//Tarih
+var dateRegex = /^(([0-2][0-9])|(30)|(31))\/((0[0-9])|(11)|(12))\/(20\d{2})$/;
+
+//Tarih araligi
+var dateRangeRegex = /^((([0-2][0-9])|(30)|(31))\/((0[0-9])|(11)|(12))\/(20\d{2}))\s-\s((([0-2][0-9])|(30)|(31))\/((0[0-9])|(11)|(12))\/(20\d{2}))$/;
+
+// birim fiyat
+var priceRegex = /^(\d)+(\.){1}(\d){2,4}$/;
+
+var updateIndexNumber = -1;
+
+(function ($) {
     'use strict';
 
     try
@@ -34,7 +45,6 @@
             isClick = 0;
             var str = picker.startDate.format('DD/MM/YYYY');
             $(this).val(str);
-            inputAreTrue("#updatePricesLabel_1");
         });
 
         $(myCalendar).on('click', function (e) {
@@ -67,7 +77,14 @@
             var theElement = $(this);
             var theStart = start.format('DD/MM/YYYY').toString();
             var theEnd = end.format("DD/MM/YYYY").toString();
-            theElement.val(theStart + " - " + theEnd);
+
+            var theContent = theStart + " - " + theEnd;
+            theElement.val(theContent);
+
+            if (dateRangeRegex.test(theContent)) {
+                inputAreTrue("#gasPriceLabel_1");
+            }
+            
         });
 
         var mainInput = $('.js-datepicker-gasprice');
@@ -123,22 +140,12 @@
 
 })(jQuery);
 
-
-//Tarih
-var dateRegex = /^(([0-2][0-9])|(30)|(31))\/((0[0-9])|(11)|(12))\/(20\d{2})$/;
-
-//Tarih araligi
-var dateRangeRegex = /^((([0-2][0-9])|(30)|(31))\/((0[0-9])|(11)|(12))\/(20\d{2}))\s-\s((([0-2][0-9])|(30)|(31))\/((0[0-9])|(11)|(12))\/(20\d{2}))$/;
-
-// birim fiyat
-var priceRegex = /^(\d)+(\.){1}(\d){2,4}$/;
-
-var updateIndexNumber = -1;
-
 $(document).ready(function ()
 {
     addTextDanger("gasPriceLabel", 2);
     disableButton("addGasPrices");
+
+    $("#updatePricesInput_1").prop("disabled", true);
 
     $("#gasPriceInput_1").keyup(function () {
         var theInput = $(this).val();
@@ -174,19 +181,19 @@ $(document).ready(function ()
     });
 
     $("#updatePricesInput_1").keyup(function () {
-        var theInput = $(this).val();
-        if (dateRegex.test(theInput)) {
-            inputAreTrue("#updatePricesLabel_1");
-            var inputsAreTrue = allInputsAreTrue("updatePricesLabel", 2);
+        //var theInput = $(this).val();
+        //if (dateRegex.test(theInput)) {
+        //    inputAreTrue("#updatePricesLabel_1");
+        //    var inputsAreTrue = allInputsAreTrue("updatePricesLabel", 2);
 
-            if (inputsAreTrue) {
-                enableButton("updateGasPrices");
-            }
-        }
-        else {
-            inputAreFalse("#updatePricesLabel_1");
-            disableButton("updateGasPrices");
-        }
+        //    if (inputsAreTrue) {
+        //        enableButton("updateGasPrices");
+        //    }
+        //}
+        //else {
+        //    inputAreFalse("#updatePricesLabel_1");
+        //    disableButton("updateGasPrices");
+        //}
     });
 
     $("#updatePricesInput_2").keyup(function () {

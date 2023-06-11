@@ -29,8 +29,6 @@ namespace ApiControlCenterWebPanel.Pages
         //
         public IActionResult OnPostAddPriceGas()
         {
-            //^(([0-3][0-9])\/([0-1][0-9])\/(20\d{2})\s\-\s([0-3][0-9])\/([0-1][0-9])\/(20\d{2}))$
-
             List<string>? priceElements = Date?.Split('/', '-').ToList();
             for (int i = 0; i < priceElements.Count; i++)
             {
