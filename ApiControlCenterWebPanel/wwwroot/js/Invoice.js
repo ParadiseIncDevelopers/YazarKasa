@@ -66,7 +66,7 @@ function CalculateIf(element)
             $("#InvoiceLitreSection").text(addPoint($("#invoiceText_1").val().toString().replace(".", ",")));
             $("#InvoicePriceSection").text(addPoint(invoicePrice.toString().replace(".", ",")));
             $(".InvoiceTotalPriceSection").text(addPoint($("#invoiceText_11").val().toString().replace(".",",")));
-            $("#InvoiceVatPriceSection").text("* " + addPoint(totalVat.toString().replace(".", ",")));
+            $("#InvoiceVatPriceSection").text("*" + addPoint(totalVat.toString().replace(".", ",")));
         }
         else if (element.includes("_1"))
         {
@@ -81,8 +81,8 @@ function CalculateIf(element)
             $("#invoiceText_11").val(calculate.toString());
             $("#InvoiceLitreSection").text(addPoint($("#invoiceText_1").val().toString().replace(".", ",")));
             $("#InvoicePriceSection").text(addPoint(invoicePrice.toString().replace(".", ",")));
-            $(".InvoiceTotalPriceSection").text("* " + addPoint($("#invoiceText_11").val().toString().replace(".", ",")));
-            $("#InvoiceVatPriceSection").text("* " + addPoint(totalVat.toString().replace(".", ",")));
+            $(".InvoiceTotalPriceSection").text("*" + addPoint($("#invoiceText_11").val().toString().replace(".", ",")));
+            $("#InvoiceVatPriceSection").text("*" + addPoint(totalVat.toString().replace(".", ",")));
         }
     }
 }

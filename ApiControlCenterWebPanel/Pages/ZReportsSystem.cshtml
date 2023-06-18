@@ -8,8 +8,8 @@
 @{
     Layout = "_FilterPage";
 
-    List<SuperAdmin>? db1 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent;
-    List<Admin>? db2 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH1)).DataContent_1;
+    List<SuperAdmin>? db1 = ((CashContent) Retriever.RetrieveTables(Utilities.PATH)).DataContent;
+    List<Admin>? db2 = ((CashContent) Retriever.RetrieveTables(Utilities.PATH1)).DataContent_1;
     string? theEntrepriseName = null, superAdmin = null, admin = null;
 
     try
@@ -31,11 +31,14 @@
 
     }
 
-    List<InvoiceZReportSystem> systemContent = ApiTableModel.RetrieveZReports();
+    List<InvoiceZReportSystem> systemContent = Retriever.RetrieveZReports();
     List<InvoiceZReportSystem> filteredSystemContent = systemContent.Where(x => x.TaxId == ZReportsSystemModel.TaxNumber).ToList();
     List<UserZReport>? allZReports = filteredSystemContent[0].UserZReports;
-
     UserZReport lastReport = allZReports.Last();
+
+    List<InvoiceEkuSystem> ekuSystem = Retriever.RetrieveEkuList();
+    List<InvoiceEkuSystem> filteredEkuSystem = ekuSystem.Where(x => x.TaxId == ZReportsSystemModel.TaxNumber).ToList();
+    List<UserEku>? allEkus = filteredEkuSystem[0].EkuList;
 
     if (lastReport.DateOfTheIndex < DateTime.Now)
     {
@@ -58,9 +61,8 @@
 
         filteredSystemContent[0].UserZReports = allZReports;
         systemContent.Where(x => x.TaxId == ZReportsSystemModel.TaxNumber).ToList()[0] = filteredSystemContent[0];
-
-
-        ApiTableModel.WriteData(systemContent);
+        FileWriter writer = FileWriter.GetInstance();
+        writer.WriteData(systemContent);
     }
 }
 
@@ -68,11 +70,28 @@
     <div class="card container">
         <div class="p-3">
             <h5 class="card-title">
-                @theEntrepriseName Z raporları
+                @theEntrepriseName Z raporları 
             </h5>
+            <div class="card-body">
+                <form method="post" asp-page-handler="addEku">
+                    <div class="row">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="col-md-6 form-group input-group-icon">
+                                    <label asp-for="Date" class="form-label" id="ekuAddLabel_1">Tarih</label>
+                                    <input asp-for="Date" class="js-datepicker-eku form-control" type="text" id="ekuAddInput_1" autocomplete="off">
+                                    <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="addEkuButton">Ekle</button>
+                </form>
+            </div>
         </div>
         <div class="table-responsive">
-            <table class="table-sort table-sort-search table project-list-table table-nowrap align-middle table-borderless">
+            <table class="table table-nowrap align-middle table-borderless">
                 <thead>
                     <tr>
                         <th scope="col" class="table-sort">Tarih</th>
@@ -83,13 +102,14 @@
                     @{
                         if (systemContent != null && systemContent.Count != 0)
                         {
-                            if (allZReports != null && allZReports.Count != 0)
+                            if (allZReports != null && allZReports.Count != 0 && allEkus != null && allEkus.Count != 0)
                             {
                                 for (int i = 0; i < allZReports.Count; i++)
                                 {
                                     <tr id="searchPlateContent_@i">
-                                        <td id="inv_1_@(i)">@allZReports[i].Index</td>
-                                        <td id="inv_2_@(i)">@allZReports[i].DateOfTheIndex.ToString().Split(" ")[0]</td>
+                                        <td id="inv_1_@(i)">@allZReports[i].DateOfTheIndex.ToString().Split(" ")[0]</td>
+                                        <td id="inv_2_@(i)">@allZReports[i].Index</td>
+                                        <td id="inv_3_@(i)">@allEkus.Where(x => allZReports[i].DateOfTheIndex <= x.DateOfTheIndex).ToList()[0].Index</td>
                                     </tr>
                                 }
                             }

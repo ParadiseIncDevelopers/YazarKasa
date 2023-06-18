@@ -89,5 +89,14 @@ a {
 }
 
 .modal-dialog-container {
-    max-width: 1250px;
+    max-width: 650px;
+}
+
+#invoiceText_9 {
+    text-align: center;
+}
+
+.align-content {
+    display: flex;
+    justify-content: center;
 }

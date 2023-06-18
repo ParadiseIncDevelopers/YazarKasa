@@ -1,6 +1,7 @@
 ﻿using ApiControlCenterWebPanel.Models;
 using ApiControlCenterWebPanel.Models.Interfaces;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace ApiControlCenterWebPanel.Controller
 {
@@ -33,6 +34,11 @@ namespace ApiControlCenterWebPanel.Controller
 
     public sealed class FileAction
     {
+        private static readonly JsonSerializerOptions Options = new()
+        {
+            WriteIndented = true
+        };
+
         private FileAction()
         {
 
@@ -120,62 +126,38 @@ namespace ApiControlCenterWebPanel.Controller
 
         public static void Write(string path, List<InvoiceEkuSystem> data)
         {
-            JsonSerializerOptions options = new()
-            {
-                WriteIndented = true
-            };
-            string writeLine = JsonSerializer.Serialize(data, options);
+            string writeLine = Regex.Unescape(JsonSerializer.Serialize(data, Options));
+
             File.WriteAllText(path, writeLine);
         }
 
         public static void Write(string path, List<InvoiceZReportSystem> data)
         {
-            JsonSerializerOptions options = new()
-            {
-                WriteIndented = true
-            };
-            string writeLine = JsonSerializer.Serialize(data, options);
+            string writeLine = Regex.Unescape(JsonSerializer.Serialize(data, Options));
             File.WriteAllText(path, writeLine);
         }
 
         public static void Write(string path, List<GasPricesSystem> data)
         {
-            JsonSerializerOptions options = new()
-            {
-                WriteIndented = true
-            };
-            string writeLine = JsonSerializer.Serialize(data, options);
+            string writeLine = Regex.Unescape(JsonSerializer.Serialize(data, Options));
             File.WriteAllText(path, writeLine);
         }
 
         public static void Write(string path, List<Admin> data)
         {
-            JsonSerializerOptions options = new()
-            {
-                WriteIndented = true
-            };
-            string writeLine = JsonSerializer.Serialize(data, options);
+            string writeLine = Regex.Unescape(JsonSerializer.Serialize(data, Options));
             File.WriteAllText(path, writeLine);
         }
 
         public static void Write(string path, List<SuperAdmin> data)
         {
-            JsonSerializerOptions options = new()
-            {
-                WriteIndented = true
-            };
-            string writeLine = JsonSerializer.Serialize(data, options);
+            string writeLine = Regex.Unescape(JsonSerializer.Serialize(data, Options));
             File.WriteAllText(path, writeLine);
         }
 
         public static void Write(string path, List<UserInvoiceContainer> data)
         {
-            JsonSerializerOptions options = new()
-            {
-                WriteIndented = true
-            };
-
-            string writeLine = JsonSerializer.Serialize(data, options);
+            string writeLine = Regex.Unescape(JsonSerializer.Serialize(data, Options));
 
             File.WriteAllText(path, writeLine);
         }

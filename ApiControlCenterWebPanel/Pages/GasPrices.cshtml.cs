@@ -20,15 +20,9 @@ namespace ApiControlCenterWebPanel.Pages
         [BindProperty]
         public string? Price { get; set; }
 
-        //Retrieves all gas prices in a list
-        public static List<GasPricesSystem> RetrieveGasPrices()
-        {
-            return ((GasPriceContent)UtilityFileAction.Create(Utilities.PATH4, "GAS_PRICES")).DataContent;
-        }
-
-        //
         public IActionResult OnPostAddPriceGas()
         {
+            FileWriter writer = FileWriter.GetInstance();
             List<string>? priceElements = Date?.Split('/', '-').ToList();
             for (int i = 0; i < priceElements.Count; i++)
             {
@@ -41,7 +35,7 @@ namespace ApiControlCenterWebPanel.Pages
 
             if(firstDate <= secondDate) 
             {
-                List<GasPricesSystem> gasPricesGetter = RetrieveGasPrices();
+                List<GasPricesSystem> gasPricesGetter = Retriever.RetrieveGasPrices();
                 DateTime initDate = firstDate;
                 List<GasPricesSystem> system = gasPricesGetter.Where(x => x.TaxId == TaxNumber).ToList();
 
@@ -94,7 +88,7 @@ namespace ApiControlCenterWebPanel.Pages
                     system[0].GasPrices = system[0].GasPrices.OrderBy(x => x.Date).ToList();
                     gasPricesGetter.Where(x => x.TaxId == TaxNumber).ToList()[0] = system[0];
                     string serializedGasPrices = JsonSerializer.Serialize(gasPricesGetter);
-                    WriteData(gasPricesGetter);
+                    writer.WriteData(gasPricesGetter);
                 }
                 else
                 {
@@ -108,7 +102,7 @@ namespace ApiControlCenterWebPanel.Pages
 
                     gasPricesGetter.Add(theSystem);
                     string serializedGasPrices = JsonSerializer.Serialize(gasPricesGetter);
-                    WriteData(gasPricesGetter);
+                    writer.WriteData(gasPricesGetter);
                 }
 
                 
@@ -124,20 +118,15 @@ namespace ApiControlCenterWebPanel.Pages
         //
         public void OnGetUpdatePriceGas(string Date, string Price) 
         {
-            List<GasPricesSystem> allPrices = RetrieveGasPrices().Where(x => x.TaxId == TaxNumber).ToList();
+            FileWriter writer = FileWriter.GetInstance();
+            List<GasPricesSystem> allPrices = Retriever.RetrieveGasPrices().Where(x => x.TaxId == TaxNumber).ToList();
             string[] splitDate = Date.Split('/');
             double price = Convert.ToDouble(Price.Replace(".", ","));
             DateTime theDate = new(Convert.ToInt32(splitDate[2]), Convert.ToInt32(splitDate[1]), Convert.ToInt32(splitDate[0]));
 
             allPrices[0].GasPrices.Where(x => x.Date == theDate).ToList()[0].Price = price;
-            WriteData(allPrices);
+            writer.WriteData(allPrices);
             Page();
-        }
-
-        //Writes gas prices data 
-        public static void WriteData(List<GasPricesSystem> data)
-        {
-            FileAction.Write(Utilities.PATH4, data);
         }
 
         public void OnGet(string taxnumber)

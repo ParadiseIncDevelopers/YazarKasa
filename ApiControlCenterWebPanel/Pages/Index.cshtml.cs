@@ -3,69 +3,16 @@ using ApiControlCenterWebPanel.Models;
 using ApiControlCenterWebPanel.Models.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace ApiControlCenterWebPanel.Pages
 {
     public class ApiTableModel : PageModel
     {
-        public static IContent? RetrieveTables(string path, string contentTypeName = "CASH")
-        {
-            if (contentTypeName == "INVOICE")
-            {
-                return (InvoiceContent) FileAction.Create(path, "INVOICE");
-            }
-            else
-            {
-                return (CashContent) FileAction.Create(path);
-                
-            }
-        }
-
-        //Retrieve all z reports in a list
-        public static List<InvoiceZReportSystem> RetrieveZReports()
-        {
-            return ((ZReportContent) UtilityFileAction.Create(Utilities.PATH3)).DataContent;
-        }
-
-        public static List<InvoiceEkuSystem> RetrieveEkuList() 
-        {
-            return ((EkuContent) UtilityFileAction.Create(Utilities.PATH5, "EKU_REPORTS")).DataContent;
-        }
-
-        public static void WriteData(List<InvoiceEkuSystem> data)
-        {
-            FileAction.Write(Utilities.PATH5, data);
-        }
-
-        public static void WriteData(List<InvoiceZReportSystem> data) 
-        {
-            FileAction.Write(Utilities.PATH3, data);
-        }
-
-        //Writes data
-        public static void WriteData(List<Admin> data)
-        {
-            FileAction.Write(Utilities.PATH1, data);
-        }
-
-        //Writes data in superadmin list
-        public static void WriteData(List<SuperAdmin> data) 
-        {
-            FileAction.Write(Utilities.PATH, data);
-        }
-
-        //Writes user invoices in a list
-        public static void WriteData(List<UserInvoiceContainer> data)
-        {
-            FileAction.Write(Utilities.PATH2, data);
-        }
-
-        public IActionResult OnGetUpdateGasPrices(string TaxNumber, double Price, string Date) 
+        public IActionResult OnGetUpdateGasPrices(string TaxNumber, double Price, string Date)
         {
             //Gets all gas prices
-            List<GasPricesSystem> gasPricesGetter = GasPricesModel.RetrieveGasPrices();
+            List<GasPricesSystem> gasPricesGetter = Retriever.RetrieveGasPrices();
 
             if (gasPricesGetter.Any(x => x.TaxId == TaxNumber))
             {
@@ -96,12 +43,12 @@ namespace ApiControlCenterWebPanel.Pages
                     System.IO.File.WriteAllText(Utilities.PATH4, serialize);
                     return new JsonResult(serialize);
                 }
-                else 
+                else
                 {
                     return Page();
                 }
             }
-            else 
+            else
             {
                 return Page();
             }
@@ -111,7 +58,7 @@ namespace ApiControlCenterWebPanel.Pages
         {
             Invoice invoice = new()
             {
-                Litre = Convert.ToDouble(Litre.Replace(".",",")),
+                Litre = Convert.ToDouble(Litre.Replace(".", ",")),
                 BirimFiyat = Convert.ToDouble(BirimFiyat.Replace(".", ",")),
                 Tarih = InvoiceChecker.DateTimeConverter(Tarih, Saat),
                 ZRaporuNo = ZRaporuNo,
@@ -130,8 +77,8 @@ namespace ApiControlCenterWebPanel.Pages
             invoice.CalculateTotalPriceWithVAT();
 
             string serialized = JsonSerializer.Serialize(invoice, options);
-            List<UserInvoiceContainer>? table = (RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent).DataContent;
-            InvoiceChecker invoiceChecker = new(table.Where(x => x.TaxId == TaxNumber).ToList()[0], RetrieveZReports());
+            List<UserInvoiceContainer>? table = (Retriever.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent).DataContent;
+            InvoiceChecker invoiceChecker = new(table.Where(x => x.TaxId == TaxNumber).ToList()[0], Retriever.RetrieveZReports());
             bool checker(UserInvoiceContainer x)
             {
                 if (x.Invoices.Any(y => y.FisNo == invoice.FisNo) || x.Invoices.Any(y => y.Tarih == invoice.Tarih))
@@ -170,7 +117,7 @@ namespace ApiControlCenterWebPanel.Pages
             }
             bool invoiceIdCheck = table.All(x => checker(x));
             bool zReportCheck = invoiceChecker.CheckInvoiceZReportId(TaxNumber, invoice);
-            invoiceChecker.SetZerosForInvoice((RetrieveTables(Utilities.PATH) as CashContent).DataContent);
+            invoiceChecker.SetZerosForInvoice((Retriever.RetrieveTables(Utilities.PATH) as CashContent).DataContent);
             invoice.EkuNo = invoiceChecker.ConvertedEkuNumber;
             invoice.ZRaporuNo = invoiceChecker.ConvertedZReportNumber;
             invoice.FisNo = invoiceChecker.ConvertedInvoiceNumber;
@@ -182,7 +129,7 @@ namespace ApiControlCenterWebPanel.Pages
             {
                 return new JsonResult("Z raporu no tarihi ile uyumsuz. Lütfen tekrar deneyiniz.");
             }
-            else 
+            else
             {
                 UserInvoiceContainer invoiceContainer = new()
                 {
@@ -199,7 +146,7 @@ namespace ApiControlCenterWebPanel.Pages
                 {
                     table?.Add(invoiceContainer);
                 }
-                else 
+                else
                 {
                     returnElement = table.Where(x => x.TaxId == TaxNumber).ToList();
                     returnElement[0].Invoices = groupedInvoices;
@@ -207,9 +154,9 @@ namespace ApiControlCenterWebPanel.Pages
                     table = table.Union(returnElement).ToList();
                 }
 
-                //buradan devam. printer lib bulunacak.
 
-                WriteData(table);
+                FileWriter writer = FileWriter.GetInstance();
+                writer.WriteData(table);
 
                 return new JsonResult(serialized);
             }
@@ -221,7 +168,7 @@ namespace ApiControlCenterWebPanel.Pages
             {
                 TaxNumber = taxNumber,
                 CashId = cashId,
-                GasStationName = gasStationName.Split("-").ToList(),
+                GasStationName = gasStationName.Split("µ").ToList(),
                 GasType = gasType,
                 CashLetters = cashLetters,
                 CashTypeName = cashNumber,
@@ -250,7 +197,7 @@ namespace ApiControlCenterWebPanel.Pages
                 UserZReports = new()
             };
 
-            while (z >= 0) 
+            while (z >= 0)
             {
                 UserZReport report = new()
                 {
@@ -277,32 +224,34 @@ namespace ApiControlCenterWebPanel.Pages
             ekuSystem.EkuList.Add(eku);
 
             //Writes the z report numbers in the z report system.
-            List<InvoiceZReportSystem> allZreports = RetrieveZReports();
+            List<InvoiceZReportSystem> allZreports = Retriever.RetrieveZReports();
             allZreports.Add(system);
-            
-            //Writes eku Number
-            List<InvoiceEkuSystem> allEkuNumbers = RetrieveEkuList();
-            allEkuNumbers.Add(ekuSystem);
-            
-            string serialized = JsonSerializer.Serialize(cash, options);
-            List<Admin>? table = (RetrieveTables(Utilities.PATH1) as CashContent)?.DataContent_1;
 
-            if (table == null) 
+            //Writes eku Number
+            List<InvoiceEkuSystem> allEkuNumbers = Retriever.RetrieveEkuList();
+            allEkuNumbers.Add(ekuSystem);
+
+            string serialized = JsonSerializer.Serialize(cash, options);
+            List<Admin>? table = (Retriever.RetrieveTables(Utilities.PATH1) as CashContent)?.DataContent_1;
+
+            FileWriter writer = FileWriter.GetInstance();
+
+            if (table == null)
             {
                 table = new()
                 {
                     admin
                 };
-                WriteData(table);
+                writer.WriteData(table);
                 return new JsonResult(serialized);
             }
 
             if (!table.Any(x => x.AdminTaxNumber == taxNumber))
             {
                 table.Add(admin);
-                WriteData(table);
-                WriteData(allZreports);
-                WriteData(allEkuNumbers);
+                writer.WriteData(table);
+                writer.WriteData(allZreports);
+                writer.WriteData(allEkuNumbers);
                 return new JsonResult(serialized);
             }
             else
@@ -313,14 +262,16 @@ namespace ApiControlCenterWebPanel.Pages
 
         public void OnGetDeleteAdmin(int index)
         {
-            List<SuperAdmin> table = (RetrieveTables(Utilities.PATH) as CashContent).DataContent;
+            List<SuperAdmin> table = (Retriever.RetrieveTables(Utilities.PATH) as CashContent).DataContent;
             table.RemoveAt(index - 1);
-            WriteData(table);
+            FileWriter writer = FileWriter.GetInstance();
+
+            writer.WriteData(table);
         }
 
         public IActionResult OnGetUpdateIndex(int index)
         {
-            SuperAdmin table = (RetrieveTables(Utilities.PATH) as CashContent).DataContent[index - 1];
+            SuperAdmin table = (Retriever.RetrieveTables(Utilities.PATH) as CashContent).DataContent[index - 1];
             JsonSerializerOptions options = new()
             {
                 WriteIndented = true
@@ -329,9 +280,9 @@ namespace ApiControlCenterWebPanel.Pages
             return new JsonResult(serialized);
         }
 
-        public IActionResult OnGetUpdateSuperAdmin(string GasType, string Password, string CashType, string ZerosInEku, string ZerosInInvoices,  string ZerosInZReports, string TaxNumber)
+        public IActionResult OnGetUpdateSuperAdmin(string GasType, string Password, string CashType, string ZerosInEku, string ZerosInInvoices, string ZerosInZReports, string TaxNumber)
         {
-            List<SuperAdmin> table = (RetrieveTables(Utilities.PATH) as CashContent).DataContent;
+            List<SuperAdmin> table = (Retriever.RetrieveTables(Utilities.PATH) as CashContent).DataContent;
             SuperAdmin theCash = table.Where(x => x.TaxNumber == TaxNumber).ToList()[0];
 
             theCash.GasType = GasType;
@@ -340,16 +291,17 @@ namespace ApiControlCenterWebPanel.Pages
             theCash.ZerosInEku = Convert.ToInt32(ZerosInEku);
             theCash.ZerosInInvoices = Convert.ToInt32(ZerosInInvoices);
             theCash.ZerosInZReports = Convert.ToInt32(ZerosInZReports);
-
             table.Where(x => x.TaxNumber == TaxNumber).ToList()[0] = theCash;
-            WriteData(table);
+            FileWriter writer = FileWriter.GetInstance();
+
+            writer.WriteData(table);
 
             return new JsonResult(JsonSerializer.Serialize(table));
         }
 
         public IActionResult OnGetUpdateAdmin(string GasType, string CashType, string ZerosInEku, string ZerosInInvoices, string ZerosInZReports, string TaxNumber)
         {
-            List<Admin> table = (RetrieveTables(Utilities.PATH1) as CashContent).DataContent_1;
+            List<Admin> table = (Retriever.RetrieveTables(Utilities.PATH1) as CashContent).DataContent_1;
             Admin theCash = table.Where(x => x.AdminTaxNumber == TaxNumber).ToList()[0];
 
             AdminModel mod = theCash.AdminModel;
@@ -358,35 +310,37 @@ namespace ApiControlCenterWebPanel.Pages
             mod.ZerosInEku = Convert.ToInt32(ZerosInEku);
             mod.ZerosInInvoices = Convert.ToInt32(ZerosInInvoices);
             mod.ZerosInZReports = Convert.ToInt32(ZerosInZReports);
-
             table.Where(x => x.AdminModel.TaxNumber == TaxNumber).ToList()[0] = theCash;
-            WriteData(table);
+            FileWriter writer = FileWriter.GetInstance();
+            writer.WriteData(table);
 
             return new JsonResult(JsonSerializer.Serialize(table));
         }
 
-        public IActionResult OnGetTaxNumberInvoiceMaker(string taxNumber) 
+        public IActionResult OnGetTaxNumberInvoiceMaker(string taxNumber)
         {
             ViewData["TaxNumberGetter"] = taxNumber;
 
-            List<GasPricesSystem> allPrices = GasPricesModel.RetrieveGasPrices().Where(x => x.TaxId == taxNumber).ToList();
+            List<GasPricesSystem> allPrices = Retriever.RetrieveGasPrices().Where(x => x.TaxId == taxNumber).ToList();
 
             if (allPrices.Count == 0)
             {
                 return new JsonResult("Benzin istasyonu için fiyatlar bulunamadı. Lütfen fiyatları güncelleyiniz.");
             }
-            else 
+            else
             {
-                return new JsonResult(JsonSerializer.Serialize(allPrices));
+                Utilities.ChosenTaxNumber = taxNumber;
+                string jsonData = JsonSerializer.Serialize(allPrices);
+                Utilities.JsonData = jsonData;
+
+                return new JsonResult(jsonData);
             }
         }
 
-        public IActionResult OnGetCashZerosForInvoice(string taxNumber) 
+        public IActionResult OnGetCashZerosForInvoice(string taxNumber)
         {
-            var theCashZeros = (RetrieveTables(Utilities.PATH) as CashContent).DataContent;
-            var theOtherZeros = (RetrieveTables(Utilities.PATH1) as CashContent).DataContent_1.Select(x => x.AdminModel).ToList();
-
-
+            var theCashZeros = (Retriever.RetrieveTables(Utilities.PATH) as CashContent).DataContent;
+            var theOtherZeros = (Retriever.RetrieveTables(Utilities.PATH1) as CashContent).DataContent_1.Select(x => x.AdminModel).ToList();
 
             List<IModelElement> elements = new();
             elements.AddRange(theCashZeros);
@@ -395,27 +349,48 @@ namespace ApiControlCenterWebPanel.Pages
             IModelElement theElement = elements.Where(x => x.TaxNumber == taxNumber).ToList()[0];
 
             string theCashInJson = JsonSerializer.Serialize(theElement);
+
+            Utilities.CashData = theCashInJson;
+
             return new JsonResult(theCashInJson);
         }
 
-        public IActionResult OnGetZReportsGetContent() 
+        public IActionResult OnGetZReportsGetContent()
         {
-            var reports = RetrieveZReports();
+            List<InvoiceZReportSystem>? reports = Retriever.RetrieveZReports();
             string reportsConverted = JsonSerializer.Serialize(reports);
+            Utilities.ZerosData = reportsConverted;
+
             return new JsonResult(reportsConverted);
         }
 
         public IActionResult OnGetEkuGetContent()
         {
-            var reports = RetrieveEkuList();
+            var reports = Retriever.RetrieveEkuList();
             string reportsConverted = JsonSerializer.Serialize(reports);
+            Utilities.EkuData = reportsConverted;
+
             return new JsonResult(reportsConverted);
         }
 
-        public IActionResult OnPostSearchPlate() 
+        public IActionResult OnPostSearchPlate()
         {
             SearchPlateModel.PlateNumber = Request.Form["plateNumber"].ToString().Trim();
             return RedirectToPage("/SearchPlate");
+        }
+
+        public IActionResult OnGetReloadPage() 
+        {
+            Dictionary<string, string> loadedElements = new()
+            {
+                { "jsonData", Utilities.JsonData },
+                { "cashData", Utilities.CashData },
+                { "chosenTaxNumber", Utilities.ChosenTaxNumber },
+                { "zerosData", Utilities.ZerosData },
+                { "ekuData", Utilities.EkuData }
+            };
+
+            return new JsonResult(loadedElements);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿//Contains and defines the address line input creator index.
 var theUpdateIndex = -1;
-//Contains and defines the gas prices adder and remover index.
-var q = 1;
+
 //The current tax number.
 var taxNumber = "";
 
@@ -11,9 +10,12 @@ var passwordRegex = /^(\d){6}$/;
 //Input 1 regex
 var beginDateInstance = /^((([0-2][0-9])|(30)|(31))\/((0[0-9])|(11)|(12))\/(20\d{2}))$/;
 
+//Input container index for cash system.
+var inputContainerIndex = 1;
+
 /**
  * Input 2 regex
- * @param kno {string}
+ * @param {string} kno kimlik no
  * */
 var vergikimlik = (kno) => {
     if (kno.length === 10) {
@@ -60,20 +62,7 @@ var gasTypeRegex = /^(.){5,}$/;
 var cashLettersRegex = /^([A-Z]){1,3}$/;
 
 //Input 7 regex
-var cashIdRegex = /^(\d){3}$/;
-
-//Hides inputs in the adding gas station list.
-function hideOtherInputs() {
-    //Hides input container while adding gas station entreprise
-    for (var i = 2; i <= 10; i++) {
-        $("#input_container_" + i).css("display", "none");
-    }
-
-    //Hides input container for gas stations pricings
-    for (var i = 1; i <= 10; i++) {
-        $("#datePriceContainer_" + i).css("display", "none");
-    }
-}
+var cashIdRegex = /^(\d){10}$/;
 
 //Input 8, 9, 10 regex
 var zerosRegex = /^(\d){1}$/;
@@ -86,22 +75,21 @@ var miscIndexRegex = /^(\d){1}$/;
 
 $(document).ready(function () {
 
-    hideOtherInputs();
+    addTextDanger("label", 14);
+
+    DisableElement("#addCash");
+    DisableElement("#InvoiceCreatorContainer input");
+    HideInputsForCashSystem("#input_container", 10);
+    HideInputsForCashSystem("#datePriceContainer_", 10);
+    addTextDanger("gasDateLabel", 14);
+    addTextDanger("gasPriceLabel", 14);
 
     $("#addTitles").click(function () {
-        if (q != 10) {
-            q++;
-            $("#input_container_" + q).css({ "display": "block" });
-            $("#input_3" + q).val('');
-        }
+        DisplayInput("#input_3", "#input_container", inputContainerIndex);
     });
 
     $("#removeTitles").click(function () {
-        if (q != 1) {
-            $("#input_container_" + q).css({ "display": "none" });
-            $("#input_3" + q).val('');
-            q--;
-        }
+        HideInput("#input_3", "#input_container", inputContainerIndex);
     });
 
     $("#contact_user_check").click(function () {
@@ -117,18 +105,7 @@ $(document).ready(function () {
                 $("#contact_user_check_" + i).prop("checked", false);
             }
         }
-    })
-
-    $("#addCash").prop("disabled", true);
-    addTextDanger("label", 14);
-
-    for (var i = 1; i <= 6; i++) {
-        inputAreTrue("#updateLabel_" + i);
-        inputAreTrue("#updateLabel2_" + i);
-    }
-    addTextDanger("gasDateLabel", 14);
-    addTextDanger("gasPriceLabel", 14);
-    $("#InvoiceCreatorContainer input").prop("disabled", true);
+    });
 
     //Input 1 Regex check
     $("#input_1").keyup(function () {
@@ -149,7 +126,6 @@ $(document).ready(function () {
 
     //Input 2 Regex check
     $("#input_2").keyup(function () {
-        var inp = $(this).val();
         if (vergikimlik(inp)) {
             inputAreTrue("#label_2");
 
@@ -170,7 +146,7 @@ $(document).ready(function () {
         var itemText = $("#" + item).text();
         $("#cashNumber").text(itemText);
 
-        if (listElementsRegex(["Beko", "Mepsan", "Arçelik"], $("#cashNumber").text())) {
+        if (listElementsRegex(["Beko", "Mepsan", "Arçelik", "Profilo", "Turpak"], $("#cashNumber").text())) {
             inputAreTrue("#label_3");
             var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
@@ -180,371 +156,71 @@ $(document).ready(function () {
     });
 
     //Input 4 Regex check
-    $("#input_31, #input_32, #input_33, #input_34, #input_35, #input_36, #input_37, #input_38, #input_39, #input_310").keyup(function () {
-        var inp = $(this).val();
-        if (gasStationNameRegex.test(inp)) {
-            inputAreTrue("#label_4");
-
-            var inputsAreTrue = allInputsAreTrue("label", 14);
-            if (inputsAreTrue) {
-                $("#addCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#label_4");
-            $("#addCash").prop("disabled", true);
-        }
-    });
+    $("#input_31, #input_32, #input_33, #input_34, #input_35, #input_36, #input_37, #input_38, #input_39, #input_310")
+        .keyup(function ()
+        {
+            var input = $(this).val();
+            ReadInput(input, gasStationNameRegex, "label", "#label_4", 14, "#addCash");
+        });
 
     //Input 5 Regex check
     $("#input_3").keyup(function () {
-        var inp = $(this).val();
-        if (gasTypeRegex.test(inp)) {
-            inputAreTrue("#label_5");
-
-            var inputsAreTrue = allInputsAreTrue("label", 14);
-            if (inputsAreTrue) {
-                $("#addCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#label_5");
-            $("#addCash").prop("disabled", true);
-        }
+        var input = $(this).val();
+        ReadInput(input, gasTypeRegex, "label", "#label_5", 14, "#addCash");
     });
 
     //Input 6 Regex check
     $("#input_4").keyup(function () {
-        var inp = $(this).val();
-        if (cashLettersRegex.test(inp)) {
-            inputAreTrue("#label_6");
-
-            var inputsAreTrue = allInputsAreTrue("label", 14);
-            if (inputsAreTrue) {
-                $("#addCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#label_6");
-            $("#addCash").prop("disabled", true);
-        }
+        var input = $(this).val();
+        ReadInput(input, cashLettersRegex, "label", "#label_6", 14, "#addCash");
     });
 
     //Input 7 Regex check
     $("#input_5").keyup(function () {
-        var inp = $(this).val();
-        if (cashIdRegex.test(inp)) {
-            inputAreTrue("#label_7");
-
-            var inputsAreTrue = allInputsAreTrue("label", 14);
-            if (inputsAreTrue) {
-                $("#addCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#label_7");
-            $("#addCash").prop("disabled", true);
-        }
+        var input = $(this).val();
+        ReadInput(input, cashIdRegex, "label", "#label_7", 14, "#addCash");
     });
 
+    //Input 8 Regex check
     $("#input_6").keyup(function () {
-        var inp = $(this).val();
-        if (zerosRegex.test(inp)) {
-            inputAreTrue("#label_8");
-
-            var inputsAreTrue = allInputsAreTrue("label", 14);
-            if (inputsAreTrue) {
-                $("#addCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#label_8");
-            $("#addCash").prop("disabled", true);
-        }
+        var input = $(this).val();
+        ReadInput(input, zerosRegex, "label", "#label_8", 14, "#addCash");
     });
 
+    //Input 9 Regex check
     $("#input_7").keyup(function () {
-        var inp = $(this).val();
-        if (zerosRegex.test(inp)) {
-            inputAreTrue("#label_9");
-
-            var inputsAreTrue = allInputsAreTrue("label", 14);
-            if (inputsAreTrue) {
-                $("#addCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#label_9");
-            $("#addCash").prop("disabled", true);
-        }
+        var input = $(this).val();
+        ReadInput(input, zerosRegex, "label", "#label_9", 14, "#addCash");
     });
 
+    //Input 10 Regex check
     $("#input_8").keyup(function () {
-        var inp = $(this).val();
-        if (zerosRegex.test(inp)) {
-            inputAreTrue("#label_10");
-
-            var inputsAreTrue = allInputsAreTrue("label", 14);
-            if (inputsAreTrue) {
-                $("#addCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#label_10");
-            $("#addCash").prop("disabled", true);
-        }
+        var input = $(this).val();
+        ReadInput(input, zerosRegex, "label", "#label_10", 14, "#addCash");
     });
 
+    //Input 11 Regex check
     $("#input_9").keyup(function () {
-        var inp = $(this).val();
-        if (zReportIndexRegex.test(inp)) {
-            inputAreTrue("#label_11");
-
-            var inputsAreTrue = allInputsAreTrue("label", 14);
-            if (inputsAreTrue) {
-                $("#addCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#label_11");
-            $("#addCash").prop("disabled", true);
-        }
+        var input = $(this).val();
+        ReadInput(input, zReportIndexRegex, "label", "#label_11", 14, "#addCash");
     });
 
+    //Input 12 Regex check
     $("#input_10").keyup(function () {
-        var inp = $(this).val();
-        if (miscIndexRegex.test(inp)) {
-            inputAreTrue("#label_12");
-
-            var inputsAreTrue = allInputsAreTrue("label", 14);
-            if (inputsAreTrue) {
-                $("#addCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#label_12");
-            $("#addCash").prop("disabled", true);
-        }
+        var input = $(this).val();
+        ReadInput(input, miscIndexRegex, "label", "#label_12", 14, "#addCash");
     });
 
+    //Input 13 Regex check
     $("#input_11").keyup(function () {
-        var inp = $(this).val();
-        if (miscIndexRegex.test(inp)) {
-            inputAreTrue("#label_13");
-
-            var inputsAreTrue = allInputsAreTrue("label", 14);
-            if (inputsAreTrue) {
-                $("#addCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#label_13");
-            $("#addCash").prop("disabled", true);
-        }
+        var input = $(this).val();
+        ReadInput(input, miscIndexRegex, "label", "#label_13", 14, "#addCash");
     });
 
+    //Input 14 Regex check
     $("#input_12").keyup(function () {
-        var inp = $(this).val();
-        if (miscIndexRegex.test(inp)) {
-            inputAreTrue("#label_14");
-
-            var inputsAreTrue = allInputsAreTrue("label", 14);
-            if (inputsAreTrue) {
-                $("#addCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#label_14");
-            $("#addCash").prop("disabled", true);
-        }
-    });
-
-    $("#updateInput_1").keyup(function () {
-        var inp = $(this).val();
-        if (gasStationNameRegex.test(inp)) {
-            inputAreTrue("#updateLabel_1");
-
-            var inputsAreTrue = allInputsAreTrue("updateLabel", 6);
-            if (inputsAreTrue) {
-                $("#updateCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#updateLabel_1");
-            $("#updateCash").prop("disabled", true);
-        }
-    });
-
-    $("#updateInput_2").keyup(function () {
-        var inp = $(this).val();
-        if (passwordRegex.test(inp)) {
-            inputAreTrue("#updateLabel_2");
-
-            var inputsAreTrue = allInputsAreTrue("updateLabel", 6);
-            if (inputsAreTrue) {
-                $("#updateCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#updateLabel_2");
-            $("#updateCash").prop("disabled", true);
-        }
-    });
-
-    $("#updateCashNumberMenu li a").click(function () {
-        var item = $(this).attr("id");
-        var itemText = $("#" + item).text();
-        $("#updateCashNumber").text(itemText);
-
-        if (listElementsRegex(["Beko", "Mepsan", "Arçelik"], $("#updateCashNumber").text())) {
-            inputAreTrue("#updateLabel_3");
-            var inputsAreTrue = allInputsAreTrue("updateLabel", 6);
-            if (inputsAreTrue) {
-                $("#updateCash").prop("disabled", false);
-            }
-        }
-    });
-
-    $("#updateInput_4").keyup(function () {
-        var inp = $(this).val();
-        if (zerosRegex.test(inp)) {
-            inputAreTrue("#updateLabel_4");
-
-            var inputsAreTrue = allInputsAreTrue("updateLabel", 6);
-            if (inputsAreTrue) {
-                $("#updateCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#updateLabel_4");
-            $("#updateCash").prop("disabled", true);
-        }
-    });
-
-    $("#updateInput_5").keyup(function () {
-        var inp = $(this).val();
-        if (zerosRegex.test(inp)) {
-            inputAreTrue("#updateLabel_5");
-
-            var inputsAreTrue = allInputsAreTrue("updateLabel", 6);
-            if (inputsAreTrue) {
-                $("#updateCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#updateLabel_5");
-            $("#updateCash").prop("disabled", true);
-        }
-    });
-
-    $("#updateInput_6").keyup(function () {
-        var inp = $(this).val();
-        if (zerosRegex.test(inp)) {
-            inputAreTrue("#updateLabel_6");
-
-            var inputsAreTrue = allInputsAreTrue("updateLabel", 6);
-            if (inputsAreTrue) {
-                $("#updateCash").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#updateLabel_6");
-            $("#updateCash").prop("disabled", true);
-        }
-    });
-
-    $("#updateInput2_1").keyup(function () {
-        var inp = $(this).val();
-        if (gasStationNameRegex.test(inp)) {
-            inputAreTrue("#updateLabel2_1");
-
-            var inputsAreTrue = allInputsAreTrue("updateLabel2", 6);
-            if (inputsAreTrue) {
-                $("#updateCash2").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#updateLabel2_1");
-            $("#updateCash2").prop("disabled", true);
-        }
-    });
-
-    $("#updateInput2_2").keyup(function () {
-        var inp = $(this).val();
-        if (passwordRegex.test(inp)) {
-            inputAreTrue("#updateLabel_2");
-
-            var inputsAreTrue = allInputsAreTrue("updateLabel2", 6);
-            if (inputsAreTrue) {
-                $("#updateCash2").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#updateLabel2_2");
-            $("#updateCash2").prop("disabled", true);
-        }
-    });
-
-    $("#updateCashNumberMenu2 li a").click(function () {
-        var item = $(this).attr("id");
-        var itemText = $("#" + item).text();
-        $("#updateCashNumber2").text(itemText);
-
-        if (listElementsRegex(["Beko", "Mepsan", "Arçelik"], $("#updateCashNumber2").text())) {
-            inputAreTrue("#updateLabel2_3");
-            var inputsAreTrue = allInputsAreTrue("updateLabel2", 6);
-            if (inputsAreTrue) {
-                $("#updateCash2").prop("disabled", false);
-            }
-        }
-    });
-
-    $("#updateInput2_4").keyup(function () {
-        var inp = $(this).val();
-        if (zerosRegex.test(inp)) {
-            inputAreTrue("#updateLabel2_4");
-
-            var inputsAreTrue = allInputsAreTrue("updateLabel2", 6);
-            if (inputsAreTrue) {
-                $("#updateCash2").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#updateLabel2_4");
-            $("#updateCash2").prop("disabled", true);
-        }
-    });
-
-    $("#updateInput2_5").keyup(function () {
-        var inp = $(this).val();
-        if (zerosRegex.test(inp)) {
-            inputAreTrue("#updateLabel2_5");
-
-            var inputsAreTrue = allInputsAreTrue("updateLabel2", 6);
-            if (inputsAreTrue) {
-                $("#updateCash2").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#updateLabel2_5");
-            $("#updateCash2").prop("disabled", true);
-        }
-    });
-
-    $("#updateInput2_6").keyup(function () {
-        var inp = $(this).val();
-        if (zerosRegex.test(inp)) {
-            inputAreTrue("#updateLabel2_6");
-
-            var inputsAreTrue = allInputsAreTrue("updateLabel2", 6);
-            if (inputsAreTrue) {
-                $("#updateCash2").prop("disabled", false);
-            }
-        }
-        else {
-            inputAreFalse("#updateLabel2_6");
-            $("#updateCash2").prop("disabled", true);
-        }
+        var input = $(this).val();
+        ReadInput(input, miscIndexRegex, "label", "#label_14", 14, "#addCash");
     });
 });
 
@@ -670,16 +346,35 @@ function updateApiKey(taxNumber, link)
         success: function (theData)
         {
             cashData = JSON.parse(JSON.parse(JSON.stringify(theData)));
-            alert(cashData);
+            alert(JSON.stringify(theData));
 
             var obj = [cashData].filter(x => x.TaxNumber == taxNumber)[0];
 
-            $("#updateInput_1").val(obj.GasType);
-            $("#updateInput_2").val(obj.Password);
-            $("#updateInput_4").val(obj.ZerosInEku);
-            $("#updateInput_5").val(obj.ZerosInInvoices);
-            $("#updateInput_6").val(obj.ZerosInZReports);
+            var gasStationNameInputs = obj.GasStationName;
+
+            //$("#updateInput_1").val(obj.GasType);
+            $("#updateInput_2").val(obj.TaxNumber);
+            $("#updateInput_3").val(obj.GasType);
+
+            for (var i = 1; i <= 10; i++)
+            {
+                $("#updateInput_3" + i).val(gasStationNameInputs[i - 1]);
+            }
+
+            $("#updateInput_4").val(obj.CashLetters);
+            $("#updateInput_5").val(obj.CashId);
+            $("#updateInput_6").val(obj.ZerosInEku);
             $("#updateCashNumber").text(obj.CashTypeName);
+            $("#updateInput_7").val(obj.ZerosInZReports);
+            $("#updateInput_8").val(obj.ZerosInInvoices);
+            //$("#updateInput_9").val(obj.Password);
+            //$("#updateInput_10").val(obj.Password);
+            $("#updateInput_11").val(obj.WeaponNumber);
+            $("#updateInput_12").val(obj.PumpNumber);
+
+            for (var i = 1; i <= 14; i++) {
+                inputAreTrue("#updateLabel_" + i);
+            }
         }
     });   
 }
@@ -700,15 +395,33 @@ function updateApiKey_2(taxNumber, link)
         success: function (theData)
         {
             cashData = JSON.parse(JSON.parse(JSON.stringify(theData)));
-            alert(cashData);
+            alert(JSON.stringify(theData));
 
             var obj = [cashData].filter(x => x.TaxNumber == taxNumber)[0];
+            var gasStationNameInputs = obj.GasStationName;
 
-            $("#updateInput2_1").val(obj.GasType);
-            $("#updateInput2_4").val(obj.ZerosInEku);
-            $("#updateInput2_5").val(obj.ZerosInInvoices);
-            $("#updateInput2_6").val(obj.ZerosInZReports);
-            $("#updateCashNumber2").text(obj.CashTypeName);
+            //$("#updateInput_1").val(obj.GasType);
+            $("#updateOtherInput_2").val(obj.TaxNumber);
+            $("#updateOtherInput_3").val(obj.GasType);
+
+            for (var i = 1; i <= 10; i++) {
+                $("#updateOtherInput_3" + i).val(gasStationNameInputs[i - 1]);
+            }
+
+            $("#updateOtherInput_4").val(obj.CashLetters);
+            $("#updateOtherInput_5").val(obj.CashId);
+            $("#updateOtherInput_6").val(obj.ZerosInEku);
+            $("#updateOtherCashNumber").text(obj.CashTypeName);
+            $("#updateOtherInput_7").val(obj.ZerosInZReports);
+            $("#updateOtherInput_8").val(obj.ZerosInInvoices);
+            //$("#updateInput_9").val(obj.Password);
+            //$("#updateInput_10").val(obj.Password);
+            $("#updateOtherInput_11").val(obj.WeaponNumber);
+            $("#updateOtherInput_12").val(obj.PumpNumber);
+
+            for (var i = 1; i <= 14; i++) {
+                inputAreTrue("#updateOtherLabel_" + i);
+            }
         }
     });
 }

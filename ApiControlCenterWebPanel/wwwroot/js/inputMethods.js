@@ -1,6 +1,9 @@
-﻿var danger = "text-danger";
-var success = "text-success";
-var dis = "disabled";
+﻿let danger = "text-danger";
+let success = "text-success";
+let dis = "disabled";
+let display = "display";
+let none = "none";
+let block = "block";
 
 /** 
  * Adds text danger
@@ -74,4 +77,121 @@ function allInputsAreTrue(labelId, count)
     }
 
     return inputsTrue;
+}
+
+/**
+ * 
+ * Disbalers
+ * 
+ */
+
+/**
+ * Enable something.
+ * @param {string} containerId
+ */
+function EnableElement(containerId)
+{
+    $(containerId).prop("disable", false);
+}
+
+/**
+ * Disable something.
+ * @param {string} containerId
+ */
+function DisableElement(containerId)
+{
+    $(containerId).prop("disable", true);
+}
+
+/**
+ * 
+ * Input Hide display system
+ * 
+ */
+
+//Contains and defines the gas prices adder and remover index.
+var hideAndDisplayIndex = 1;
+
+/**
+ * Hides inputs in the adding gas station list.
+ * @param {string} containerId The name of the container.
+ * @param {number} size The index.
+ */
+function HideInputsForCashSystem(containerId, size)
+{
+    var i;
+
+    if (containerId == "#input_container_")
+    {
+        //Hides input container while adding gas station entreprise
+        for (i = 2; i <= size; i++)
+        {
+            $(containerId + i).css(display, none);
+        }
+    }
+    else
+    {
+        //Hides other inputs
+        for (i = 1; i <= size; i++) {
+            $(containerId + i).css(display, none);
+        }
+    }
+}
+
+/**
+ * Hides the input.
+ * @param {string} inputId Input to remove.
+ * @param {string} containerId The container.
+ * @param {number} index The index.
+ */
+var HideInput = (inputId, containerId, index) =>
+{
+    if (index != 1) {
+        $(containerId + index).css({ display: none });
+        $(inputId + index).val('');
+        index--;
+    }
+};
+
+/**
+ * Displays input.
+ * @param {string} inputId Input to remove.
+ * @param {string} containerId The container.
+ * @param {number} index The index.
+ */
+var DisplayInput = (inputId, containerId, index) => {
+    if (index != 10) {
+        index++;
+        $(containerId + index).css({ display: block });
+        $(inputId + index).val('');
+    }
+};
+
+/**
+* 
+* Input readers
+* 
+*/
+
+/**
+ * Reads and checks input.
+ * @param {string} input
+ * @param {RegExp} regexCheck
+ * @param {string} wrapperLabel
+ * @param {string} labelId
+ * @param {number} formSize
+ */
+function ReadInput(input, regexCheck, wrapperLabel, labelId, formSize, buttonId) {
+    if (regexCheck.test(input)) {
+        inputAreTrue(labelId);
+
+        var inputsAreTrue = allInputsAreTrue(wrapperLabel, formSize);
+        if (inputsAreTrue) {
+            EnableElement(buttonId);
+        }
+    }
+    else {
+        inputAreFalse("#label_5");
+        DisableElement(buttonId);
+    }
 }

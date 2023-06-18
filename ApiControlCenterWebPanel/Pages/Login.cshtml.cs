@@ -15,7 +15,7 @@ namespace ApiControlCenterWebPanel.Pages
 
         public IActionResult OnPostAuthenticate(string taxNumber, string password)
         {
-            List<SuperAdmin>? db1 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent;
+            List<SuperAdmin>? db1 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent;
 
             if (db1.Any(x => x.TaxNumber == taxNumber && x.Password == password))
             {
@@ -58,12 +58,14 @@ namespace ApiControlCenterWebPanel.Pages
                 WriteIndented = true
             };
             string serialized = JsonSerializer.Serialize(cash, options);
-            List<SuperAdmin> table = (ApiTableModel.RetrieveTables(Utilities.PATH1) as CashContent).DataContent;
+            List<SuperAdmin> table = (Retriever.RetrieveTables(Utilities.PATH1) as CashContent).DataContent;
 
             if (!table.Any(x => x.TaxNumber == TaxNumber))
             {
                 table.Add(cash);
-                ApiTableModel.WriteData(table);
+                FileWriter writer = FileWriter.GetInstance();
+                writer.WriteData(table);
+
                 return new JsonResult(serialized);
             }
             else

@@ -1,4 +1,6 @@
-﻿namespace ApiControlCenterWebPanel.Models
+﻿using System.Runtime.CompilerServices;
+
+namespace ApiControlCenterWebPanel.Models
 {
     public class Utilities
     {
@@ -9,5 +11,31 @@
         public static readonly string PATH4 = @"C:\YazarKasa\gasPricesSystem.json";
         public static readonly string PATH5 = @"C:\YazarKasa\ekuList.json";
         public static readonly string PRINTING_PATH = @"C:\YazarKasa\";
+
+        public static string JsonData 
+        { 
+            get { return string.Empty; } 
+            set { } 
+        }
+        public static string CashData 
+        { 
+            get { return string.Empty; } 
+            set { } 
+        }
+        public static string ChosenTaxNumber 
+        { 
+            get { return string.Empty; } 
+            set { } 
+        }
+        public static string ZerosData
+        { 
+            get { return string.Empty; }
+            set { } 
+        }
+        public static string EkuData 
+        { 
+            get { return string.Empty; } 
+            set { } 
+        }
     }
 }

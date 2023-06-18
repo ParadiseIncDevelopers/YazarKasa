@@ -1,7 +1,8 @@
-﻿(function ($) {
+﻿(function ($)
+{
     'use strict';
-
-    try {
+    try
+    {
         $('.js-datepicker-eku').daterangepicker({
             "singleDatePicker": true,
             "showDropdowns": true,
@@ -31,13 +32,23 @@
 
         $(myCalendar).on('apply.daterangepicker', function (ev, picker) {
             isClick = 0;
-            var str = picker.startDate.format('DD/MM/YYYY');
-            $(this).val(str);
 
-            if (dateRegex.test(str))
+            var strDate = picker.startDate;
+            var startDateInString = strDate.format('DD/MM/YYYY');
+            var dateValue = strDate;
+            var today = new Date();
+
+            if (dateValue < today)
             {
-                inputAreTrue("#ekuAddLabel_1");
-                enableButton("addEkuButton");
+                alert("Geriye dönük tarih belirlenemez. Lütfen tekrar deneyin.");
+            }
+            else
+            {
+                if (dateRegex.test(startDateInString)) {
+                    $(this).val(startDateInString);
+                    inputAreTrue("#ekuAddLabel_1");
+                    enableButton("addEkuButton");
+                }
             }
         });
 

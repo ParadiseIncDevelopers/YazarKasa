@@ -16,5 +16,11 @@ namespace ApiControlCenterWebPanel.Models
         {
             TheCurrentAuth = this;
         }
+
+        public bool IsNewOpen()
+        {
+            return Utilities.JsonData == string.Empty && Utilities.CashData == string.Empty &&
+                Utilities.ChosenTaxNumber == string.Empty && Utilities.ZerosData == string.Empty && Utilities.EkuData == string.Empty;
+        }
     }
 }

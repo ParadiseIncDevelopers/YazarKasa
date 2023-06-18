@@ -88,7 +88,7 @@
                             $("#invoiceText_10").val(weaponIndex);
                             $("#invoiceText_8").val(pumpIndex);
 
-                            $("#InvoiceZReportSection").text("Z NO :" + zIndexNumber.toString().padStart(zero2, '0'));
+                            $("#InvoiceZReportSection").text("Z NO : " + zIndexNumber.toString().padStart(zero2, '0'));
                             $("#InvoiceEkuSection").text("EKU NO : " + ekuIndexGetter.toString().padStart(zero1, '0'));
                             $("#InvoiceDateSection").text(str.replace('/', '-').replace('/', '-'));
                             $("#InvoicePriceSection").text(price);

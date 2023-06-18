@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ApiControlCenterWebPanel.Models;
-using System.Text.Json;
+using ApiControlCenterWebPanel.Controller;
 
 namespace ApiControlCenterWebPanel.Pages
 {
@@ -29,7 +29,7 @@ namespace ApiControlCenterWebPanel.Pages
                 dateElements[i] = dateElements[i].Trim();
             }
 
-            List<InvoiceEkuSystem> allEku = ApiTableModel.RetrieveEkuList();
+            List<InvoiceEkuSystem> allEku = Retriever.RetrieveEkuList();
             InvoiceEkuSystem filteredEku = allEku.Where(x => x.TaxId == TaxNumber).ToList()[0];
 
             DateTime theDate = new(Convert.ToInt32(dateElements?[2]), Convert.ToInt32(dateElements?[1]), Convert.ToInt32(dateElements?[0]));
@@ -43,7 +43,8 @@ namespace ApiControlCenterWebPanel.Pages
                 };
                 filteredEku.EkuList.Add(eku);
                 allEku.Where(x => x.TaxId == TaxNumber).ToList()[0] = filteredEku;
-                ApiTableModel.WriteData(allEku);
+                FileWriter writer = FileWriter.GetInstance();
+                writer.WriteData(allEku);
 
                 return Page();
             }

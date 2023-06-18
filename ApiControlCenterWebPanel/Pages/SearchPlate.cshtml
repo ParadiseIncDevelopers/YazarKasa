@@ -37,7 +37,7 @@
                 </thead>
                 <tbody id="tableElements">
                     @{
-                        List<UserInvoiceContainer> allInvoices = (ApiTableModel.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent).DataContent;
+                        List<UserInvoiceContainer> allInvoices = (Retriever.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent).DataContent;
 
                         string plakaNo = SearchPlateModel.PlateNumber;
 
@@ -47,7 +47,7 @@
                         {
                             for (int j = 0; j < filteredInvoices[i].Invoices.Count; j++)
                             {
-                                SuperAdmin theCash = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == allInvoices[i].TaxId).ToList()[0];
+                                SuperAdmin theCash = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == allInvoices[i].TaxId).ToList()[0];
 
                                 string[] theDateFull = allInvoices[i].Invoices[j].Tarih.Value.ToString().Split(" ");
                                 string[] theDate = theDateFull[0].Split("-");
@@ -63,9 +63,9 @@
                                     <td id="inv_5_@(i)_@(j)">@filteredInvoices[i].Invoices[j].FisNo</td>
                                     <td id="inv_6_@(i)_@(j)">@filteredInvoices[i].Invoices[j].ZRaporuNo</td>
                                     <td id="inv_7_@(i)_@(j)">@filteredInvoices[i].Invoices[j].EkuNo</td>
-                                    <td id="inv_8_@(i)_@(j)">@filteredInvoices[i].Invoices[j].BirimFiyat</td>
-                                    <td id="inv_9_@(i)_@(j)">@filteredInvoices[i].Invoices[j].Litre</td>
-                                    <td id="inv_10_@(i)_@(j)">@filteredInvoices[i].Invoices[j].TotalFiyat</td>
+                                    <td id="inv_8_@(i)_@(j)">@filteredInvoices[i].Invoices[j].BirimFiyat.ToString("0.00")</td>
+                                    <td id="inv_9_@(i)_@(j)">@filteredInvoices[i].Invoices[j].Litre.ToString("0.00")</td>
+                                    <td id="inv_10_@(i)_@(j)">@filteredInvoices[i].Invoices[j].TotalFiyat.ToString("0.00")</td>
                                     <td>
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item">

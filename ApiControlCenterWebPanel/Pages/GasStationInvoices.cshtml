@@ -8,8 +8,8 @@
 @{
     Layout = "_FilterPage";
 
-    List<SuperAdmin>? db1 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent;
-    List<Admin>? db2 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH1)).DataContent_1;
+    List<SuperAdmin>? db1 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent;
+    List<Admin>? db2 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH1)).DataContent_1;
     string? theEntrepriseName = null, superAdmin = null, admin = null;
 
     try
@@ -57,7 +57,7 @@
                 </thead>
                 <tbody id="tableElements">
                     @{
-                        List<UserInvoiceContainer>? allInvoices = (ApiTableModel.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent)?.DataContent.FindAll(x => x.TaxId == GasStationInvoicesModel.TaxNumber);
+                        List<UserInvoiceContainer>? allInvoices = (Retriever.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent)?.DataContent.FindAll(x => x.TaxId == GasStationInvoicesModel.TaxNumber);
 
                         if (allInvoices != null && allInvoices.Count != 0)
                         {
@@ -66,7 +66,7 @@
                             {
                                 for (int i = 0; i < filteredInvoices.Count; i++)
                                 {
-                                    SuperAdmin theCash = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList()[0];
+                                    SuperAdmin theCash = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList()[0];
                                     string[] theDateFull = filteredInvoices[i].Tarih.Value.ToString().Split(" ");
                                     string[] theDate = theDateFull[0].Split("-");
                                     string[] theHour = theDateFull[1].Split(":");
@@ -80,9 +80,10 @@
                                         <td id="inv_4_@(i)">@filteredInvoices[i].FisNo</td>
                                         <td id="inv_5_@(i)">@filteredInvoices[i].ZRaporuNo</td>
                                         <td id="inv_6_@(i)">@filteredInvoices[i].EkuNo</td>
-                                        <td id="inv_7_@(i)">@filteredInvoices[i].BirimFiyat</td>
-                                        <td id="inv_8_@(i)">@filteredInvoices[i].Litre</td>
-                                        <td id="inv_9_@(i)">@filteredInvoices[i].TotalFiyat</td>
+                                        <td id="inv_7_@(i)">@filteredInvoices[i].BirimFiyat.ToString("0.00")</td>
+                                        <td id="inv_8_@(i)">@filteredInvoices[i].Litre.ToString("0.00")</td>
+                                        <td id="inv_9_@(i)">@filteredInvoices[i].TotalFiyat.ToString("0.00")</td>
+                                        <td id="inv_10_@(i)">@filteredInvoices[i].PlakaNo</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">
@@ -185,10 +186,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="printInvoiceFromPlate" data-bs-dismiss="modal" aria-label="Close">Ekle</button>
+                <button type="button" class="btn btn-primary" id="printInvoiceFromPlate" data-bs-dismiss="modal" aria-label="Close">KAYDET</button>
             </div>
         </div>
     </div>
 </div>
 
-<script src="~/js/gasStationInvoices.js"></script>
+<script src="~/js/GasStationInvoices.js"></script>

@@ -8,8 +8,8 @@
 @{
     Layout = "_FilterPage";
 
-    List<SuperAdmin>? db1 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH)).DataContent;
-    List<Admin>? db2 = ((CashContent)ApiTableModel.RetrieveTables(Utilities.PATH1)).DataContent_1;
+    List<SuperAdmin>? db1 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent;
+    List<Admin>? db2 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH1)).DataContent_1;
     string? theEntrepriseName = null, superAdmin = null, admin = null;
 
     try
@@ -36,7 +36,7 @@
     <div class="card container">
         <div class="p-3">
             <h5 class="card-title">
-                @theEntrepriseName Z raporları
+                @theEntrepriseName ekü no ları
             </h5>
             <div class="card-body">
                 <form method="post" asp-page-handler="addEku">
@@ -66,7 +66,7 @@
                 </thead>
                 <tbody id="tableElements">
                     @{
-                        List<InvoiceEkuSystem> systemContent = ApiTableModel.RetrieveEkuList().Where(x => x.TaxId == EkuSystemModel.TaxNumber).ToList();
+                        List<InvoiceEkuSystem> systemContent = Retriever.RetrieveEkuList().Where(x => x.TaxId == EkuSystemModel.TaxNumber).ToList();
 
                         if (systemContent != null && systemContent.Count != 0)
                         {
