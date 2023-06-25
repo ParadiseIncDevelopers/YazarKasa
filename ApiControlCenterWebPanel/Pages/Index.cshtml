@@ -73,6 +73,9 @@
                 <a class="btn btn-primary" id="invoiceModalOpener" data-bs-toggle="modal" data-bs-target="#searchInvoiceModal">
                     <i class="bx bx-search me-1"></i> Plaka ara
                 </a>
+                <a class="btn btn-primary" id="massPaymentOpener" data-bs-toggle="modal" data-bs-target="#massPaymentModal">
+                    <i class="bx bx-search me-1"></i> Toplu Fatura Kes
+                </a>
             </div>
             <div class="p-3 row">
                 <div class="col-md-5">
@@ -82,7 +85,8 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">Benzin istasyonu adı</th>
-                                        <th scope="col" style="width: 200px;">İşlemler</th>
+                                        <th scope="col">İşlemler</th>
+                                        <th scope="col" style="width: 50px;">Ekü</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tableElements">
@@ -90,10 +94,10 @@
                                         List<Models.SuperAdmin> superAdmin = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber).ToList();
 
                                         List<IModelElement> allElements = new()
-                            {
-                            superAdmin[0]
-                            };
-
+                                        {
+                                            superAdmin[0]
+                                        };
+                                        
                                         List<Admin> theSubAdmins = ((CashContent)Retriever.RetrieveTables(Utilities.PATH1)).DataContent_1.Where(x => x.AdminTaxNumber == AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber).ToList();
                                         List<AdminModel> groupedAdminModels = theSubAdmins.Select(admin => admin.AdminModel).ToList();
                                         allElements.AddRange(groupedAdminModels);
@@ -101,7 +105,9 @@
                                         for (int i = 0; i < allElements.Count; i++)
                                         {
                                             <tr id="adminPanelContent_@i">
-                                                <td><a class="mb-0 taxNumberLink text-dark" id="taxNumber_@i" onclick="getTheTaxNumber('@Url.Page("index", "cashzerosforinvoice")', '@Url.Page("index", "taxnumberinvoicemaker")', '@allElements[i].TaxNumber', @i)">@allElements[i].GasStationName[0]</a></td>
+                                                <td>
+                                                    <a class="mb-0 taxNumberLink text-dark" id="taxNumber_@i" onclick="getTheTaxNumber('@Url.Page("index", "cashzerosforinvoice")', '@Url.Page("index", "taxnumberinvoicemaker")', '@allElements[i].TaxNumber', @i)">@allElements[i].GasStationName[0]</a>
+                                                </td>
                                                 <td>
                                                     <ul class="list-inline mb-0">
                                                         @{
@@ -109,7 +115,7 @@
                                                             {
                                                                 <li class="list-inline-item">
                                                                     <a href="javascript:void(0);" id="deleteApiKey" onclick="deleteApiKey(@i + 1)" title="Delete" class="px-2 text-danger">
-                                                                        <i class="bx bx-trash-alt font-size-18"></i>
+                                                                        <i class="bx bx-trash-alt font-size-1"></i>
                                                                     </a>
                                                                 </li>
                                                             }
@@ -117,7 +123,7 @@
                                                             {
                                                                 <li class="list-inline-item">
                                                                     <a href="javascript:void(0);" id="deleteApiKey" onclick="alert('Bu Hesap silinemez.')" title="Delete" class="px-2 text-danger">
-                                                                        <i class="bx bx-trash-alt font-size-18"></i>
+                                                                        <i class="bx bx-trash-alt font-size-1"></i>
                                                                     </a>
                                                                 </li>
                                                             }
@@ -128,7 +134,7 @@
                                                             {
                                                                 <li class="list-inline-item">
                                                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updateOtherCashModal" onclick="updateApiKey_2('@allElements[i].TaxNumber', '@Url.Page("index", "cashzerosforinvoice")')" title="Update the cash info." class="px-2 text-success">
-                                                                        <i class='bx bxs-comment-edit font-size-18'></i>
+                                                                        <i class='bx bxs-comment-edit font-size-1'></i>
                                                                     </a>
                                                                 </li>
                                                             }
@@ -136,34 +142,34 @@
                                                             {
                                                                 <li class="list-inline-item">
                                                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updateCashModal" onclick="updateApiKey('@allElements[i].TaxNumber', '@Url.Page("index", "cashzerosforinvoice")')" title="Update the cash info." class="px-2 text-success">
-                                                                        <i class='bx bxs-comment-edit font-size-18'></i>
+                                                                        <i class='bx bxs-comment-edit font-size-1'></i>
                                                                     </a>
                                                                 </li>
                                                             }
                                                         }
 
-
                                                         <li class="list-inline-item">
                                                             <a asp-page="/GasPrices" asp-route-taxnumber="@allElements[i].TaxNumber" title="Benzin fiyatlarını düzenler" class="px-2 text-warning">
-                                                                <i class='bx bx-money font-size-18'></i>
+                                                                <i class='bx bx-money font-size-1'></i>
                                                             </a>
                                                         </li>
-
-                                                    </ul>
-                                                    <ul class="list-inline mb-0">
                                                         <li class="list-inline-item">
                                                             <a asp-page="/GasStationInvoices" asp-route-taxnumber="@allElements[i].TaxNumber" title="Bütün firmanın faturalarına bakar." class="px-2 text-info">
-                                                                <i class='bx bx-search-alt font-size-18'></i>
+                                                                <i class='bx bx-search-alt font-size-1'></i>
                                                             </a>
                                                         </li>
                                                         <li class="list-inline-item">
                                                             <a asp-page="/ZReportsSystem" asp-route-taxnumber="@allElements[i].TaxNumber" title="Bütün firmanın faturalarına bakar." class="px-2 text-info">
-                                                                <i class='bx bx-search-alt font-size-18'></i>
+                                                                <i class='bx bx-search-alt font-size-1'></i>
                                                             </a>
                                                         </li>
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul class="list-inline mb-0">
                                                         <li class="list-inline-item">
-                                                            <a asp-page="/EkuSystem" asp-route-taxnumber="@allElements[i].TaxNumber" title="Bütün firmanın faturalarına bakar." class="px-2 text-success">
-                                                                <i class='bx bxs-plus-square font-size-18'></i>
+                                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#massPaymentModal" class="px-2 text-success">
+                                                                <i class='bx bxs-plus-square font-size-2'></i>
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -274,7 +280,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="addCashModalLabel">Firma ekle</h5>
-                        <button type="button" id="closeAddCashModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" id="closeAddCash" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form method="get">
@@ -421,18 +427,18 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="updateCashModalLabel">Firma düzenle</h5>
-                        <button type="button" id="updateAddCashModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" id="closeUpdateCash" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form method="get">
                             <div class="mb-3">
-                                <label class="form-label" id="updateLabel_2">Vergi Numarası</label>
-                                <input type="text" name="taxNumber" class="form-control" id="updateInput_2">
+                                <label class="form-label" id="updateLabel_1">Vergi Numarası</label>
+                                <input type="text" name="taxNumber" class="form-control" id="updateInput_1">
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateLabel_3">Kasa türü</label>
+                                    <label class="form-label" id="updateLabel_2">Kasa türü</label>
                                     <div class="dropdown">
                                         <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="updateCashNumber" name="cashNumber" data-bs-toggle="dropdown" aria-expanded="false">
                                             Choose
@@ -447,51 +453,51 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateLabel_6">Kasa harfleri</label>
-                                    <input type="text" maxlength="3" name="cashLetters" class="form-control" id="updateInput_4">
+                                    <label class="form-label" id="updateLabel_3">Kasa harfleri</label>
+                                    <input type="text" maxlength="3" name="cashLetters" class="form-control" id="updateInput_3">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateLabel_7">Kasa numarası</label>
-                                    <input type="text" maxlength="10" name="cashId" class="form-control" id="updateInput_5">
+                                    <label class="form-label" id="updateLabel_4">Kasa numarası</label>
+                                    <input type="text" maxlength="10" name="cashId" class="form-control" id="updateInput_4">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateLabel_8">Ekü no sayı hanesi</label>
-                                    <input type="text" maxlength="1" name="zerosInEku" class="form-control" id="updateInput_6">
+                                    <label class="form-label" id="updateLabel_5">Ekü no sayı hanesi</label>
+                                    <input type="text" maxlength="1" name="zerosInEku" class="form-control" id="updateInput_5">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateLabel_10">Fiş no sayı hanesi</label>
-                                    <input type="text" maxlength="1" name="zerosInInvoice" class="form-control" id="updateInput_8">
+                                    <label class="form-label" id="updateLabel_6">Fiş no sayı hanesi</label>
+                                    <input type="text" maxlength="1" name="zerosInInvoice" class="form-control" id="updateInput_6">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateLabel_9">Z no sayı hanesi</label>
+                                    <label class="form-label" id="updateLabel_7">Z no sayı hanesi</label>
                                     <input type="text" maxlength="1" name="zerosInZReport" class="form-control" id="updateInput_7">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateLabel_5">Benzin Türü</label>
-                                    <input type="text" name="gasType" class="form-control" id="updateInput_3">
+                                    <label class="form-label" id="updateLabel_8">Benzin Türü</label>
+                                    <input type="text" name="gasType" class="form-control" id="updateInput_8">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateLabel_13">Tabanca no</label>
-                                    <input type="text" name="weaponNumber" class="form-control" id="updateInput_11">
+                                    <label class="form-label" id="updateLabel_9">Tabanca no</label>
+                                    <input type="text" name="weaponNumber" class="form-control" id="updateInput_9">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateLabel_14">Pompa no</label>
-                                    <input type="text" name="pumpNumber" class="form-control" id="updateInput_12">
+                                    <label class="form-label" id="updateLabel_10">Pompa no</label>
+                                    <input type="text" name="pumpNumber" class="form-control" id="updateInput_10">
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" id="updateLabel_4">Fatura satırları</label>
-                                <ul class="list-inline mb-3">
-                                    <li class="list-inline-item" id="addTitles">
+                                <label class="form-label" id="updateLabel_11">Fatura satırları</label>
+                                <ul class="MainUpdate list-inline mb-3">
+                                    <li class="list-inline-item" id="addUpdateTitles">
                                         <a class="btn btn-primary" title="Satır ekle">
                                             <i class="bx bx-message-add"></i> Satır ekle
                                         </a>
                                     </li>
-                                    <li class="list-inline-item" id="removeTitles">
+                                    <li class="list-inline-item" id="removeUpdateTitles">
                                         <a class="btn btn-primary" title="Satır sil">
                                             <i class="bx bx-message-alt-x"></i> Satır sil
                                         </a>
@@ -499,49 +505,49 @@
                                 </ul>
                                 <div class="mb-3 form-group" id="update_input_container_1">
                                     <label class="form-label">Fatura Satır 1</label>
-                                    <input type="text" class="form-control" id="updateInput_31">
+                                    <input type="text" class="form-control" id="updateInput_111">
                                 </div>
                                 <div class="mb-3 form-group" id="update_input_container_2">
                                     <label class="form-label">Fatura Satır 2</label>
-                                    <input type="text" class="form-control" id="updateInput_32">
+                                    <input type="text" class="form-control" id="updateInput_112">
                                 </div>
                                 <div class="mb-3 form-group" id="update_input_container_3">
                                     <label class="form-label">Fatura Satır 3</label>
-                                    <input type="text" class="form-control" id="updateInput_33">
+                                    <input type="text" class="form-control" id="updateInput_113">
                                 </div>
                                 <div class="mb-3 form-group" id="update_input_container_4">
                                     <label class="form-label">Fatura Satır 4</label>
-                                    <input type="text" class="form-control" id="updateInput_34">
+                                    <input type="text" class="form-control" id="updateInput_114">
                                 </div>
                                 <div class="mb-3 form-group" id="update_input_container_5">
                                     <label class="form-label">Fatura Satır 5</label>
-                                    <input type="text" class="form-control" id="updateInput_35">
+                                    <input type="text" class="form-control" id="updateInput_115">
                                 </div>
                                 <div class="mb-3 form-group" id="update_input_container_6">
                                     <label class="form-label">Fatura Satır 6</label>
-                                    <input type="text" class="form-control" id="updateInput_36">
+                                    <input type="text" class="form-control" id="updateInput_116">
                                 </div>
                                 <div class="mb-3 form-group" id="update_input_container_7">
                                     <label class="form-label">Fatura Satır 7</label>
-                                    <input type="text" class="form-control" id="updateInput_37">
+                                    <input type="text" class="form-control" id="updateInput_117">
                                 </div>
                                 <div class="mb-3 form-group" id="update_input_container_8">
                                     <label class="form-label">Fatura Satır 8</label>
-                                    <input type="text" class="form-control" id="updateInput_38">
+                                    <input type="text" class="form-control" id="updateInput_118">
                                 </div>
                                 <div class="mb-3 form-group" id="update_input_container_9">
                                     <label class="form-label">Fatura Satır 9</label>
-                                    <input type="text" class="form-control" id="updateInput_39">
+                                    <input type="text" class="form-control" id="updateInput_119">
                                 </div>
-                                <div class="mb-3 form-group" id="input_container_10">
+                                <div class="mb-3 form-group" id="update_input_container_10">
                                     <label class="form-label">Fatura Satır 10</label>
-                                    <input type="text" class="form-control" id="updateInput_310">
+                                    <input type="text" class="form-control" id="updateInput_1110">
                                 </div>
                             </div>
                             <div class="row mb-3 d-grid">
-                            <button type="button" class="btn btn-primary col-md-12" id="updateCash" data-bs-dismiss="modal" aria-label="Close">KAYDET</button>
+                                <button type="button" class="btn btn-primary col-md-12" id="updateCash" data-bs-dismiss="modal" aria-label="Close">KAYDET</button>
                             </div>
-                            
+
                         </form>
                     </div>
                 </div>
@@ -554,7 +560,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="updateOtherCashModalLabel">Firma düzenle</h5>
-                        <button type="button" id="closeUpdateOtherCashModalLabel" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" id="closeUpdateOtherCash" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form method="get">
@@ -618,63 +624,63 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" id="updateOtherLabel_4">Fatura satırları</label>
-                                <ul class="list-inline mb-3">
-                                    <li class="list-inline-item" id="addTitles">
+                                <ul class="OtherUpdate list-inline mb-3">
+                                    <li class="list-inline-item" id="addUpdateTitles">
                                         <a class="btn btn-primary" title="Satır ekle">
                                             <i class="bx bx-message-add"></i> Satır ekle
                                         </a>
                                     </li>
-                                    <li class="list-inline-item" id="removeTitles">
+                                    <li class="list-inline-item" id="removeUpdateTitles">
                                         <a class="btn btn-primary" title="Satır sil">
                                             <i class="bx bx-message-alt-x"></i> Satır sil
                                         </a>
                                     </li>
                                 </ul>
-                                <div class="mb-3 form-group" id="update_input_container_1">
+                                <div class="mb-3 form-group" id="update_other_input_container_1">
                                     <label class="form-label">Fatura Satır 1</label>
-                                    <input type="text" class="form-control" id="updateOtherInput_31">
+                                    <input type="text" class="form-control" id="uOtherInput_1">
                                 </div>
-                                <div class="mb-3 form-group" id="update_input_container_2">
+                                <div class="mb-3 form-group" id="update_other_input_container_2">
                                     <label class="form-label">Fatura Satır 2</label>
-                                    <input type="text" class="form-control" id="updateOtherInput_32">
+                                    <input type="text" class="form-control" id="uOtherInput_2">
                                 </div>
-                                <div class="mb-3 form-group" id="update_input_container_3">
+                                <div class="mb-3 form-group" id="update_other_input_container_3">
                                     <label class="form-label">Fatura Satır 3</label>
-                                    <input type="text" class="form-control" id="updateOtherInput_33">
+                                    <input type="text" class="form-control" id="uOtherInput_3">
                                 </div>
-                                <div class="mb-3 form-group" id="update_input_container_4">
+                                <div class="mb-3 form-group" id="update_other_input_container_4">
                                     <label class="form-label">Fatura Satır 4</label>
-                                    <input type="text" class="form-control" id="updateOtherInput_34">
+                                    <input type="text" class="form-control" id="uOtherInput_4">
                                 </div>
-                                <div class="mb-3 form-group" id="update_input_container_5">
+                                <div class="mb-3 form-group" id="update_other_input_container_5">
                                     <label class="form-label">Fatura Satır 5</label>
-                                    <input type="text" class="form-control" id="updateOtherInput_35">
+                                    <input type="text" class="form-control" id="uOtherInput_5">
                                 </div>
-                                <div class="mb-3 form-group" id="update_input_container_6">
+                                <div class="mb-3 form-group" id="update_other_input_container_6">
                                     <label class="form-label">Fatura Satır 6</label>
-                                    <input type="text" class="form-control" id="updateOtherInput_36">
+                                    <input type="text" class="form-control" id="uOtherInput_6">
                                 </div>
-                                <div class="mb-3 form-group" id="update_input_container_7">
+                                <div class="mb-3 form-group" id="update_other_input_container_7">
                                     <label class="form-label">Fatura Satır 7</label>
-                                    <input type="text" class="form-control" id="updateOtherInput_37">
+                                    <input type="text" class="form-control" id="uOtherInput_7">
                                 </div>
-                                <div class="mb-3 form-group" id="update_input_container_8">
+                                <div class="mb-3 form-group" id="update_other_input_container_8">
                                     <label class="form-label">Fatura Satır 8</label>
-                                    <input type="text" class="form-control" id="updateOtherInput_38">
+                                    <input type="text" class="form-control" id="uOtherInput_8">
                                 </div>
-                                <div class="mb-3 form-group" id="update_input_container_9">
+                                <div class="mb-3 form-group" id="update_other_input_container_9">
                                     <label class="form-label">Fatura Satır 9</label>
-                                    <input type="text" class="form-control" id="updateOtherInput_39">
+                                    <input type="text" class="form-control" id="uOtherInput_9">
                                 </div>
-                                <div class="mb-3 form-group" id="input_container_10">
+                                <div class="mb-3 form-group" id="update_other_input_container_10">
                                     <label class="form-label">Fatura Satır 10</label>
-                                    <input type="text" class="form-control" id="updateOtherInput_310">
+                                    <input type="text" class="form-control" id="uOtherInput_10">
                                 </div>
                             </div>
                             <div class="row mb-3 d-grid">
-                            <button type="button" class="btn btn-primary" id="updateOtherCash" data-bs-dismiss="modal" aria-label="Close">KAYDET</button>
+                                <button type="button" class="btn btn-primary" id="updateOtherCash" data-bs-dismiss="modal" aria-label="Close">KAYDET</button>
                             </div>
-                            
+
                         </form>
                     </div>
                 </div>
@@ -697,12 +703,81 @@
                             <div class="row mb-3 d-grid">
                                 <button type="submit" class="btn btn-primary col-md-12" id="searchPlateButton" aria-label="Close">Ara</button>
                             </div>
-                            
+
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Mass payment modal --> 
+        <div class="modal fade" id="massPaymentModal" tabindex="-1" aria-labelledby="massPaymentModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Toplu Fatura Kes</h5>
+                        <button type="button" id="massPayment" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" asp-page-handler="masspayment">
+                            <div class="mb-3">
+                                <label class="form-label" id="MassPaymentLabel_1">Plaka no</label>
+                                <input type="text" name="plateNumber" class="form-control" id="MassPaymentInput_1">
+                            </div>
+                            <div class="mb-3">
+                                <table class="table project-list-table table-nowrap align-middle table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Benzin istasyonu adı</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            for (int i = 0; i < allElements.Count; i++)
+                                            {
+                                                <tr id="massPaymentContent_@i">
+                                                    <td>
+                                                        <label class="form-check-label" for="massPaymentCheck_@i">
+                                                            <input type="checkbox" class="massPaymentChecks form-check-input" id="massPaymentCheck_@i"/>
+                                                            <a class="mb-0 taxNumberLink text-dark" id="taxNumber_@i">
+                                                                @allElements[i].GasStationName[0]
+                                                            </a>
+                                                        </label>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    <tbody>
+                                </table>
+                            </div>
+                            <div class="row mb-3 d-grid">
+                                <button type="submit" class="btn btn-primary col-md-12" id="massPaymentButton" aria-label="Close">Sayfayı Yükle</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="searchInvoiceModal" tabindex="-1" aria-labelledby="searchInvoiceModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Plakaya göre faturalar ara</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" asp-page-handler="ekuadd">
+                            <div class="row mb-3 d-grid">
+                                <button type="submit" class="btn btn-primary col-md-12" id="searchPlateButton" aria-label="Close">Ara</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     }
     else
     {
@@ -793,7 +868,7 @@
                     ZerosInInvoice: zerosInInvoice,
                     ZerosInEku: zerosInEku,
                     ZerosInZReport: zerosInZReport,
-                    ZReportIndex: zReportIndex, 
+                    ZReportIndex: zReportIndex,
                     LastEkuNumber: lastEkuNumber,
                     WeaponNumber: weaponNumber,
                     PumpNumber: pumpNumber

@@ -91,7 +91,7 @@ function allInputsAreTrue(labelId, count)
  */
 function EnableElement(containerId)
 {
-    $(containerId).prop("disable", false);
+    $(containerId).prop("disabled", false);
 }
 
 /**
@@ -100,7 +100,7 @@ function EnableElement(containerId)
  */
 function DisableElement(containerId)
 {
-    $(containerId).prop("disable", true);
+    $(containerId).prop("disabled", true);
 }
 
 /**
@@ -121,20 +121,8 @@ function HideInputsForCashSystem(containerId, size)
 {
     var i;
 
-    if (containerId == "#input_container_")
-    {
-        //Hides input container while adding gas station entreprise
-        for (i = 2; i <= size; i++)
-        {
-            $(containerId + i).css(display, none);
-        }
-    }
-    else
-    {
-        //Hides other inputs
-        for (i = 1; i <= size; i++) {
-            $(containerId + i).css(display, none);
-        }
+    for (i = 2; i <= size; i++) {
+        $(containerId + i).css(display, none);
     }
 }
 
@@ -146,11 +134,13 @@ function HideInputsForCashSystem(containerId, size)
  */
 var HideInput = (inputId, containerId, index) =>
 {
+    console.log(index);
     if (index != 1) {
         $(containerId + index).css({ display: none });
         $(inputId + index).val('');
         index--;
     }
+    return index;
 };
 
 /**
@@ -165,6 +155,7 @@ var DisplayInput = (inputId, containerId, index) => {
         $(containerId + index).css({ display: block });
         $(inputId + index).val('');
     }
+    return index;
 };
 
 /**
@@ -182,16 +173,32 @@ var DisplayInput = (inputId, containerId, index) => {
  * @param {number} formSize
  */
 function ReadInput(input, regexCheck, wrapperLabel, labelId, formSize, buttonId) {
+    console.log("test");
     if (regexCheck.test(input)) {
         inputAreTrue(labelId);
-
+        console.log(true);
         var inputsAreTrue = allInputsAreTrue(wrapperLabel, formSize);
         if (inputsAreTrue) {
             EnableElement(buttonId);
         }
     }
     else {
-        inputAreFalse("#label_5");
+        console.log(false);
+        inputAreFalse(labelId);
         DisableElement(buttonId);
+    }
+}
+
+/**
+ * 
+ * Input writers
+ * 
+ */
+
+function RemoveInputs(containerId, index)
+{
+    for (var i = 1; i <= index; i++)
+    {
+        $(containerId + index).val('');
     }
 }

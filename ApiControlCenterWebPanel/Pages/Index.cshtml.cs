@@ -379,6 +379,11 @@ namespace ApiControlCenterWebPanel.Pages
             return RedirectToPage("/SearchPlate");
         }
 
+        public void OnPostMassPayment() 
+        {
+            Response.Redirect("/MassInvoice");
+        }
+
         public IActionResult OnGetReloadPage() 
         {
             Dictionary<string, string> loadedElements = new()

@@ -73,23 +73,81 @@ var zReportIndexRegex = /^(\d){1,5}$/;
 //Input 12, 13, 14 regex
 var miscIndexRegex = /^(\d){1}$/;
 
+//Mass payment input 1 regex
+var plateRegex = /^([A-Z0-9\s]){5,12}$/;
+
 $(document).ready(function () {
 
     addTextDanger("label", 14);
+    addTextDanger("MassPaymentLabel", 1);
+    addTextDanger("updateLabel", 14);
 
     DisableElement("#addCash");
+    DisableElement("#massPaymentButton");
     DisableElement("#InvoiceCreatorContainer input");
-    HideInputsForCashSystem("#input_container", 10);
+    HideInputsForCashSystem("#input_container_", 10);
+    HideInputsForCashSystem("#update_input_container_", 10);
+    HideInputsForCashSystem("#update_other_input_container_", 10);
     HideInputsForCashSystem("#datePriceContainer_", 10);
     addTextDanger("gasDateLabel", 14);
     addTextDanger("gasPriceLabel", 14);
 
+    $("#massPayment").click(function ()
+    {
+        $("#MassPaymentInput_1").val('');
+        addTextDanger("MassPaymentLabel", 1);
+    })
+
+    $(".closeAddCash").click(function ()
+    {
+        inputContainerIndex = 1;
+        RemoveInputs("#input_3", 10);
+        addTextDanger("label", 14);
+    });
+
+    $(".closeUpdateCash").click(function ()
+    {
+        inputContainerIndex = 1;
+        RemoveInputs("#updateInput_11", 10);
+        addTextDanger("updateLabel", 11);
+    })
+
+    $(".closeUpdateOtherCash").click(function () {
+        inputContainerIndex = 1;
+        RemoveInputs("#uOtherInput_11", 10);
+        addTextDanger("updateLabel", 11);
+    })
+
     $("#addTitles").click(function () {
-        DisplayInput("#input_3", "#input_container", inputContainerIndex);
+        var ind = DisplayInput("#input_3", "#input_container_", inputContainerIndex);
+        inputContainerIndex = ind;
     });
 
     $("#removeTitles").click(function () {
-        HideInput("#input_3", "#input_container", inputContainerIndex);
+        var ind = HideInput("#input_3", "#input_container_", inputContainerIndex);
+        inputContainerIndex = ind;
+    });
+
+    $(".MainUpdate #addUpdateTitles").click(function () {
+        var ind = DisplayInput("#updateInput_11", "#update_input_container_", inputContainerIndex);
+        inputContainerIndex = ind;
+    });
+
+    $(".MainUpdate #removeUpdateTitles").click(function () {
+        var ind = HideInput("#updateInput_11", "#update_input_container_", inputContainerIndex);
+        inputContainerIndex = ind;
+    });
+
+    $(".OtherUpdate #addUpdateTitles").click(function () {
+        var ind = DisplayInput("#uOtherInput_11", "#update_other_input_container_", inputContainerIndex);
+        console.log(ind);
+        inputContainerIndex = ind;
+    });
+
+    $(".OtherUpdate #removeUpdateTitles").click(function () {
+        var ind = HideInput("#uOtherInput_11", "#update_other_input_container_", inputContainerIndex);
+        console.log(ind);
+        inputContainerIndex = ind;
     });
 
     $("#contact_user_check").click(function () {
@@ -126,7 +184,8 @@ $(document).ready(function () {
 
     //Input 2 Regex check
     $("#input_2").keyup(function () {
-        if (vergikimlik(inp)) {
+        var input = $(this).val();
+        if (vergikimlik(input)) {
             inputAreTrue("#label_2");
 
             var inputsAreTrue = allInputsAreTrue("label", 14);
@@ -222,6 +281,146 @@ $(document).ready(function () {
         var input = $(this).val();
         ReadInput(input, miscIndexRegex, "label", "#label_14", 14, "#addCash");
     });
+
+
+    //Update input 1 Regex check
+    $("#updateInput_1").keyup(function () {
+        var input = $(this).val();
+        if (vergikimlik(input)) {
+            inputAreTrue("#updateLabel_1");
+
+            var inputsAreTrue = allInputsAreTrue("label", 14);
+            if (inputsAreTrue) {
+                $("#updateCash").prop("disabled", false);
+            }
+        }
+        else {
+            inputAreFalse("#updateLabel_1");
+            $("#updateCash").prop("disabled", true);
+        }
+    });
+
+    //Update input 2 Regex check
+    $("#updateCashNumberMenu li a").click(function () {
+        var item = $(this).attr("id");
+        var itemText = $("#" + item).text();
+        $("#updateCashNumber").text(itemText);
+
+        if (listElementsRegex(["Beko", "Mepsan", "Arçelik", "Profilo", "Turpak"], $("#updateCashNumber").text())) {
+            inputAreTrue("#updateLabel_2");
+            var inputsAreTrue = allInputsAreTrue("updateLabel", 11);
+            if (inputsAreTrue) {
+                $("#updateCash").prop("disabled", false);
+            }
+        }
+    });
+
+    //Update input 3 Regex check
+    $("#updateInput_3").keyup(function () {
+        var input = $(this).val();
+        ReadInput(input, cashLettersRegex, "updateLabel", "#updateLabel_3", 11, "#updateCash");
+    });
+
+    //Update input 4 Regex check
+    $("#updateInput_4").keyup(function () {
+        var input = $(this).val();
+        ReadInput(input, cashIdRegex, "updateLabel", "#updateLabel_4", 11, "#updateCash");
+    });
+
+    //Update input 5 Regex check
+    $("#updateInput_5").keyup(function () {
+        var input = $(this).val();
+        ReadInput(input, zerosRegex, "updateLabel", "#updateLabel_5", 11, "#updateCash");
+    });
+
+    //Update input 6 Regex check
+    $("#updateInput_6").keyup(function () {
+        var input = $(this).val();
+        ReadInput(input, zerosRegex, "updateLabel", "#updateLabel_6", 11, "#updateCash");
+    });
+
+    //Update input 7 Regex check
+    $("#updateInput_7").keyup(function () {
+        var input = $(this).val();
+        ReadInput(input, zerosRegex, "updateLabel", "#updateLabel_7", 11, "#updateCash");
+    });
+
+    //Update input 8 Regex check
+    $("#updateInput_8").keyup(function () {
+        var input = $(this).val();
+        ReadInput(input, gasTypeRegex, "updateLabel", "#updateLabel_8", 11, "#updateCash");
+    });
+
+    //Update input 9 Regex check
+    $("#updateInput_9").keyup(function () {
+        var input = $(this).val();
+        ReadInput(input, miscIndexRegex, "updateLabel", "#updateLabel_9", 11, "#updateCash");
+    });
+
+    //Update input 10 Regex check
+    $("#updateInput_10").keyup(function () {
+        var input = $(this).val();
+        ReadInput(input, miscIndexRegex, "updateLabel", "#updateLabel_10", 11, "#updateCash");
+    });
+
+    //Update input 11 Regex check
+    $("#updateInput_111, #updateInput_112, #updateInput_113, #updateInput_114, #updateInput_115, #updateInput_116, #updateInput_117, #updateInput_118, #updateInput_119, #updateInput_1110")
+        .keyup(function ()
+        {
+            var input = $(this).val();
+            ReadInput(input, gasStationNameRegex, "updateLabel", "#updateLabel_11", 11, "#updateCash");
+        });
+
+    //Mass Payment input 10 Regex check
+    $("#MassPaymentInput_1").keyup(function () {
+        var inputsAreFalse = () => {
+            const checkedCount = $('.massPaymentChecks:checked').length;
+            return checkedCount == 0;
+        }
+
+        var checkedAreZero = inputsAreFalse();
+
+        var input = $(this).val();
+
+        if (plateRegex.test(input)) {
+            inputAreTrue("#MassPaymentLabel_1");
+            if (!checkedAreZero) {
+                $("#massPaymentButton").prop("disabled", false);
+            }
+        }
+        else {
+            inputAreFalse("#MassPaymentLabel_1");
+            $("#massPaymentButton").prop("disabled", true);
+        }
+    });
+
+    $('.massPaymentChecks').change(function ()
+    {
+        var inputsAreFalse = () => {
+            const checkedCount = $('.massPaymentChecks:checked').length;
+            return checkedCount == 0;
+        }
+
+        var checkedAreZero = inputsAreFalse();
+
+        var input = $("#MassPaymentInput_1").val();
+
+        if (plateRegex.test(input)) {
+            inputAreTrue("#MassPaymentLabel_1");
+            console.log(!checkedAreZero)
+            if (!checkedAreZero) {
+                $("#massPaymentButton").prop("disabled", false);
+            }
+            else
+            {
+                $("#massPaymentButton").prop("disabled", true);
+            }
+        }
+        else {
+            inputAreFalse("#MassPaymentLabel_1");
+            $("#massPaymentButton").prop("disabled", true);
+        }
+    });
 });
 
 /**
@@ -234,7 +433,7 @@ function createRow(theCashZeros, taxNumberInvoiceMaker, theData) {
     var index = document.getElementById("tableElements").children.length;
     var obj = JSON.parse(theData);
 
-    var elements = '<tr id="adminPanelContent_' + index + '"><td><a class="mb-0 taxNumberLink text-dark" id="taxNumber_' + index + '" onclick="getTheTaxNumber(' + theCashZeros + ', ' + taxNumberInvoiceMaker + ', ' + obj[index].TaxNumber + ', ' + index + ')"> ' + obj[index].GasStationName[0] + '</a></td><td><ul class="list-inline mb-0"><li class="list-inline-item"><a href="javascript: void (0); " id="deleteApiKey" onclick="deleteApiKey(' + index + ' + 1)" title="Delete" class="px-2 text-danger"><i class="bx bx-trash-alt font-size-18"></i></a></li><li class="list-inline-item"><a href="javascript: void (0); " data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#exampleModal2" id="updateApiKey" onclick="updateApiKey(' + index + ' + 1) " title="Update" class="px-2 text-info"><i class="bx bxs-comment-edit font-size-18"></i></a></li><li class="list-inline-item"><a href="javascript: void (0); " data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#exampleModal2" id="updateApiKey" onclick="" title="Update" class="px-2 text-success"><i class="bx bx-search font-size-18"></i></a></li></ul></td></tr>';
+    var elements = '<tr id="adminPanelContent_' + index + '"><td><a class="mb-0 taxNumberLink text-dark" id="taxNumber_' + index + '" onclick="getTheTaxNumber(' + theCashZeros + ', ' + taxNumberInvoiceMaker + ', ' + obj[index].TaxNumber + ', ' + index + ')"> ' + obj[index].GasStationName[0] + '</a></td><td><ul class="list-inline mb-0"><li class="list-inline-item"><a href="javascript: void (0); " id="deleteApiKey" onclick="deleteApiKey(' + index + ' + 1)" title="Delete" class="px-2 text-danger"><i class="bx bx-trash-alt font-size-05"></i></a></li><li class="list-inline-item"><a href="javascript: void (0); " data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#exampleModal2" id="updateApiKey" onclick="updateApiKey(' + index + ' + 1) " title="Update" class="px-2 text-info"><i class="bx bxs-comment-edit font-size-05"></i></a></li><li class="list-inline-item"><a href="javascript: void (0); " data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#exampleModal2" id="updateApiKey" onclick="" title="Update" class="px-2 text-success"><i class="bx bx-search font-size-05"></i></a></li></ul></td></tr>';
     $("#tableElements").append(elements);
 }
 
@@ -346,31 +545,24 @@ function updateApiKey(taxNumber, link)
         success: function (theData)
         {
             cashData = JSON.parse(JSON.parse(JSON.stringify(theData)));
-            alert(JSON.stringify(theData));
 
             var obj = [cashData].filter(x => x.TaxNumber == taxNumber)[0];
 
             var gasStationNameInputs = obj.GasStationName;
 
-            //$("#updateInput_1").val(obj.GasType);
-            $("#updateInput_2").val(obj.TaxNumber);
-            $("#updateInput_3").val(obj.GasType);
-
-            for (var i = 1; i <= 10; i++)
-            {
-                $("#updateInput_3" + i).val(gasStationNameInputs[i - 1]);
-            }
-
-            $("#updateInput_4").val(obj.CashLetters);
-            $("#updateInput_5").val(obj.CashId);
-            $("#updateInput_6").val(obj.ZerosInEku);
+            $("#updateInput_1").val(obj.TaxNumber);
+            $("#updateInput_3").val(obj.CashLetters);
+            $("#updateInput_4").val(obj.CashId);
+            $("#updateInput_5").val(obj.ZerosInEku);
+            $("#updateInput_6").val(obj.ZerosInZReports);
             $("#updateCashNumber").text(obj.CashTypeName);
-            $("#updateInput_7").val(obj.ZerosInZReports);
-            $("#updateInput_8").val(obj.ZerosInInvoices);
-            //$("#updateInput_9").val(obj.Password);
-            //$("#updateInput_10").val(obj.Password);
-            $("#updateInput_11").val(obj.WeaponNumber);
-            $("#updateInput_12").val(obj.PumpNumber);
+            $("#updateInput_7").val(obj.ZerosInInvoices);
+            $("#updateInput_8").val(obj.GasType);
+            $("#updateInput_9").val(obj.WeaponNumber);
+            $("#updateInput_10").val(obj.PumpNumber);
+            for (var i = 1; i <= 10; i++) {
+                $("#updateInput_11" + i).val(gasStationNameInputs[i - 1]);
+            }
 
             for (var i = 1; i <= 14; i++) {
                 inputAreTrue("#updateLabel_" + i);
@@ -395,7 +587,6 @@ function updateApiKey_2(taxNumber, link)
         success: function (theData)
         {
             cashData = JSON.parse(JSON.parse(JSON.stringify(theData)));
-            alert(JSON.stringify(theData));
 
             var obj = [cashData].filter(x => x.TaxNumber == taxNumber)[0];
             var gasStationNameInputs = obj.GasStationName;
@@ -442,7 +633,7 @@ function updateApiKey_2(taxNumber, link)
 </div> *@
 
                             @* <div class="dropdown">
-    <a class="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bx bx-dots-horizontal-rounded"></i></a>
+    <a class="btn btn-link text-muted py-1 font-size-056 shadow-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bx bx-dots-horizontal-rounded"></i></a>
     <ul class="dropdown-menu dropdown-menu-end">
         <li><a class="dropdown-item" href="#">Action</a></li>
         <li><a class="dropdown-item" href="#">Another action</a></li>
