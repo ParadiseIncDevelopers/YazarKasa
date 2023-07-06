@@ -1,10 +1,10 @@
-using ApiControlCenterWebPanel.Controller;
-using ApiControlCenterWebPanel.Models;
+using YazarKasaPetrol.Controller;
+using YazarKasaPetrol.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
 
-namespace ApiControlCenterWebPanel.Pages
+namespace YazarKasaPetrol.Pages
 {
     public class LoginModel : PageModel
     {

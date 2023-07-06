@@ -1,0 +1,184 @@
+﻿@page
+@model YazarKasaPetrol.Pages.LoginModel
+@{
+
+}
+<div class="container">
+    <div class="row align-items-center">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <form method="post" asp-page-handler="authenticate">
+                <div class="mb-3">
+                    <label class="form-label" id="loginLabel_1">Vergi Numarası</label>
+                    <input type="text" name="taxNumber" class="form-control" id="loginInput_1">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" id="loginLabel_2">Parola</label>
+                    <input type="password" maxlength="6" name="password" class="form-control" id="loginInput_2">
+                </div>
+                <button type="submit" class="btn btn-primary" id="login">Giriş yap</button>
+            </form>
+            @*<div class="py-2">
+            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal">Kaydol</a>
+            </div>*@
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ana kullanıcı ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="get">
+                    <div class="mb-3">
+                        <label class="form-label" id="label_1">Vergi Numarası</label>
+                        <input type="text" name="taxNumber" class="form-control" id="input_1">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="label_2">Parola</label>
+                        <input type="password" maxlength="6" name="password" class="form-control" id="input_2">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="label_3">Kasa numarası</label>
+                        <div class="dropdown">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="cashNumber" name="cashNumber" data-bs-toggle="dropdown" aria-expanded="false">
+                                Choose
+                            </a>
+                            <ul class="dropdown-menu" id="cashNumberMenu" aria-labelledby="cashNumber">
+                                <li><a class="dropdown-item" id="cashNumber_1" href="#">Beko</a></li>
+                                <li><a class="dropdown-item" id="cashNumber_2" href="#">Mepsan</a></li>
+                                <li><a class="dropdown-item" id="cashNumber_3" href="#">Arçelik</a></li>
+                                <li><a class="dropdown-item" id="cashNumber_3" href="#">Profilo</a></li>
+                                <li><a class="dropdown-item" id="cashNumber_3" href="#">Turpak</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="label_4">Fatura satırları</label>
+                        <ul class="list-inline mb-3">
+                            <li class="list-inline-item" id="addTitles">
+                                <a class="btn btn-primary" title="Satır ekle">
+                                    <i class="bx bx-message-add"></i> Satır ekle
+                                </a>
+                            </li>
+                            <li class="list-inline-item" id="removeTitles">
+                                <a class="btn btn-primary" title="Satır sil">
+                                    <i class="bx bx-message-alt-x"></i> Satır sil
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="mb-3 form-group" id="input_container_1">
+                            <label class="form-label">Fatura Satır 1</label>
+                            <input type="text" class="form-control" id="input_31">
+                        </div>
+                        <div class="mb-3 form-group" id="input_container_2">
+                            <label class="form-label">Fatura Satır 2</label>
+                            <input type="text" class="form-control" id="input_32">
+                        </div>
+                        <div class="mb-3 form-group" id="input_container_3">
+                            <label class="form-label">Fatura Satır 3</label>
+                            <input type="text" class="form-control" id="input_33">
+                        </div>
+                        <div class="mb-3 form-group" id="input_container_4">
+                            <label class="form-label">Fatura Satır 4</label>
+                            <input type="text" class="form-control" id="input_34">
+                        </div>
+                        <div class="mb-3 form-group" id="input_container_5">
+                            <label class="form-label">Fatura Satır 5</label>
+                            <input type="text" class="form-control" id="input_35">
+                        </div>
+                        <div class="mb-3 form-group" id="input_container_6">
+                            <label class="form-label">Fatura Satır 6</label>
+                            <input type="text" class="form-control" id="input_36">
+                        </div>
+                        <div class="mb-3 form-group" id="input_container_7">
+                            <label class="form-label">Fatura Satır 7</label>
+                            <input type="text" class="form-control" id="input_37">
+                        </div>
+                        <div class="mb-3 form-group" id="input_container_8">
+                            <label class="form-label">Fatura Satır 8</label>
+                            <input type="text" class="form-control" id="input_38">
+                        </div>
+                        <div class="mb-3 form-group" id="input_container_9">
+                            <label class="form-label">Fatura Satır 9</label>
+                            <input type="text" class="form-control" id="input_39">
+                        </div>
+                        <div class="mb-3 form-group" id="input_container_10">
+                            <label class="form-label">Fatura Satır 10</label>
+                            <input type="text" class="form-control" id="input_310">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="label_5">Benzin Türü</label>
+                        <input type="text" name="gasType" class="form-control" id="input_3">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="label_6">Kasa harfleri</label>
+                        <input type="text" maxlength="3" name="cashLetters" class="form-control" id="input_4">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="label_7">Kasa numarası</label>
+                        <input type="text" maxlength="5" name="cashId" class="form-control" id="input_5">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="label_8">Ekü no sayı hanesi</label>
+                        <input type="text" maxlength="1" name="zerosInEku" class="form-control" id="input_6">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="label_9">Fiş no sayı hanesi</label>
+                        <input type="text" maxlength="1" name="zerosInInvoice" class="form-control" id="input_7">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="label_10">Z no sayı hanesi</label>
+                        <input type="text" maxlength="1" name="zerosInZReport" class="form-control" id="input_8">
+                    </div>
+                    <button type="button" class="btn btn-primary" id="addCash">Ekle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#addCash").click(function () {
+            var taxNumber = $("#input_1").val();
+            var password = $("#input_2").val();
+            var cashNumber = $("#cashNumber").text();
+            var gasStationName = $("#input_31").val() + "-" + $("#input_32").val() + "-" + $("#input_33").val() +
+                $("#input_34").val() + "-" + $("#input_35").val() + "-" + $("#input_36").val() + "-" + $("#input_37").val() + "-" +
+                $("#input_38").val() + "-" + $("#input_39").val() + "-" + $("#input_310").val();
+            var gasType = $("#input_3").val();
+            var cashLetters = $("#input_4").val();
+            var cashId = $("#input_5").val();
+            var zerosInEku = $("#input_6").val();
+            var zerosInInvoice = $("#input_7").val();
+            var zerosInZReport = $("#input_8").val();
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Page("login", "register")',
+                data: {
+                    TaxNumber: taxNumber,
+                    Password: password,
+                    CashNumber: cashNumber,
+                    GasStationName: gasStationName,
+                    GasType: gasType,
+                    CashLetters: cashLetters,
+                    CashId: cashId,
+                    ZerosInEku: zerosInEku,
+                    ZerosInInvoice: zerosInInvoice,
+                    ZerosInZReport: zerosInZReport
+                },
+                success: function (theData) {
+                    alert("User created successfully.");
+                }
+            });
+        });
+    });
+</script>
