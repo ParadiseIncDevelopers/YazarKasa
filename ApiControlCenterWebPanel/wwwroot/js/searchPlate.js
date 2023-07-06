@@ -19,8 +19,8 @@
     $("#InvoiceDateSection").text(txt3);
     $("#InvoiceNoSection").text("FİŞ NO : " + txt5);
     $("#InvoiceHourSection").text(txt4);
-    $("#InvoiceLitreSection").text(txt9);
-    $("#InvoicePriceSection").text(txt8);
+    $("#InvoiceLitreSection").text(txt9 + "\xa0");
+    $("#InvoicePriceSection").text("\xa0".concat(txt8));
     $("#InvoiceVatPriceSection").text("*" + vatPrice);
     $(".InvoiceTotalPriceSection").text("*" + txt10);
     $("#InvoiceEkuSection").text("EKU NO : " + txt7);
@@ -35,3 +35,9 @@
     document.getElementById("InvoiceQRCodeSection").style.width = "100%";
     document.getElementById("InvoiceQRCodeSection").style.height = "100%";
 }
+
+$(document).ready(function () {
+    $("#printInvoiceFromPlate").click(function () {
+        $("#page").printThis();
+    })
+});

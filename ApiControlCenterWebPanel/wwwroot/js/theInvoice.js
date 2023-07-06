@@ -27,8 +27,6 @@ var hasInput = () => document.getElementById("invoiceModalLabel").innerHTML.incl
 //If in the main page gas prices management has not "choose".
 var hasGasPriceInput = () => $("#gasPriceUsers").text() != "choose";
 
-
-
 /**
  * 
  * @param {string} element
@@ -36,15 +34,23 @@ var hasGasPriceInput = () => $("#gasPriceUsers").text() != "choose";
 function CalculateIf(element)
 {
     var addPoint = (numberString) => {
-        let [integerPart, decimalPart] = numberString.split(",");
-        let formattedIntegerPart = "";
 
-        while (integerPart.length > 3) {
-            formattedIntegerPart = "." + integerPart.slice(-3) + formattedIntegerPart;
-            integerPart = integerPart.slice(0, -3);
+        if (!numberString.includes(","))
+        {
+            return numberString + "," + "00";
         }
+        else
+        {
+            let [integerPart, decimalPart] = numberString.split(",");
+            let formattedIntegerPart = "";
 
-        return integerPart + formattedIntegerPart + "," + decimalPart;
+            while (integerPart.length > 3) {
+                formattedIntegerPart = "." + integerPart.slice(-3) + formattedIntegerPart;
+                integerPart = integerPart.slice(0, -3);
+            }
+
+            return integerPart + formattedIntegerPart + "," + decimalPart;
+        }
     }
 
     var invoicePrice = $("#invoiceText_2").val();
@@ -63,10 +69,11 @@ function CalculateIf(element)
             totalVat = totalVat.toFixed(2);
 
             $("#invoiceText_1").val(calculate.toString());
-            $("#InvoiceLitreSection").text(addPoint($("#invoiceText_1").val().toString().replace(".", ",")));
-            $("#InvoicePriceSection").text(addPoint(invoicePrice.toString().replace(".", ",")));
-            $(".InvoiceTotalPriceSection").text(addPoint($("#invoiceText_11").val().toString().replace(".",",")));
+            $("#InvoiceLitreSection").text(addPoint($("#invoiceText_1").val().toString().replace(".", ",")).concat("\xa0"));
+            $("#InvoicePriceSection").text("\xa0".concat(addPoint(invoicePrice.toString().replace(".", ","))));
+            $(".InvoiceTotalPriceSection").text("*" + addPoint($("#invoiceText_11").val().toString().replace(".",",")));
             $("#InvoiceVatPriceSection").text("*" + addPoint(totalVat.toString().replace(".", ",")));
+            inputAreTrue("#invoiceLabel_1");
         }
         else if (element.includes("_1"))
         {
@@ -83,6 +90,7 @@ function CalculateIf(element)
             $("#InvoicePriceSection").text(addPoint(invoicePrice.toString().replace(".", ",")));
             $(".InvoiceTotalPriceSection").text("*" + addPoint($("#invoiceText_11").val().toString().replace(".", ",")));
             $("#InvoiceVatPriceSection").text("*" + addPoint(totalVat.toString().replace(".", ",")));
+            inputAreTrue("#invoiceLabel_11");
         }
     }
 }
@@ -90,12 +98,11 @@ function CalculateIf(element)
 /**
  * Updates the zeros in the string.
  * @param {number} output the output of the string.
- * @param {number} index the output of the string.
+ * @param {number} index the index of the zeroAdder.
  */
 function UpdateZeros(output, index)
 {
     var theZeros = -1;
-    var returnString = "";
     switch (index)
     {
         case 0:
@@ -109,24 +116,7 @@ function UpdateZeros(output, index)
             break;
     }
 
-    var powerOf10 = Math.pow(10, theZeros);
-
-
-    for (var i = output; i < powerOf10;)
-    {
-        if (output == 0) {
-            break;
-        }
-        else
-        {
-            returnString = returnString.concat("0");
-            i *= 10;
-        }
-    }
-    
-    var newOutput = returnString.concat(output.toString()).toString();
-
-    return newOutput;
+    return output.toString().padStart(theZeros, '0');
 }
 
 //The json data for gas prices getting
@@ -137,6 +127,7 @@ $(document).ready(function ()
 
     disableButton("addInvoice");
     disableButton("gasPriceUpdate");
+    disableButton("searchPlateButton");
 
     $("#invoiceText_1").keyup(function ()
     {
@@ -167,7 +158,7 @@ $(document).ready(function ()
             inputAreTrue("#invoiceLabel_2");
             var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
 
-            $("#InvoicePriceSection").text(theInput.replace(".", ","));
+            $("#InvoicePriceSection").text("*" + theInput.replace(".", ","));
 
             if (inputsAreTrue) {
                 enableButton("addInvoice");
@@ -282,7 +273,7 @@ $(document).ready(function ()
             inputAreTrue("#invoiceLabel_7");
             var inputsAreTrue = allInputsAreTrue("invoiceLabel", 11) && hasInput();
             var UpdatedInput = UpdateZeros(parseFloat(theInput), 0);
-            $("#InvoiceNoSection").text("FIS NO : " + UpdatedInput);
+            $("#InvoiceNoSection").text("FİŞ NO : " + UpdatedInput);
 
             if (inputsAreTrue) {
                 enableButton("addInvoice");

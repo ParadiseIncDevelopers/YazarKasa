@@ -1,5 +1,4 @@
 ﻿using ApiControlCenterWebPanel.Models.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ApiControlCenterWebPanel.Models
 {
@@ -17,10 +16,13 @@ namespace ApiControlCenterWebPanel.Models
             TheCurrentAuth = this;
         }
 
-        public bool IsNewOpen()
+        public static bool IsNewOpen
         {
-            return Utilities.JsonData == string.Empty && Utilities.CashData == string.Empty &&
-                Utilities.ChosenTaxNumber == string.Empty && Utilities.ZerosData == string.Empty && Utilities.EkuData == string.Empty;
+            get 
+            {
+                return Utilities.JsonData == null && Utilities.CashData == null &&
+                Utilities.ChosenTaxNumber == null && Utilities.ZerosData == null && Utilities.EkuData == null;
+            }
         }
     }
 }

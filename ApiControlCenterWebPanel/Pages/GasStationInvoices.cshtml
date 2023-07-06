@@ -40,7 +40,7 @@
             </h5>
         </div>
         <div class="table-responsive">
-            <table class="table table-nowrap align-middle table-borderless">
+            <table class="table project-list-table table-nowrap align-middle table-borderless">
                 <thead>
                     <tr>
                         <th scope="col" class="table-sort">Unvan</th>
@@ -66,15 +66,20 @@
                             {
                                 for (int i = 0; i < filteredInvoices.Count; i++)
                                 {
-                                    SuperAdmin theCash = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList()[0];
+                                    SuperAdmin theCash = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList().FirstOrDefault();
+
+                                    Admin theCash2 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH1)).DataContent_1.Where(x => x.AdminModel.TaxNumber == GasStationInvoicesModel.TaxNumber && x.AdminTaxNumber == AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber).ToList().FirstOrDefault();
+
                                     string[] theDateFull = filteredInvoices[i].Tarih.Value.ToString().Split(" ");
                                     string[] theDate = theDateFull[0].Split("-");
                                     string[] theHour = theDateFull[1].Split(":");
                                     string dateDisplayer = theDate[0] + "/" + theDate[1] + "/" + filteredInvoices[i].Tarih.Value.Year;
                                     string hourDisplayer = theHour[0] + ":" + theHour[1];
 
+                                    string gasStationName = theCash == null ? theCash2.AdminModel.GasStationName[0] : theCash.GasStationName[0];
+
                                     <tr id="searchPlateContent_@i">
-                                        <td id="inv_1_@(i)">@theCash.GasStationName.Aggregate((item1, item2) => item1 + "\n" + item2)</td>
+                                        <td id="inv_1_@(i)">@gasStationName</td>
                                         <td id="inv_2_@(i)">@dateDisplayer</td>
                                         <td id="inv_3_@(i)">@hourDisplayer</td>
                                         <td id="inv_4_@(i)">@filteredInvoices[i].FisNo</td>
@@ -88,7 +93,7 @@
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">
                                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@GasStationInvoicesModel.TaxNumber', @(i))" title="Print this invoice" class="px-2 text-info">
-                                                        <i class='bx bx-printer font-size-05'></i>
+                                                        <i class='bx bx-printer font-size-1'></i>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -193,3 +198,11 @@
 </div>
 
 <script src="~/js/GasStationInvoices.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#printInvoiceFromPlate").click(function () {
+            $("#page").printThis();
+        });
+    });
+</script>

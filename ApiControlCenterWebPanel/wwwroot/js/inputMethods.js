@@ -5,6 +5,11 @@ let display = "display";
 let none = "none";
 let block = "block";
 
+function addTextColorsToAdmins()
+{
+    $("[id*='taxNumber_']").addClass("text-dark");
+}
+
 /** 
  * Adds text danger
  * @param index {number}

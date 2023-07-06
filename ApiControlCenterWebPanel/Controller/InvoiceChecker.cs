@@ -1,4 +1,5 @@
 ﻿using ApiControlCenterWebPanel.Models;
+using System.Globalization;
 using System.Text;
 
 namespace ApiControlCenterWebPanel.Controller
@@ -37,42 +38,12 @@ namespace ApiControlCenterWebPanel.Controller
             return new DateTime(Convert.ToInt32(theDate[2]), Convert.ToInt32(theDate[1]), Convert.ToInt32(theDate[0]));
         }
 
-        public bool CheckInvoiceZReportId(string taxNumber, Invoice invoice)
+        public void SetZerosForInvoice(List<SuperAdmin> cashList, string taxNumber)
         {
-            int zReportId = Convert.ToInt32(invoice.ZRaporuNo);
-            TaxNumber = taxNumber;
-
-            if (Invoices != null)
-            {
-                if (Invoices.Invoices.Count == 0)
-                {
-                    return true;
-                }
-
-                if (Convert.ToInt32(Invoices.Invoices.Last().ZRaporuNo) >= zReportId)
-                {
-                    DateTime correspondentDate = ZReports.Where(x => x.TaxId == taxNumber).ToList()[0].UserZReports[zReportId - 1].DateOfTheIndex;
-                    DateTime invoiceDate = new(invoice.Tarih.Value.Year, invoice.Tarih.Value.Month, invoice.Tarih.Value.Day);
-
-                    return correspondentDate == invoiceDate;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void SetZerosForInvoice(List<SuperAdmin> cashList)
-        {
-            SuperAdmin theFilteredCash = cashList.Where(x => x.TaxNumber == TaxNumber).First();
-            int? invoice = theFilteredCash.ZerosInInvoices;
-            int? zreport = theFilteredCash.ZerosInZReports;
-            int? eku = theFilteredCash.ZerosInEku;
+            SuperAdmin theFilteredCash = cashList.Where(x => x.TaxNumber == taxNumber).First();
+            int invoice = Convert.ToInt32(theFilteredCash.ZerosInInvoices.ToString());
+            int zreport = Convert.ToInt32(theFilteredCash.ZerosInZReports.ToString());
+            int eku = Convert.ToInt32(theFilteredCash.ZerosInEku.ToString());
 
             Invoice theInvoice = Invoices.Invoices.First();
             ConvertedZReportNumber = ZeroSetter(Convert.ToInt32(theInvoice.ZRaporuNo), zreport);
@@ -80,24 +51,22 @@ namespace ApiControlCenterWebPanel.Controller
             ConvertedEkuNumber = ZeroSetter(Convert.ToInt32(theInvoice.EkuNo), eku);
         }
 
-        private static string ZeroSetter(int? theValue, int? zerosInTheCash)
+        public void SetZerosForInvoice(List<Admin> cashList, string taxNumber)
         {
-            StringBuilder theReturnString = new("");
+            Admin theFilteredCash = cashList.Where(x => x.AdminModel.TaxNumber == taxNumber && x.AdminTaxNumber == AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber).First();
+            int invoice = Convert.ToInt32(theFilteredCash.AdminModel.ZerosInInvoices.ToString());
+            int zreport = Convert.ToInt32(theFilteredCash.AdminModel.ZerosInZReports.ToString());
+            int eku = Convert.ToInt32(theFilteredCash.AdminModel.ZerosInEku.ToString());
 
-            for (int i = 1; i <= zerosInTheCash;)
-            {
-                if (theValue < Math.Pow(10, 2))
-                {
-                    i++;
-                    theReturnString.Append('0');
-                }
-                else 
-                {
-                    theReturnString.Append(theValue);
-                }
-            }
+            Invoice theInvoice = Invoices.Invoices.First();
+            ConvertedZReportNumber = ZeroSetter(Convert.ToInt32(theInvoice.ZRaporuNo), zreport);
+            ConvertedInvoiceNumber = ZeroSetter(Convert.ToInt32(theInvoice.FisNo), invoice);
+            ConvertedEkuNumber = ZeroSetter(Convert.ToInt32(theInvoice.EkuNo), eku);
+        }
 
-            return theReturnString.ToString();
+        private static string ZeroSetter(int theValue, int zerosInTheCash)
+        {
+            return theValue.ToString().PadLeft(zerosInTheCash + 1, '0');
         }
     }
 }

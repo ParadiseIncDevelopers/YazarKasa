@@ -43,21 +43,50 @@
 
                         List<UserInvoiceContainer>? filteredInvoices = allInvoices.FindAll(x => x.Invoices.Any(y => y.PlakaNo == plakaNo));
 
+                        List<string> cashNames(string taxNumber)
+                        {
+                            List<string> names = new();
+                            List<SuperAdmin>? ad1 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent?.Where(x => x.TaxNumber == taxNumber).ToList();
+                            List<Admin>? ad2 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH1)).DataContent_1?.Where(x => x.AdminModel.TaxNumber == taxNumber).ToList();
+
+                            if (ad1.Count != 0)
+                            {
+                                foreach (var item in ad1)
+                                {
+                                    names.Add(item.GasStationName[0]);
+                                }
+                            }
+                            else if (ad2.Count != 0)
+                            {
+                                foreach (var item in ad2)
+                                {
+                                    names.Add(item.AdminModel.GasStationName[0]);
+                                }
+                            }
+                            else
+                            {
+                                return names;
+                            }
+
+                            return names;
+                        }
+
                         for (int i = 0; i < filteredInvoices.Count; i++)
                         {
                             for (int j = 0; j < filteredInvoices[i].Invoices.Count; j++)
                             {
-                                SuperAdmin theCash = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == allInvoices[i].TaxId).ToList()[0];
+                                var theCash = cashNames(filteredInvoices[i].TaxId);
 
                                 string[] theDateFull = allInvoices[i].Invoices[j].Tarih.Value.ToString().Split(" ");
                                 string[] theDate = theDateFull[0].Split("-");
                                 string[] theHour = theDateFull[1].Split(":");
                                 string dateDisplayer = theDate[0] + "/" + theDate[1] + "/" + allInvoices[i].Invoices[j].Tarih.Value.Year;
                                 string hourDisplayer = theHour[0] + ":" + theHour[1];
+                                string entrepriseName = theCash[0];
 
                                 <tr id="searchPlateContent_@i">
                                     <td id="inv_1_@(i)_@(j)">@filteredInvoices[i].Invoices[j].PlakaNo</td>
-                                    <td id="inv_2_@(i)_@(j)">@theCash.GasStationName.Aggregate((item1, item2) => item1 + "\n" + item2)</td>
+                                    <td id="inv_2_@(i)_@(j)">@entrepriseName</td>
                                     <td id="inv_3_@(i)_@(j)">@dateDisplayer</td>
                                     <td id="inv_4_@(i)_@(j)">@hourDisplayer</td>
                                     <td id="inv_5_@(i)_@(j)">@filteredInvoices[i].Invoices[j].FisNo</td>
@@ -70,7 +99,7 @@
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item">
                                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@filteredInvoices[i].TaxId', @(i), @(j))" title="Print this invoice" class="px-2 text-info">
-                                                    <i class='bx bx-printer font-size-05'></i>
+                                                    <i class='bx bx-printer font-size-1'></i>
                                                 </a>
                                             </li>
                                         </ul>
@@ -114,10 +143,12 @@
                         </div>
                         <div class="col-texts">
                             <div class="row-texts">
-                                <div class="row-text text-left"><div id="InvoiceLitreSection">1,00 LT</div> X <div id="InvoicePriceSection">1,00</div></div>
-                                <div class="row-text text-left" id="InvoiceGasTypeSection">MOT.VPRO</div>
+                                <div class="col-texts row-text text-left"><div class="row-text" id="InvoiceLitreSection">1,00 LT</div> x <div class="row-text" id="InvoicePriceSection">1,00</div></div>
                             </div>
+                        </div>
+                        <div class="col-texts">
                             <div class="row-texts row-texts2">
+                                <div class="row-text text-left" id="InvoiceGasTypeSection">MOT.VPRO</div>
                                 <div class="row-text text-right">%18</div>
                             </div>
                             <div class="row-texts row-texts2">
@@ -173,14 +204,12 @@
     </div>
 </div>
 
-<script src="~/js/searchPlate.js"></script>
+<script src="~/js/SearchPlate.js"></script>
 
 <script>
     $(document).ready(function () {
         $("#printInvoiceFromPlate").click(function () {
-            var elements = $("#page").html();
-
-            alert(elements);
+            $("#page").printThis();
         });
     });
 </script>

@@ -15,51 +15,6 @@
 
         return returnString;
     };
-
-    bool auth = new AuthType().IsNewOpen();
-
-    if (auth)
-    {
-        <script>
-            var jsonData, cashData, chosenTaxNumber, zerosData, ekuData;
-
-            $.ajax({
-                type: 'GET',
-                url: '@Url.Page("index", "zreportsgetcontent")',
-                success: function (theData) {
-                    zerosData = JSON.parse(theData);
-                }
-            });
-            $.ajax({
-                type: 'GET',
-                url: '@Url.Page("index", "ekugetcontent")',
-                success: function (theData) {
-                    ekuData = JSON.parse(theData);
-                }
-            });
-        </script>
-    }
-    else
-    {
-        <script>
-
-            var jsonData, cashData, chosenTaxNumber, zerosData, ekuData;
-
-            $.ajax({
-                type: 'GET',
-                url: '@Url.Page("index", "reloadcontent")',
-                success: function (theData) {
-                    var theJsonData = JSON.parse(theData);
-
-                    jsonData = theJsonData.jsonData;
-                    cashData = theJsonData.cashData;
-                    chosenTaxNumber = theJsonData.chosenTaxNumber;
-                    zerosData = theJsonData.zerosData;
-                    ekuData = theJsonData.ekuData;
-                }
-            });
-        </script>
-    }
 }
 
 @{
@@ -73,9 +28,9 @@
                 <a class="btn btn-primary" id="invoiceModalOpener" data-bs-toggle="modal" data-bs-target="#searchInvoiceModal">
                     <i class="bx bx-search me-1"></i> Plaka ara
                 </a>
-                <a class="btn btn-primary" id="massPaymentOpener" data-bs-toggle="modal" data-bs-target="#massPaymentModal">
+                <!--<a class="btn btn-primary" id="massPaymentOpener" data-bs-toggle="modal" data-bs-target="#massPaymentModal">
                     <i class="bx bx-search me-1"></i> Toplu Fatura Kes
-                </a>
+                </a>-->
             </div>
             <div class="p-3 row">
                 <div class="col-md-5">
@@ -114,26 +69,7 @@
                                                             if (i != 0)
                                                             {
                                                                 <li class="list-inline-item">
-                                                                    <a href="javascript:void(0);" id="deleteApiKey" onclick="deleteApiKey(@i + 1)" title="Delete" class="px-2 text-danger">
-                                                                        <i class="bx bx-trash-alt font-size-1"></i>
-                                                                    </a>
-                                                                </li>
-                                                            }
-                                                            else
-                                                            {
-                                                                <li class="list-inline-item">
-                                                                    <a href="javascript:void(0);" id="deleteApiKey" onclick="alert('Bu Hesap silinemez.')" title="Delete" class="px-2 text-danger">
-                                                                        <i class="bx bx-trash-alt font-size-1"></i>
-                                                                    </a>
-                                                                </li>
-                                                            }
-                                                        }
-
-                                                        @{
-                                                            if (i != 0)
-                                                            {
-                                                                <li class="list-inline-item">
-                                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updateOtherCashModal" onclick="updateApiKey_2('@allElements[i].TaxNumber', '@Url.Page("index", "cashzerosforinvoice")')" title="Update the cash info." class="px-2 text-success">
+                                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updateOtherCashModal" onclick="updateApiKey_2('@allElements[i].TaxNumber', '@Url.Page("index", "cashzerosforinvoice")')" title="Update the cash info." class="px-2 text-secondary">
                                                                         <i class='bx bxs-comment-edit font-size-1'></i>
                                                                     </a>
                                                                 </li>
@@ -141,7 +77,7 @@
                                                             else
                                                             {
                                                                 <li class="list-inline-item">
-                                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updateCashModal" onclick="updateApiKey('@allElements[i].TaxNumber', '@Url.Page("index", "cashzerosforinvoice")')" title="Update the cash info." class="px-2 text-success">
+                                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-placement="top" data-bs-target="#updateCashModal" onclick="updateApiKey('@allElements[i].TaxNumber', '@Url.Page("index", "cashzerosforinvoice")')" title="Update the cash info." class="px-2 text-secondary">
                                                                         <i class='bx bxs-comment-edit font-size-1'></i>
                                                                     </a>
                                                                 </li>
@@ -159,7 +95,7 @@
                                                             </a>
                                                         </li>
                                                         <li class="list-inline-item">
-                                                            <a asp-page="/ZReportsSystem" asp-route-taxnumber="@allElements[i].TaxNumber" title="Bütün firmanın faturalarına bakar." class="px-2 text-info">
+                                                            <a asp-page="/ZReportsSystem" asp-route-taxnumber="@allElements[i].TaxNumber" title="Bütün firmanın z raporu no'larına bakar." class="px-2 text-danger">
                                                                 <i class='bx bx-search-alt font-size-1'></i>
                                                             </a>
                                                         </li>
@@ -168,7 +104,7 @@
                                                 <td>
                                                     <ul class="list-inline mb-0">
                                                         <li class="list-inline-item">
-                                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#massPaymentModal" class="px-2 text-success">
+                                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ekuNumberAddingModal" onclick="ekuAddPlusOneButton('@allElements[i].TaxNumber', '@Url.Page("index", "ekuaddoneplus")')" class="px-2 text-secondary">
                                                                 <i class='bx bxs-plus-square font-size-2'></i>
                                                             </a>
                                                         </li>
@@ -565,13 +501,13 @@
                     <div class="modal-body">
                         <form method="get">
                             <div class="mb-3">
-                                <label class="form-label" id="updateOtherLabel_2">Vergi Numarası</label>
-                                <input type="text" name="taxNumber" class="form-control" id="updateOtherInput_2">
+                                <label class="form-label" id="updateOtherLabel_1">Vergi Numarası</label>
+                                <input type="text" name="taxNumber" class="form-control" id="updateOtherInput_1">
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateOtherLabel_3">Kasa türü</label>
+                                    <label class="form-label" id="updateOtherLabel_2">Kasa türü</label>
                                     <div class="dropdown">
                                         <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="updateOtherCashNumber" name="cashNumber" data-bs-toggle="dropdown" aria-expanded="false">
                                             Choose
@@ -586,44 +522,44 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateOtherLabel_6">Kasa harfleri</label>
-                                    <input type="text" maxlength="3" name="cashLetters" class="form-control" id="updateOtherInput_4">
+                                    <label class="form-label" id="updateOtherLabel_3">Kasa harfleri</label>
+                                    <input type="text" maxlength="3" name="cashLetters" class="form-control" id="updateOtherInput_3">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateOtherLabel_7">Kasa numarası</label>
-                                    <input type="text" maxlength="10" name="cashId" class="form-control" id="updateOtherInput_5">
+                                    <label class="form-label" id="updateOtherLabel_4">Kasa numarası</label>
+                                    <input type="text" maxlength="10" name="cashId" class="form-control" id="updateOtherInput_4">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateOtherLabel_8">Ekü no sayı hanesi</label>
-                                    <input type="text" maxlength="1" name="zerosInEku" class="form-control" id="updateOtherInput_6">
+                                    <label class="form-label" id="updateOtherLabel_5">Ekü no sayı hanesi</label>
+                                    <input type="text" maxlength="1" name="zerosInEku" class="form-control" id="updateOtherInput_5">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateOtherLabel_10">Fiş no sayı hanesi</label>
-                                    <input type="text" maxlength="1" name="zerosInInvoice" class="form-control" id="updateOtherInput_8">
+                                    <label class="form-label" id="updateOtherLabel_6">Fiş no sayı hanesi</label>
+                                    <input type="text" maxlength="1" name="zerosInInvoice" class="form-control" id="updateOtherInput_6">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateOtherLabel_9">Z no sayı hanesi</label>
+                                    <label class="form-label" id="updateOtherLabel_7">Z no sayı hanesi</label>
                                     <input type="text" maxlength="1" name="zerosInZReport" class="form-control" id="updateOtherInput_7">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateOtherLabel_5">Benzin Türü</label>
-                                    <input type="text" name="gasType" class="form-control" id="updateOtherInput_3">
+                                    <label class="form-label" id="updateOtherLabel_8">Benzin Türü</label>
+                                    <input type="text" name="gasType" class="form-control" id="updateOtherInput_8">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateOtherLabel_13">Tabanca no</label>
-                                    <input type="text" name="weaponNumber" class="form-control" id="updateOtherInput_11">
+                                    <label class="form-label" id="updateOtherLabel_9">Tabanca no</label>
+                                    <input type="text" name="weaponNumber" class="form-control" id="updateOtherInput_9">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label" id="updateOtherLabel_14">Pompa no</label>
-                                    <input type="text" name="pumpNumber" class="form-control" id="updateOtherInput_12">
+                                    <label class="form-label" id="updateOtherLabel_10">Pompa no</label>
+                                    <input type="text" name="pumpNumber" class="form-control" id="updateOtherInput_10">
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" id="updateOtherLabel_4">Fatura satırları</label>
+                                <label class="form-label" id="updateOtherLabel_11">Fatura satırları</label>
                                 <ul class="OtherUpdate list-inline mb-3">
                                     <li class="list-inline-item" id="addUpdateTitles">
                                         <a class="btn btn-primary" title="Satır ekle">
@@ -710,7 +646,6 @@
             </div>
         </div>
 
-        <!-- Mass payment modal --> 
         <div class="modal fade" id="massPaymentModal" tabindex="-1" aria-labelledby="massPaymentModal" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -778,13 +713,31 @@
             </div>
         </div>
 
+        <div class="modal fade" id="ekuNumberAddingModal" tabindex="-1" aria-labelledby="ekuNumberAddingModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ekuNumberAddingLabel">Ekü no'ya +1 eklemek istiyor musunuz?</h5>
+                        <button type="button" id="ekuNumberAddingClose" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row align-items-center align-middle">
+                            <button type="submit" class="btn btn-danger col-md-5 m-1" id="ekuNumberAddYes" data-bs-dismiss="modal" aria-label="Close" onclick="ekuAddPlusOneButtonConfirm('@Url.Page("index", "ekuaddconfirm")')">Evet</button>
+                            <button type="submit" class="btn btn-primary col-md-5 m-1" id="ekuNumberAddNo" data-bs-dismiss="modal" aria-label="Close">Kapat</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
     }
     else
     {
-        Response.Redirect("/Login");
+        RedirectPermanent("/Login");
     }
 }
 <script>
+    var jsonData, cashData, chosenTaxNumber, zerosData, ekuData;
+
     function deleteApiKey(index) {
         $.ajax({
             type: 'GET',
@@ -799,6 +752,32 @@
     }
 
     $(document).ready(function () {
+
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Page("index", "zreportsloader")',
+            success: function (theData) 
+            {
+                alert(theData);
+            }
+        });
+        
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Page("index", "zreportsgetcontent")',
+            success: function (theData) {
+                zerosData = JSON.parse(theData);
+            }
+        });
+
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Page("index", "ekugetcontent")',
+            success: function (theData) {
+                ekuData = JSON.parse(theData);
+            }
+        });
+
         //Adds invoice.
         $("#addInvoice").click(function () {
             var litre = $("#invoiceText_1").val();
@@ -811,7 +790,7 @@
             var tabancaNo = $("#invoiceText_8").val();
             var plakaNo = $("#invoiceText_9").val();
             var pompaNo = $("#invoiceText_10").val();
-            var taxNumber = $("#invoiceModalLabel").text().split(" - ")[1];
+            var taxNumber = chosenTaxNumber;
 
             $.ajax({
                 type: 'GET',
@@ -829,8 +808,18 @@
                     PlakaNo: plakaNo,
                     PompaNo: pompaNo
                 },
-                success: function (theData) {
-                    alert(objectData.toString());
+                success: function (theData) 
+                {
+                    var objectData = JSON.stringify(theData);
+
+                    if (objectData.includes("Fiş no saatleri uyuşmuyor.")) 
+                    {
+                        alert(objectData);
+                    }
+                    else
+                    {
+                        $("#page").printThis();
+                    }
                 }
             });
         });
@@ -887,19 +876,19 @@
 
         //Updates the cash.
         $("#updateCash").click(function () {
-            var taxNumber = $("#updateInput_2").val();
-            var gasType = $("#updateInput_3").val();
+            var taxNumber = $("#updateInput_1").val();
             var cashTypeName = $("#updateCashNumber").text();
-            var updateCashStationName = $("#updateInput_31").val() + "µ" + $("#updateInput_32").val() + "µ" + $("#updateInput_33").val() +
-                $("#updateInput_34").val() + "µ" + $("#updateInput_35").val() + "µ" + $("#updateInput_36").val() + "µ" + $("#updateInput_37").val() + "µ" +
-                $("#updateInput_38").val() + "µ" + $("#updateInput_39").val() + "µ" + $("#updateInput_310").val();
-            var cashLetters = $("#updateInput_4").val();
-            var cashId = $("#updateInput_5").val();
-            var zerosInEku = $("#updateInput_6").val();
-            var zerosInZReports = $("#updateInput_7").val();
-            var zerosInInvoices = $("#updateInput_8").val();
-            var weaponNumber = $("#updateInput_11").val();
-            var pumpNumber = $("#updateInput_12").val();
+            var cashLetters = $("#updateInput_3").val();
+            var cashId = $("#updateInput_4").val();
+            var zerosInEku = $("#updateInput_5").val();
+            var zerosInZReports = $("#updateInput_6").val();
+            var zerosInInvoices = $("#updateInput_7").val();
+            var gasType = $("#updateInput_8").val();
+            var weaponNumber = $("#updateInput_9").val();
+            var pumpNumber = $("#updateInput_10").val(); 
+            var updateCashStationName = $("#updateInput_111").val() + "µ" + $("#updateInput_112").val() + "µ" + $("#updateInput_113").val() +
+                $("#updateInput_114").val() + "µ" + $("#updateInput_115").val() + "µ" + $("#updateInput_116").val() + "µ" + $("#updateInput_117").val() + "µ" +
+                $("#updateInput_118").val() + "µ" + $("#updateInput_119").val() + "µ" + $("#updateInput_1110").val();
 
             $.ajax({
                 type: 'GET',
@@ -918,28 +907,26 @@
                     PumpNumber: pumpNumber
                 },
                 success: function (theData) {
-
+                    location.reload();
                 }
             });
         });
 
         //Updates other cash.
         $("#updateOtherCash").click(function () {
-            var taxNumber = $("#updateOtherInput_2").val();
-            var gasType = $("#updateOtherInput_3").val();
+            var taxNumber = $("#updateOtherInput_1").val();
             var cashTypeName = $("#updateCashNumber").text();
-            var updateCashStationName = $("#updateOtherInput_31").val() + "µ" + $("#updateOtherInput_32").val() + "µ" + $("#updateOtherInput_33").val() +
-                $("#updateOtherInput_34").val() + "µ" + $("#updateOtherInput_35").val() + "µ" + $("#updateOtherInput_36").val() + "µ" + $("#updateOtherInput_37").val() + "µ" +
-                $("#updateOtherInput_38").val() + "µ" + $("#updateOtherInput_39").val() + "µ" + $("#updateOtherInput_310").val();
-            var cashLetters = $("#updateOtherInput_4").val();
-            var cashId = $("#updateOtherInput_5").val();
-            var zerosInEku = $("#updateOtherInput_6").val();
-            var zerosInZReports = $("#updateOtherInput_7").val();
-            var zerosInInvoices = $("#updateOtherInput_8").val();
-            var weaponNumber = $("#updateOtherInput_11").val();
-            var pumpNumber = $("#updateOtherInput_12").val();
-
-            alert(cashNumber);
+            var cashLetters = $("#updateOtherInput_3").val();
+            var cashId = $("#updateOtherInput_4").val();
+            var zerosInEku = $("#updateOtherInput_5").val();
+            var zerosInZReports = $("#updateOtherInput_6").val();
+            var zerosInInvoices = $("#updateOtherInput_7").val();
+            var gasType = $("#updateOtherInput_8").val();
+            var weaponNumber = $("#updateOtherInput_9").val();
+            var pumpNumber = $("#updateOtherInput_10").val();
+            var updateCashStationName = $("#uOtherInput_1").val() + "µ" + $("#uOtherInput_2").val() + "µ" + $("#uOtherInput_3").val() +
+                $("#uOtherInput_4").val() + "µ" + $("#uOtherInput_5").val() + "µ" + $("#uOtherInput_6").val() + "µ" + $("#uOtherInput_7").val() + "µ" +
+                $("#uOtherInput_8").val() + "µ" + $("#uOtherInput_9").val() + "µ" + $("#uOtherInput_10").val();
 
             $.ajax({
                 type: 'GET',
@@ -958,7 +945,7 @@
                     PumpNumber: pumpNumber
                 },
                 success: function (theData) {
-
+                    location.reload();
                 }
             });
         });

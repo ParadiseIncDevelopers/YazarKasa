@@ -12,30 +12,10 @@ namespace ApiControlCenterWebPanel.Models
         public static readonly string PATH5 = @"C:\YazarKasa\ekuList.json";
         public static readonly string PRINTING_PATH = @"C:\YazarKasa\";
 
-        public static string JsonData 
-        { 
-            get { return string.Empty; } 
-            set { } 
-        }
-        public static string CashData 
-        { 
-            get { return string.Empty; } 
-            set { } 
-        }
-        public static string ChosenTaxNumber 
-        { 
-            get { return string.Empty; } 
-            set { } 
-        }
-        public static string ZerosData
-        { 
-            get { return string.Empty; }
-            set { } 
-        }
-        public static string EkuData 
-        { 
-            get { return string.Empty; } 
-            set { } 
-        }
+        public static string? JsonData { get; set; }
+        public static string? CashData { get; set; }
+        public static string? ChosenTaxNumber { get; set; }
+        public static string? ZerosData { get; set; }
+        public static string? EkuData { get; set; }
     }
 }

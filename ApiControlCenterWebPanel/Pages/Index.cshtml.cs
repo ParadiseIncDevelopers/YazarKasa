@@ -72,93 +72,161 @@ namespace ApiControlCenterWebPanel.Pages
             {
                 WriteIndented = true
             };
-
             invoice.CalculateTotalPrice();
             invoice.CalculateTotalPriceWithVAT();
-
             string serialized = JsonSerializer.Serialize(invoice, options);
             List<UserInvoiceContainer>? table = (Retriever.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent).DataContent;
-            InvoiceChecker invoiceChecker = new(table.Where(x => x.TaxId == TaxNumber).ToList()[0], Retriever.RetrieveZReports());
-            bool checker(UserInvoiceContainer x)
-            {
-                if (x.Invoices.Any(y => y.FisNo == invoice.FisNo) || x.Invoices.Any(y => y.Tarih == invoice.Tarih))
-                {
-                    return false;
-                }
-                else
-                {
-                    List<Invoice> subInvoiceContainer = new();
-                    foreach (Invoice inv in x.Invoices)
-                    {
-                        if (inv.Tarih < invoice.Tarih)
-                        {
-                            subInvoiceContainer.Add(inv);
-                        }
-                        else
-                        {
-                            subInvoiceContainer.Add(inv);
-                            break;
-                        }
-                    }
+            bool userEmpty = table.Where(x => x.TaxId == TaxNumber).ToList().Count == 0;
 
-                    if (subInvoiceContainer.Count == 1)
-                    {
-                        return Convert.ToInt32(subInvoiceContainer[0].FisNo) > Convert.ToInt32(invoice.FisNo);
-                    }
-                    else if (subInvoiceContainer.Count == x.Invoices.Count)
-                    {
-                        return Convert.ToInt32(invoice.FisNo) > Convert.ToInt32(subInvoiceContainer[^1].FisNo);
-                    }
-                    else
-                    {
-                        return Convert.ToInt32(subInvoiceContainer[^2].FisNo) < Convert.ToInt32(invoice.FisNo) && Convert.ToInt32(invoice.FisNo) < Convert.ToInt32(subInvoiceContainer[^1].FisNo);
-                    }
-                }
-            }
-            bool invoiceIdCheck = table.All(x => checker(x));
-            bool zReportCheck = invoiceChecker.CheckInvoiceZReportId(TaxNumber, invoice);
-            invoiceChecker.SetZerosForInvoice((Retriever.RetrieveTables(Utilities.PATH) as CashContent).DataContent);
-            invoice.EkuNo = invoiceChecker.ConvertedEkuNumber;
-            invoice.ZRaporuNo = invoiceChecker.ConvertedZReportNumber;
-            invoice.FisNo = invoiceChecker.ConvertedInvoiceNumber;
-            if (!invoiceIdCheck)
+            string invWriter;
+
+            string InvoiceWriter() 
             {
-                return new JsonResult("Bu fiş no uyumsuz, Lütfen tekrar deneyiniz.");
-            }
-            else if (!zReportCheck)
-            {
-                return new JsonResult("Z raporu no tarihi ile uyumsuz. Lütfen tekrar deneyiniz.");
-            }
-            else
-            {
-                UserInvoiceContainer invoiceContainer = new()
+                UserInvoiceContainer invoiceContainer;
+                try
                 {
-                    Invoices = table.Where(x => x.TaxId == TaxNumber).ToList()[0].Invoices,
-                    TaxId = TaxNumber
-                };
+                    invoiceContainer = new()
+                    {
+                        Invoices = table.Where(x => x.TaxId == TaxNumber).ToList()[0].Invoices,
+                        TaxId = TaxNumber
+                    };
+                }
+                catch 
+                {
+                    invoiceContainer = new()
+                    {
+                        Invoices = new List<Invoice>(),
+                        TaxId = TaxNumber
+                    };
+                }
+                
 
                 invoiceContainer.Invoices.Add(invoice);
-                List<Invoice> groupedInvoices = invoiceContainer.Invoices.OrderBy(x => x.Tarih).ToList();
-                invoiceContainer.Invoices = groupedInvoices;
-
+                List<Invoice> orderedInvoices = invoiceContainer.Invoices.OrderBy(x => x.Tarih).ToList();
+                invoiceContainer.Invoices = orderedInvoices;
                 List<UserInvoiceContainer> returnElement = new();
-                if (table.Any(x => x.TaxId != TaxNumber))
+
+                if (!table.Any(x => x.TaxId == TaxNumber))
                 {
                     table?.Add(invoiceContainer);
                 }
                 else
                 {
-                    returnElement = table.Where(x => x.TaxId == TaxNumber).ToList();
-                    returnElement[0].Invoices = groupedInvoices;
-
-                    table = table.Union(returnElement).ToList();
+                    table.Where(x => x.TaxId == TaxNumber).ToList()[0].Invoices = orderedInvoices;
                 }
 
 
                 FileWriter writer = FileWriter.GetInstance();
                 writer.WriteData(table);
 
-                return new JsonResult(serialized);
+                return serialized;
+            }
+
+            if (userEmpty)
+            {
+                invWriter = InvoiceWriter();
+                return new JsonResult(invWriter);
+            }
+            else 
+            {
+                InvoiceChecker invoiceChecker = new(table.Where(x => x.TaxId == TaxNumber).ToList()[0], Retriever.RetrieveZReports());
+                List<Invoice>? container = invoiceChecker.Invoices?.Invoices;
+                var groupedInvoices = container.GroupBy(x => new DateTime(x.Tarih.Value.Year, x.Tarih.Value.Month, x.Tarih.Value.Day)).ToList();
+                var hasDate = groupedInvoices.Any(x => x.Any(y => new DateTime(y.Tarih.Value.Year, y.Tarih.Value.Month, y.Tarih.Value.Day) == new DateTime(invoice.Tarih.Value.Year, invoice.Tarih.Value.Month, invoice.Tarih.Value.Day)));
+
+                void SetZeros() 
+                {
+                    List<SuperAdmin> ad1 = (Retriever.RetrieveTables(Utilities.PATH) as CashContent).DataContent;
+                    List<Admin> ad2 = (Retriever.RetrieveTables(Utilities.PATH1) as CashContent).DataContent_1;
+
+                    bool isSuperAdmin = ad1.Any(x => x.TaxNumber == TaxNumber);
+
+                    if (isSuperAdmin)
+                    {
+                        invoiceChecker.SetZerosForInvoice(ad1, TaxNumber);
+                    }
+                    else
+                    {
+                        invoiceChecker.SetZerosForInvoice(ad2, TaxNumber);
+                    }
+
+                    invoice.EkuNo = invoiceChecker.ConvertedEkuNumber;
+                    invoice.ZRaporuNo = invoiceChecker.ConvertedZReportNumber;
+                    invoice.FisNo = invoiceChecker.ConvertedInvoiceNumber;
+                }
+
+                if (!hasDate)
+                {
+                    invWriter = InvoiceWriter();
+                    return new JsonResult(invWriter);
+                }
+                else 
+                {
+                    var filteredGrouping = groupedInvoices.Where(x => x.Any(y => new DateTime(y.Tarih.Value.Year, y.Tarih.Value.Month, y.Tarih.Value.Day) == new DateTime(invoice.Tarih.Value.Year, invoice.Tarih.Value.Month, invoice.Tarih.Value.Day))).ToList()[0].OrderBy(z => z.Tarih).ToList();
+
+                    if (filteredGrouping.Any(x => Convert.ToInt32(x.FisNo) == Convert.ToInt32(invoice.FisNo)))
+                    {
+                        return new JsonResult("Bu fiş no'dan zaten var. Lütfen tekrar deneyin.");
+                    }
+                    else 
+                    {
+                        for (int i = 0; i < filteredGrouping.Count; i++)
+                        {
+                            int index = Convert.ToInt32(filteredGrouping[i].FisNo);
+                            int invoiceIndex = Convert.ToInt32(invoice.FisNo);
+
+                            if (index < invoiceIndex && i != filteredGrouping.Count - 1)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                if (i == 0)
+                                {
+                                    if (filteredGrouping[i].Tarih < invoice.Tarih && index > invoiceIndex)
+                                    {
+                                        return new JsonResult("Fiş no saatleri uyuşmuyor. Lütfen Tekrar deneyin.");
+                                    }
+                                    else 
+                                    {
+                                        SetZeros();
+                                        invWriter = InvoiceWriter();
+                                        return new JsonResult(invWriter);
+                                    }
+                                }
+                                else if (i == filteredGrouping.Count - 1)
+                                {
+                                    if (filteredGrouping[i].Tarih < invoice.Tarih && index < invoiceIndex)
+                                    {
+                                        SetZeros();
+                                        invWriter = InvoiceWriter();
+                                        return new JsonResult(invWriter);
+                                    }
+                                    else
+                                    {
+                                        return new JsonResult("Fiş no saatleri uyuşmuyor. Lütfen Tekrar deneyin.");
+                                    }
+                                }
+                                else 
+                                {
+                                    int oldInvoiceIndex = Convert.ToInt32(filteredGrouping[i - 1].FisNo);
+                                    
+                                    if (filteredGrouping[i].Tarih > invoice.Tarih && filteredGrouping[i - 1].Tarih < invoice.Tarih && index > invoiceIndex && oldInvoiceIndex < invoiceIndex)
+                                    {
+                                        SetZeros();
+                                        invWriter = InvoiceWriter();
+                                        return new JsonResult(invWriter);
+                                    }
+                                    else
+                                    {
+                                        return new JsonResult("Fiş no saatleri uyuşmuyor. Lütfen Tekrar deneyin.");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return new JsonResult("");
+                }
             }
         }
 
@@ -280,14 +348,14 @@ namespace ApiControlCenterWebPanel.Pages
             return new JsonResult(serialized);
         }
 
-        public IActionResult OnGetUpdateSuperAdmin(string GasType, string Password, string CashType, string ZerosInEku, string ZerosInInvoices, string ZerosInZReports, string TaxNumber)
+        public IActionResult OnGetUpdateSuperAdmin(string GasType, string ZerosInEku, string ZerosInInvoices, string ZerosInZReports, string TaxNumber)
         {
             List<SuperAdmin> table = (Retriever.RetrieveTables(Utilities.PATH) as CashContent).DataContent;
             SuperAdmin theCash = table.Where(x => x.TaxNumber == TaxNumber).ToList()[0];
 
             theCash.GasType = GasType;
-            theCash.Password = Password;
-            theCash.CashTypeName = CashType;
+            theCash.Password = theCash.Password;
+            theCash.CashTypeName = theCash.CashTypeName;
             theCash.ZerosInEku = Convert.ToInt32(ZerosInEku);
             theCash.ZerosInInvoices = Convert.ToInt32(ZerosInInvoices);
             theCash.ZerosInZReports = Convert.ToInt32(ZerosInZReports);
@@ -379,23 +447,88 @@ namespace ApiControlCenterWebPanel.Pages
             return RedirectToPage("/SearchPlate");
         }
 
+        public IActionResult OnGetZReportsLoader() 
+        {
+            List<InvoiceZReportSystem> systemContent = Retriever.RetrieveZReports();
+            List<InvoiceZReportSystem> filteredSystemContent = systemContent.Where(x => x.TaxId == ZReportsSystemModel.TaxNumber).ToList();
+            List<UserZReport>? allZReports = filteredSystemContent[0].UserZReports;
+            UserZReport lastReport = allZReports.Last();
+
+            List<InvoiceEkuSystem> ekuSystem = Retriever.RetrieveEkuList();
+            List<InvoiceEkuSystem> filteredEkuSystem = ekuSystem.Where(x => x.TaxId == ZReportsSystemModel.TaxNumber).ToList();
+            List<UserEku>? allEkus = filteredEkuSystem[0].EkuList;
+
+            if (lastReport.DateOfTheIndex < DateTime.Now)
+            {
+                UserZReport? reportElements = lastReport;
+                DateTime lastDate = reportElements.DateOfTheIndex;
+                DateTime lastDateFormatted = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                int lastIndex = reportElements.Index;
+
+                while (lastDate < lastDateFormatted)
+                {
+                    lastDate = lastDate.AddDays(1);
+                    lastIndex++;
+                    UserZReport theReport = new()
+                    {
+                        Index = lastIndex,
+                        DateOfTheIndex = lastDate
+                    };
+                    allZReports.Add(theReport);
+                }
+
+                filteredSystemContent[0].UserZReports = allZReports;
+                systemContent.Where(x => x.TaxId == ZReportsSystemModel.TaxNumber).ToList()[0] = filteredSystemContent[0];
+                FileWriter writer = FileWriter.GetInstance();
+                writer.WriteData(systemContent);
+            }
+
+            return new JsonResult("Sistem hazır.");
+        }
+
+        public IActionResult OnGetEkuAddOnePlus(string TaxNumber)
+        {
+            var reports = Retriever.RetrieveEkuList();
+            InvoiceEkuSystem ekus = reports.Where(x => x.TaxId == TaxNumber).ToList()[0];
+
+            DateTime today = new(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+
+            UserEku newEku = new()
+            {
+                DateOfTheIndex = today,
+                Index = ekus.EkuList.Last().Index + 1
+            };
+
+            ekus.EkuList.Add(newEku);
+            reports.Where(x => x.TaxId == TaxNumber).ToList()[0] = ekus;
+            string reportsConverted = JsonSerializer.Serialize(reports);
+            Utilities.EkuData = reportsConverted;
+            Utilities.ChosenTaxNumber = TaxNumber;
+            return new JsonResult(reportsConverted);
+        }
+
+        public IActionResult OnGetEkuAddConfirm() 
+        {
+            FileWriter writer = FileWriter.GetInstance();
+            List<InvoiceEkuSystem> ekuSystem = JsonSerializer.Deserialize<List<InvoiceEkuSystem>>(Utilities.EkuData);
+
+            string taxNumber = Utilities.ChosenTaxNumber;
+            DateTime today = new(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+
+            if (ekuSystem.Any(x => x.TaxId == taxNumber && x.EkuList[^2].DateOfTheIndex == today))
+            {
+                return new JsonResult("Bugün ekü yenilendi. Lütfen yarın veya başka bir gün deneyiniz.");
+            }
+            else
+            {
+                writer.WriteData(ekuSystem);
+                return new JsonResult(ekuSystem);
+            }
+        }
+
         public void OnPostMassPayment() 
         {
             Response.Redirect("/MassInvoice");
-        }
-
-        public IActionResult OnGetReloadPage() 
-        {
-            Dictionary<string, string> loadedElements = new()
-            {
-                { "jsonData", Utilities.JsonData },
-                { "cashData", Utilities.CashData },
-                { "chosenTaxNumber", Utilities.ChosenTaxNumber },
-                { "zerosData", Utilities.ZerosData },
-                { "ekuData", Utilities.EkuData }
-            };
-
-            return new JsonResult(loadedElements);
         }
     }
 }

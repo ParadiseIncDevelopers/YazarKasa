@@ -53,6 +53,7 @@
                         if (datePriceContent == null)
                         {
                             alert("Bu tarihte bir fiyat yok. Lütfen bu tarihe fiyat yazınız.");
+                            return;
                         }
                         else
                         {
@@ -64,7 +65,10 @@
                                 var r = str2.toString();
                                 return q == r;
                             });
-                            var ekuIndexGetter = ekuData.filter(x => taxNumberFunc(x))[0].EkuList.filter(y =>
+
+                            var ekuIndex = ekuData.filter(x => taxNumberFunc(x))[0].EkuList;
+
+                            var filteredEkuIndex = ekuIndex.filter(y =>
                             {
                                 var q = y.DateOfTheIndex.toString().split("T")[0];
                                 var year = parseInt(q.substring(0, 4));
@@ -73,32 +77,57 @@
                                 var qDate = new Date(year, month, day);
                                 var rDate = new Date(str2);
                                 return qDate >= rDate;
-                            })[0].Index;
+                            });
 
-                            var weaponIndex = cashData.WeaponNumber;
-                            var pumpIndex = cashData.PumpNumber;
-                            var zero1 = cashData.ZerosInEku;
-                            var zero2 = cashData.ZerosInZReports;
-                            var zIndexNumber = zerosIndexGetter[0].Index;
+                            var ekuIndexGetter;
 
-                            $("#invoiceText_2").val(price);
-                            $("#invoiceText_2").prop("disabled", true);
-                            $("#invoiceText_5").val(zIndexNumber);
-                            $("#invoiceText_6").val(ekuIndexGetter);
-                            $("#invoiceText_10").val(weaponIndex);
-                            $("#invoiceText_8").val(pumpIndex);
+                            if (filteredEkuIndex.length == 0)
+                            {
+                                ekuIndexGetter = ekuIndex[ekuIndex.length - 1].Index + 1;
+                            }
+                            else
+                            {
+                                ekuIndexGetter = filteredEkuIndex[0].Index + 1;
+                            }
 
-                            $("#InvoiceZReportSection").text("Z NO : " + zIndexNumber.toString().padStart(zero2, '0'));
-                            $("#InvoiceEkuSection").text("EKU NO : " + ekuIndexGetter.toString().padStart(zero1, '0'));
-                            $("#InvoiceDateSection").text(str.replace('/', '-').replace('/', '-'));
-                            $("#InvoicePriceSection").text(price);
+                            if (zerosIndexGetter.length == 0)
+                            {
+                                alert("Lütfen Z raporu sayılıarını işlemlerden yeniletiniz.");
+                                return;
+                            }
+                            else
+                            {
+                                var weaponIndex = cashData.WeaponNumber;
+                                var pumpIndex = cashData.PumpNumber;
+                                var zero1 = cashData.ZerosInEku;
+                                var zero2 = cashData.ZerosInZReports;
+                                var zIndexNumber = zerosIndexGetter[0].Index;
 
-                            inputAreTrue("#invoiceLabel_5");
-                            inputAreTrue("#invoiceLabel_6");
-                            inputAreTrue("#invoiceLabel_3");
-                            inputAreTrue("#invoiceLabel_2");
-                            inputAreTrue("#invoiceLabel_10");
-                            inputAreTrue("#invoiceLabel_8");
+                                $("#invoiceText_1").prop("disabled", false);
+                                $("#invoiceText_4").prop("disabled", false);
+                                $("#invoiceText_9").prop("disabled", false);
+                                $("#invoiceText_7").prop("disabled", false);
+                                $("#invoiceText_11").prop("disabled", false);
+
+                                $("#invoiceText_2").val(price);
+                                $("#invoiceText_2").prop("disabled", true);
+                                $("#invoiceText_5").val(zIndexNumber);
+                                $("#invoiceText_6").val(ekuIndexGetter);
+                                $("#invoiceText_10").val(weaponIndex);
+                                $("#invoiceText_8").val(pumpIndex);
+
+                                $("#InvoiceZReportSection").text("Z NO : " + zIndexNumber.toString().padStart(zero2, '0'));
+                                $("#InvoiceEkuSection").text("EKU NO : " + ekuIndexGetter.toString().padStart(zero1, '0'));
+                                $("#InvoiceDateSection").text(str.replace('/', '-').replace('/', '-'));
+                                $("#InvoicePriceSection").text(price);
+
+                                inputAreTrue("#invoiceLabel_5");
+                                inputAreTrue("#invoiceLabel_6");
+                                inputAreTrue("#invoiceLabel_3");
+                                inputAreTrue("#invoiceLabel_2");
+                                inputAreTrue("#invoiceLabel_10");
+                                inputAreTrue("#invoiceLabel_8");
+                            }
                         }
                     }
                 }

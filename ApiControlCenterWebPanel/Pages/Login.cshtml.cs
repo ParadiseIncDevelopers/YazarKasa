@@ -8,7 +8,7 @@ namespace ApiControlCenterWebPanel.Pages
 {
     public class LoginModel : PageModel
     {
-        public void OnGet()
+        public void OnGet() 
         {
 
         }

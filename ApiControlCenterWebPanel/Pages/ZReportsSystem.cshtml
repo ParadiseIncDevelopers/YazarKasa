@@ -96,6 +96,7 @@
                     <tr>
                         <th scope="col" class="table-sort">Tarih</th>
                         <th scope="col" class="table-sort">Z Raporu</th>
+                        <th scope="col" class="table-sort">Ekü sayısı</th>
                     </tr>
                 </thead>
                 <tbody id="tableElements">
@@ -106,10 +107,28 @@
                             {
                                 for (int i = 0; i < allZReports.Count; i++)
                                 {
+                                    string date = allZReports[i].DateOfTheIndex.ToString().Split(" ")[0];
+                                    int index = allZReports[i].Index + 1;
+                                    
+
                                     <tr id="searchPlateContent_@i">
-                                        <td id="inv_1_@(i)">@allZReports[i].DateOfTheIndex.ToString().Split(" ")[0]</td>
-                                        <td id="inv_2_@(i)">@allZReports[i].Index</td>
-                                        <td id="inv_3_@(i)">@allEkus.Where(x => allZReports[i].DateOfTheIndex <= x.DateOfTheIndex).ToList()[0].Index</td>
+                                        <td id="inv_1_@(i)">@date</td>
+                                        <td id="inv_2_@(i)">@index</td>
+                                        @{
+                                            int ekuIndex;
+                                            if (allEkus.Count >= i)
+                                            {
+                                                ekuIndex = allEkus.Where(x => allZReports[i].DateOfTheIndex <= x.DateOfTheIndex).ToList()[0].Index + 1;
+                                                <td id="inv_3_@(i)">@ekuIndex</td>
+                                            }
+                                            else
+                                            {
+                                                ekuIndex = allEkus.Last().Index + 1;
+                                                <td id="inv_3_@(i)">@ekuIndex</td>
+                                            }
+                                        }
+
+                                        
                                     </tr>
                                 }
                             }
