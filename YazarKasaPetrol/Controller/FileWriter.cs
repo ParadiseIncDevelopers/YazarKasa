@@ -14,6 +14,11 @@ namespace YazarKasaPetrol.Controller
             return new FileWriter();
         }
 
+        public void WriteData(AppLogs data) 
+        {
+            FileAction.Write(Utilities.LOGIN_PATH, data);
+        }
+
         public void WriteData(List<InvoiceEkuSystem> data)
         {
             FileAction.Write(Utilities.PATH5, data);

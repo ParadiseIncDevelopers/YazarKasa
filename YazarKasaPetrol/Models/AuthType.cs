@@ -1,4 +1,7 @@
-﻿using YazarKasaPetrol.Models.Interfaces;
+﻿using YazarKasaPetrol.Controller;
+using YazarKasaPetrol.Controller.Exceptions;
+using YazarKasaPetrol.Models.Interfaces;
+using YazarKasaPetrol.Pages;
 
 namespace YazarKasaPetrol.Models
 {
@@ -14,6 +17,7 @@ namespace YazarKasaPetrol.Models
         public void CreateAuth()
         {
             TheCurrentAuth = this;
+            LoginModel.WriteLoginContent();
         }
 
         public static bool IsNewOpen

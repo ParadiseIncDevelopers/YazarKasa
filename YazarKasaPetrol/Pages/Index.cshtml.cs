@@ -307,7 +307,7 @@ namespace YazarKasaPetrol.Pages
             }
         }
 
-        public IActionResult OnGetAddCash(string StartDate, string taxNumber, string cashNumber, string gasStationName, string gasType, string cashLetters, string cashId, int zerosInInvoice, int zerosInZReport, int zerosInEku, int zReportIndex, int lastEkuNumber, int weaponNumber, int pumpNumber)
+        public IActionResult OnGetAddCash(string StartDate, string taxNumber, string cashTypeName, string gasStationName, string gasType, string cashLetters, string cashId, int zerosInInvoice, int zerosInZReport, int zerosInEku, int zReportIndex, int lastEkuNumber, int weaponNumber, int pumpNumber)
         {
             AdminModel cash = new()
             {
@@ -316,7 +316,7 @@ namespace YazarKasaPetrol.Pages
                 GasStationName = gasStationName.Split("µ").ToList(),
                 GasType = gasType,
                 CashLetters = cashLetters,
-                CashTypeName = cashNumber,
+                CashTypeName = cashTypeName,
                 ZerosInEku = zerosInEku,
                 ZerosInInvoices = zerosInInvoice,
                 ZerosInZReports = zerosInZReport,
@@ -405,15 +405,6 @@ namespace YazarKasaPetrol.Pages
             }
         }
 
-        public void OnGetDeleteAdmin(int index)
-        {
-            List<SuperAdmin> table = (Retriever.RetrieveTables(Utilities.PATH) as CashContent).DataContent;
-            table.RemoveAt(index - 1);
-            FileWriter writer = FileWriter.GetInstance();
-
-            writer.WriteData(table);
-        }
-
         public IActionResult OnGetUpdateIndex(int index)
         {
             SuperAdmin table = (Retriever.RetrieveTables(Utilities.PATH) as CashContent).DataContent[index - 1];
@@ -425,17 +416,37 @@ namespace YazarKasaPetrol.Pages
             return new JsonResult(serialized);
         }
 
-        public IActionResult OnGetUpdateSuperAdmin(string GasType, string ZerosInEku, string ZerosInInvoices, string ZerosInZReports, string TaxNumber)
+        /*
+         TaxNumber: taxNumber,
+                    GasType: gasType,
+                    CashTypeName: cashTypeName,
+                    UpdateCashStationName: updateCashStationName,
+                    CashLetters: cashLetters,
+                    CashId: cashId,
+                    ZerosInEku: zerosInEku,
+                    ZerosInZReports: zerosInZReports,
+                    ZerosInInvoices: zerosInInvoices,
+                    WeaponNumber: weaponNumber,
+                    PumpNumber: pumpNumber
+         
+         */
+
+        public IActionResult OnGetUpdateSuperAdmin(string TaxNumber, string GasType, string CashTypeName, string UpdateCashStationName, string CashLetters, string CashId,  string ZerosInEku, string ZerosInZReports, string ZerosInInvoices, string WeaponNumber, string PumpNumber)
         {
             List<SuperAdmin> table = (Retriever.RetrieveTables(Utilities.PATH) as CashContent).DataContent;
             SuperAdmin theCash = table.Where(x => x.TaxNumber == TaxNumber).ToList()[0];
 
             theCash.GasType = GasType;
             theCash.Password = theCash.Password;
-            theCash.CashTypeName = theCash.CashTypeName;
+            theCash.CashTypeName = CashTypeName;
+            theCash.GasStationName = UpdateCashStationName.Split("µ").ToList();
+            theCash.CashLetters = CashLetters;
+            theCash.CashId = CashId;
             theCash.ZerosInEku = Convert.ToInt32(ZerosInEku);
             theCash.ZerosInInvoices = Convert.ToInt32(ZerosInInvoices);
             theCash.ZerosInZReports = Convert.ToInt32(ZerosInZReports);
+            theCash.WeaponNumber = WeaponNumber;
+            theCash.PumpNumber = PumpNumber;
             table.Where(x => x.TaxNumber == TaxNumber).ToList()[0] = theCash;
             FileWriter writer = FileWriter.GetInstance();
 
@@ -444,17 +455,23 @@ namespace YazarKasaPetrol.Pages
             return new JsonResult(JsonSerializer.Serialize(table));
         }
 
-        public IActionResult OnGetUpdateAdmin(string GasType, string CashType, string ZerosInEku, string ZerosInInvoices, string ZerosInZReports, string TaxNumber)
+        public IActionResult OnGetUpdateAdmin(string TaxNumber, string GasType, string CashTypeName, string UpdateCashStationName, string CashLetters, string CashId, string ZerosInEku, string ZerosInZReports, string ZerosInInvoices, string WeaponNumber, string PumpNumber)
         {
             List<Admin> table = (Retriever.RetrieveTables(Utilities.PATH1) as CashContent).DataContent_1;
             Admin theCash = table.Where(x => x.AdminTaxNumber == TaxNumber).ToList()[0];
 
             AdminModel mod = theCash.AdminModel;
+
             mod.GasType = GasType;
-            mod.CashTypeName = CashType;
+            mod.CashTypeName = CashTypeName;
+            mod.GasStationName = UpdateCashStationName.Split("µ").ToList();
+            mod.CashLetters = CashLetters;
+            mod.CashId = CashId;
             mod.ZerosInEku = Convert.ToInt32(ZerosInEku);
             mod.ZerosInInvoices = Convert.ToInt32(ZerosInInvoices);
             mod.ZerosInZReports = Convert.ToInt32(ZerosInZReports);
+            mod.WeaponNumber = WeaponNumber;
+            mod.PumpNumber = PumpNumber;
             table.Where(x => x.AdminModel.TaxNumber == TaxNumber).ToList()[0] = theCash;
             FileWriter writer = FileWriter.GetInstance();
             writer.WriteData(table);

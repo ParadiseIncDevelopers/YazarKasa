@@ -1,7 +1,9 @@
 namespace YazarKasaPetrol 
 {
-    class Program 
+    public class Program 
     {
+        public static WebApplication? TheApp { get; set; }
+
         private static void Main(string[] args) 
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -9,26 +11,27 @@ namespace YazarKasaPetrol
             // Add services to the container.
             builder.Services.AddRazorPages();
 
-            var app = builder.Build();
+            TheApp = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+            if (!TheApp.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Error");
+                TheApp.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                TheApp.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            TheApp.UseHttpsRedirection();
+            TheApp.UseStaticFiles();
 
-            app.UseRouting();
+            TheApp.UseRouting();
 
-            app.UseAuthorization();
+            TheApp.UseAuthorization();
 
-            app.MapRazorPages();
+            TheApp.MapRazorPages();
 
-            app.Run();
+            TheApp.Run();
+            
 
         }
     }

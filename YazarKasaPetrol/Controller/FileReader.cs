@@ -2,6 +2,9 @@
 using YazarKasaPetrol.Models.Interfaces;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography.X509Certificates;
+using YazarKasaPetrol.Controller.Exceptions;
+using System.Runtime.CompilerServices;
 
 namespace YazarKasaPetrol.Controller
 {
@@ -124,6 +127,13 @@ namespace YazarKasaPetrol.Controller
             }
         }
 
+        public static void Write(string path, AppLogs data)
+        {
+            string writeLine = Regex.Unescape(JsonSerializer.Serialize(data, Options));
+
+            File.WriteAllText(path, writeLine);
+        }
+
         public static void Write(string path, List<InvoiceEkuSystem> data)
         {
             string writeLine = Regex.Unescape(JsonSerializer.Serialize(data, Options));
@@ -212,6 +222,31 @@ namespace YazarKasaPetrol.Controller
             }
         }
 
+        private static LogContent GetLogs(string path)
+        {
+            LogContent logContent = new();   
+            string lines = File.ReadAllText(path);
+
+            if (lines.Length == 0)
+            {
+                throw new LogsNotFoundException("keyNotFound");
+            }
+            else 
+            {
+                try
+                {
+                    logContent.DataContent = JsonSerializer.Deserialize<AppLogs>(lines);
+                }
+                catch (Exception) 
+                {
+                    logContent = new();
+                }
+                logContent.Path = path;
+            }
+
+            return logContent;
+        }
+
         public static IUtilityContent Create(string path, string contentTypeName = "Z_REPORT")
         {
             if (contentTypeName == "Z_REPORT")
@@ -279,12 +314,36 @@ namespace YazarKasaPetrol.Controller
                 return null;
             }
         }
+
+        public static LogContent ReadFile(string loginPath)
+        {
+            LogContent content;
+
+            if (File.Exists(loginPath))
+            {
+                content = GetLogs(loginPath);
+            }
+            else
+            {
+                throw new LogsNotFoundException("logsNotFound");
+            }
+
+            return content;
+        }
+
+        
     }
 
     public class ZReportContent : IUtilityContent
     {
         public string? Path { get; set; }
         public List<InvoiceZReportSystem>? DataContent { get; set; }
+    }
+
+    public class LogContent 
+    {
+        public string? Path { get; set; }
+        public AppLogs? DataContent { get; set; }
     }
 
     public class GasPriceContent : IUtilityContent

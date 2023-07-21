@@ -12,14 +12,14 @@
         Response.Redirect("Login", true);
     }
 
-    List<SuperAdmin>? db1 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent;
-    List<Admin>? db2 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH1)).DataContent_1;
+    List<SuperAdmin>? db1 = ((CashContent) Retriever.RetrieveTables(Utilities.PATH)).DataContent;
+    List<Admin>? db2 = ((CashContent) Retriever.RetrieveTables(Utilities.PATH1)).DataContent_1;
     string? theEntrepriseName = null, superAdmin = null, admin = null;
 
     try
     {
-        var supAdm = db1?.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList();
-        var adm = db2?.Where(x => x.AdminModel.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList();
+        var supAdm = db1?.Where(x => x.TaxNumber == theTaxNumber).ToList();
+        var adm = db2?.Where(x => x.AdminModel.TaxNumber == theTaxNumber).ToList();
 
         if (supAdm != null && supAdm.Count != 0)
         {
@@ -55,7 +55,7 @@
 
     <div class="container">
         <div class="card p-3">
-            <h5 class="card-title modal-title" id="invoiceModalLabel">@AuthType.TheCurrentAuth.UserCredentialsForInvoice.GasStationName[0] Benzin fiyat paneli</h5>
+            <h5 class="card-title modal-title" id="invoiceModalLabel">@theEntrepriseName Benzin fiyat paneli</h5>
             <div class="card-body">
                 <form method="post" asp-page-handler="addpricegas">
                     <div class="row">

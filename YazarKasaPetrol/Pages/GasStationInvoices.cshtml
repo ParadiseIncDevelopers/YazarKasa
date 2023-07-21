@@ -8,8 +8,8 @@
 @{
     Layout = "_FilterPage";
 
-    List<SuperAdmin>? db1 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent;
-    List<Admin>? db2 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH1)).DataContent_1;
+    List<SuperAdmin>? db1 = ((CashContent) Retriever.RetrieveTables(Utilities.PATH)).DataContent;
+    List<Admin>? db2 = ((CashContent) Retriever.RetrieveTables(Utilities.PATH1)).DataContent_1;
     string? theEntrepriseName = null, superAdmin = null, admin = null;
 
     try
@@ -38,9 +38,19 @@
             <h5 class="card-title">
                 @theEntrepriseName kodlu plakanın bütün faturaları
             </h5>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group input-group-icon">
+                            <label class="form-label text-info" id="searchInvoicesLabel">Faturalar içinden ara</label>
+                            <input class="form-control" type="text" id="searchInvoicesFilter" placeholder="Ara...">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="table-responsive">
-            <table class="table project-list-table table-nowrap align-middle table-borderless">
+            <table class="table project-list-table table-nowrap align-middle table-borderless" id="gasInvoicesTable">
                 <thead>
                     <tr>
                         <th scope="col" class="table-sort">Unvan</th>
@@ -57,7 +67,7 @@
                 </thead>
                 <tbody id="tableElements">
                     @{
-                        List<UserInvoiceContainer>? allInvoices = (Retriever.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent)?.DataContent.FindAll(x => x.TaxId == GasStationInvoicesModel.TaxNumber);
+                        List<UserInvoiceContainer>? allInvoices = (Retriever.RetrieveTables(Utilities.PATH2, "INVOICE") as InvoiceContent)?.DataContent?.FindAll(x => x.TaxId == GasStationInvoicesModel.TaxNumber);
 
                         if (allInvoices != null && allInvoices.Count != 0)
                         {
@@ -66,9 +76,9 @@
                             {
                                 for (int i = 0; i < filteredInvoices.Count; i++)
                                 {
-                                    SuperAdmin theCash = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList().FirstOrDefault();
+                                    SuperAdmin? theCash = ((CashContent)Retriever.RetrieveTables(Utilities.PATH))?.DataContent?.Where(x => x.TaxNumber == GasStationInvoicesModel.TaxNumber).ToList().FirstOrDefault();
 
-                                    Admin theCash2 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH1)).DataContent_1.Where(x => x.AdminModel.TaxNumber == GasStationInvoicesModel.TaxNumber && x.AdminTaxNumber == AuthType.TheCurrentAuth.UserCredentialsForInvoice.TaxNumber).ToList().FirstOrDefault();
+                                    Admin? theCash2 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH1)).DataContent_1?.Where(x => x.AdminModel.TaxNumber == GasStationInvoicesModel.TaxNumber && x.AdminTaxNumber == AuthType.TheCurrentAuth?.UserCredentialsForInvoice?.TaxNumber).ToList().FirstOrDefault();
 
                                     string[] theDateFull = filteredInvoices[i].Tarih.Value.ToString().Split(" ");
                                     string[] theDate = theDateFull[0].Split("-");
@@ -76,9 +86,14 @@
                                     string dateDisplayer = theDate[0] + "/" + theDate[1] + "/" + filteredInvoices[i].Tarih.Value.Year;
                                     string hourDisplayer = theHour[0] + ":" + theHour[1];
 
-                                    List<string> gasStationName = theCash == null ? theCash2.AdminModel.GasStationName : theCash.GasStationName;
+                                    List<string>? gasStationName = theCash == null ? theCash2?.AdminModel.GasStationName : theCash.GasStationName;
                                     string gasStationNameJoined = string.Join("µ", gasStationName);
-                                    string gasTypeName = theCash == null ? theCash2.AdminModel.GasType : theCash.GasType;
+                                    string? gasTypeName = theCash == null ? theCash2?.AdminModel.GasType : theCash.GasType;
+
+                                    string? CashLetters = theCash == null ? theCash2?.AdminModel.CashLetters : theCash.CashLetters;
+                                    string? CashNumbers = theCash == null ? theCash2?.AdminModel.CashId : theCash.CashId;
+                                    string? CashTypeName = theCash == null ? theCash2?.AdminModel.CashTypeName : theCash.CashTypeName;
+
                                     <tr id="searchPlateContent_@i">
                                         <td id="inv_1_@(i)">@gasStationName[0]</td>
                                         <td id="inv_2_@(i)">@dateDisplayer</td>
@@ -93,7 +108,7 @@
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">
-                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@GasStationInvoicesModel.TaxNumber', @(i), '@gasStationNameJoined', '@gasTypeName')" title="Print this invoice" class="px-2 text-info">
+                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@GasStationInvoicesModel.TaxNumber', @(i), '@gasStationNameJoined', '@gasTypeName', '@CashLetters', '@CashNumbers', '@CashTypeName')" title="Print this invoice" class="px-2 text-info">
                                                         <i class='bx bx-printer font-size-1'></i>
                                                     </a>
                                                 </li>
@@ -174,7 +189,7 @@
                         </div>
 
                         <div>
-                            <img id="InvoiceQRCodeSection" src="">
+                            <div id="InvoiceQRCodeSection"></div>
                         </div>
                         <div class="row-texts">
                             <div class="row-text">İYİ YOLCULUKLAR DİLERİZ</div>
@@ -188,13 +203,15 @@
                             </div>
                         </div>
                         <div class="row-texts">
-                            <div class="row-text">MFAU 000000000000</div>
+                            <div class="row-text" id="InvoiceCashLettersAndNumbersSection"></div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="printInvoiceFromPlate" data-bs-dismiss="modal" aria-label="Close">Ekle</button>
+                <div class="col-md-12 row d-grid gap-2">
+                    <button type="button" class="btn btn-primary" id="printInvoiceFromPlate" data-bs-dismiss="modal" aria-label="Close">Yazdır</button>
+                </div>
             </div>
         </div>
     </div>
@@ -203,9 +220,23 @@
 <script src="~/js/gasStationInvoices.js"></script>
 
 <script>
+
+    let options = {
+        numberPerPage: 50, 
+        goBar: true, 
+        pageCounter: true
+    };
+
+    let filterOptions = {
+        el: '#searchInvoicesFilter' 
+    };
+
+    paginate.init('#gasInvoicesTable', options, filterOptions);
+
     $(document).ready(function () 
     {
-        $("#printInvoiceFromPlate").click(function () {
+        $("#printInvoiceFromPlate").click(function () 
+        {
             $("#page").printThis();
         });
     });

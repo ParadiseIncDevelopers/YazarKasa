@@ -119,8 +119,6 @@ function UpdateZeros(output, index)
     return output.toString().padStart(theZeros + 1, '0');
 }
 
-//The json data for gas prices getting
-
 $(document).ready(function ()
 {
     addTextDanger("invoiceLabel", 11);
@@ -141,6 +139,7 @@ $(document).ready(function ()
             CalculateIf("#invoiceText_1");
 
             if (inputsAreTrue) {
+                createQRCode(cashData.CashTypeName, cashData.TaxNumber, $("#invoiceText_3").val(), $("#invoiceText_4").val(), cashData.GasType, $("#invoiceText_1").val(), $("#invoiceText_7").val(), "InvoiceQRCodeSection");
                 enableButton("addInvoice");
             }
         }
@@ -161,6 +160,7 @@ $(document).ready(function ()
             $("#InvoicePriceSection").text("*" + theInput.replace(".", ","));
 
             if (inputsAreTrue) {
+                createQRCode(cashData.CashTypeName, cashData.TaxNumber, $("#invoiceText_3").val(), $("#invoiceText_4").val(), cashData.GasType, $("#invoiceText_1").val(), $("#invoiceText_7").val(), "InvoiceQRCodeSection");
                 enableButton("addInvoice");
             }
         }
@@ -181,6 +181,7 @@ $(document).ready(function ()
             CalculateIf("#invoiceText_11");
 
             if (inputsAreTrue) {
+                createQRCode(cashData.CashTypeName, cashData.TaxNumber, $("#invoiceText_3").val(), $("#invoiceText_4").val(), cashData.GasType, $("#invoiceText_1").val(), $("#invoiceText_7").val(), "InvoiceQRCodeSection");
                 enableButton("addInvoice");
             }
         }
@@ -202,6 +203,7 @@ $(document).ready(function ()
             $("#InvoiceDateSection").text(theInput.replace("/", "-").replace("/", "-"));
 
             if (inputsAreTrue) {
+                createQRCode(cashData.CashTypeName, cashData.TaxNumber, $("#invoiceText_3").val(), $("#invoiceText_4").val(), cashData.GasType, $("#invoiceText_1").val(), $("#invoiceText_7").val(), "InvoiceQRCodeSection");
                 enableButton("addInvoice");
             }
         }
@@ -221,6 +223,7 @@ $(document).ready(function ()
             $("#InvoiceHourSection").text(theInput);
 
             if (inputsAreTrue) {
+                createQRCode(cashData.CashTypeName, cashData.TaxNumber, $("#invoiceText_3").val(), $("#invoiceText_4").val(), cashData.GasType, $("#invoiceText_1").val(), $("#invoiceText_7").val(), "InvoiceQRCodeSection");
                 enableButton("addInvoice");
             }
         }
@@ -240,6 +243,7 @@ $(document).ready(function ()
             $("#InvoiceZReportSection").text("Z NO : " + UpdatedInput);
 
             if (inputsAreTrue) {
+                createQRCode(cashData.CashTypeName, cashData.TaxNumber, $("#invoiceText_3").val(), $("#invoiceText_4").val(), cashData.GasType, $("#invoiceText_1").val(), $("#invoiceText_7").val(), "InvoiceQRCodeSection");
                 enableButton("addInvoice");
             }
         }
@@ -258,6 +262,7 @@ $(document).ready(function ()
             $("#InvoiceEkuSection").text("EKU NO : " + UpdatedInput);
 
             if (inputsAreTrue) {
+                createQRCode(cashData.CashTypeName, cashData.TaxNumber, $("#invoiceText_3").val(), $("#invoiceText_4").val(), cashData.GasType, $("#invoiceText_1").val(), $("#invoiceText_7").val(), "InvoiceQRCodeSection");
                 enableButton("addInvoice");
             }
         }
@@ -276,6 +281,7 @@ $(document).ready(function ()
             $("#InvoiceNoSection").text("FİŞ NO : " + UpdatedInput);
 
             if (inputsAreTrue) {
+                createQRCode(cashData.CashTypeName, cashData.TaxNumber, $("#invoiceText_3").val(), $("#invoiceText_4").val(), cashData.GasType, $("#invoiceText_1").val(), $("#invoiceText_7").val(), "InvoiceQRCodeSection");
                 enableButton("addInvoice");
             }
         }
@@ -294,6 +300,7 @@ $(document).ready(function ()
             //$("#").text();
 
             if (inputsAreTrue) {
+                createQRCode(cashData.CashTypeName, cashData.TaxNumber, $("#invoiceText_3").val(), $("#invoiceText_4").val(), cashData.GasType, $("#invoiceText_1").val(), $("#invoiceText_7").val(), "InvoiceQRCodeSection");
                 enableButton("addInvoice");
             }
         }
@@ -313,6 +320,7 @@ $(document).ready(function ()
             $("#InvoicePlateSection").text(theInput.toUpperCase().replace(' ','').replace(' ',''));
 
             if (inputsAreTrue) {
+                createQRCode(cashData.CashTypeName, cashData.TaxNumber, $("#invoiceText_3").val(), $("#invoiceText_4").val(), cashData.GasType, $("#invoiceText_1").val(), $("#invoiceText_7").val(), "InvoiceQRCodeSection");
                 enableButton("addInvoice");
             }
         }
@@ -333,6 +341,7 @@ $(document).ready(function ()
             //$("#").text();
 
             if (inputsAreTrue) {
+                createQRCode(cashData.CashTypeName, cashData.TaxNumber, $("#invoiceText_3").val(), $("#invoiceText_4").val(), cashData.GasType, $("#invoiceText_1").val(), $("#invoiceText_7").val(), "InvoiceQRCodeSection");
                 enableButton("addInvoice");
             }
         }

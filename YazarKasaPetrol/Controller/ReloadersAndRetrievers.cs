@@ -1,4 +1,5 @@
-﻿using YazarKasaPetrol.Models;
+﻿using YazarKasaPetrol.Controller.Exceptions;
+using YazarKasaPetrol.Models;
 using YazarKasaPetrol.Models.Interfaces;
 
 namespace YazarKasaPetrol.Controller
@@ -20,6 +21,47 @@ namespace YazarKasaPetrol.Controller
             {
                 return (CashContent)FileAction.Create(path);
 
+            }
+        }
+
+        public static List<LoginLog> RetrieveLogs() 
+        {
+            try 
+            {
+                AppLogs contents = UtilityFileAction.ReadFile(Utilities.LOGIN_PATH).DataContent;
+                if (contents.AllLogins?.Count == 0 || contents.AllLogins == null)
+                {
+                    throw new ApplicationIdException("appIdError", 4);
+                }
+                else 
+                {
+                    return contents.AllLogins;
+                }
+            }
+            catch (Exception)
+            {
+                return new List<LoginLog>();
+            }
+        }
+
+        public static string? RetrieveAppId() 
+        {
+            try
+            {
+                LogContent theLogContainer = UtilityFileAction.ReadFile(Utilities.LOGIN_PATH);
+                string? appId = theLogContainer.DataContent.AppIdNumber;
+                if (appId == null)
+                {
+                    throw new ApplicationIdException("appIdError", 4);
+                }
+                else
+                {
+                    return appId;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 

@@ -28,9 +28,6 @@
                 <a class="btn btn-primary" id="invoiceModalOpener" data-bs-toggle="modal" data-bs-target="#searchInvoiceModal">
                     <i class="bx bx-search me-1"></i> Plaka ara
                 </a>
-                <!--<a class="btn btn-primary" id="massPaymentOpener" data-bs-toggle="modal" data-bs-target="#massPaymentModal">
-                    <i class="bx bx-search me-1"></i> Toplu Fatura Kes
-                </a>-->
             </div>
             <div class="p-3 row">
                 <div class="col-md-5">
@@ -229,15 +226,15 @@
                                 <div class="col-md-4">
                                     <label class="form-label" id="label_3">Kasa türü</label>
                                     <div class="dropdown">
-                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="cashNumber" name="cashNumber" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="cashTypeName" name="cashTypeName" data-bs-toggle="dropdown" aria-expanded="false">
                                             Choose
                                         </a>
-                                        <ul class="dropdown-menu" id="cashNumberMenu" aria-labelledby="cashNumber">
-                                            <li><a class="dropdown-item" id="cashNumber_1" href="#">Beko</a></li>
-                                            <li><a class="dropdown-item" id="cashNumber_2" href="#">Mepsan</a></li>
-                                            <li><a class="dropdown-item" id="cashNumber_3" href="#">Arçelik</a></li>
-                                            <li><a class="dropdown-item" id="cashNumber_3" href="#">Profilo</a></li>
-                                            <li><a class="dropdown-item" id="cashNumber_3" href="#">Turpak</a></li>
+                                        <ul class="dropdown-menu" id="cashTypeNameMenu" aria-labelledby="cashTypeName">
+                                            <li><a class="dropdown-item" id="cashTypeName_1" href="#">Beko</a></li>
+                                            <li><a class="dropdown-item" id="cashTypeName_2" href="#">Mepsan</a></li>
+                                            <li><a class="dropdown-item" id="cashTypeName_3" href="#">Arçelik</a></li>
+                                            <li><a class="dropdown-item" id="cashTypeName_3" href="#">Profilo</a></li>
+                                            <li><a class="dropdown-item" id="cashTypeName_3" href="#">Turpak</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -376,15 +373,15 @@
                                 <div class="col-md-4">
                                     <label class="form-label" id="updateLabel_2">Kasa türü</label>
                                     <div class="dropdown">
-                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="updateCashNumber" name="cashNumber" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="updateCashTypeName" name="cashTypeName" data-bs-toggle="dropdown" aria-expanded="false">
                                             Choose
                                         </a>
-                                        <ul class="dropdown-menu" id="updateCashNumberMenu" aria-labelledby="cashNumber">
-                                            <li><a class="dropdown-item" id="cashNumber_1" href="#">Beko</a></li>
-                                            <li><a class="dropdown-item" id="cashNumber_2" href="#">Mepsan</a></li>
-                                            <li><a class="dropdown-item" id="cashNumber_3" href="#">Arçelik</a></li>
-                                            <li><a class="dropdown-item" id="cashNumber_4" href="#">Profilo</a></li>
-                                            <li><a class="dropdown-item" id="cashNumber_5" href="#">Turpak</a></li>
+                                        <ul class="dropdown-menu" id="updateCashTypeNameMenu" aria-labelledby="cashTypeName">
+                                            <li><a class="dropdown-item" id="cashTypeName_1" href="#">Beko</a></li>
+                                            <li><a class="dropdown-item" id="cashTypeName_2" href="#">Mepsan</a></li>
+                                            <li><a class="dropdown-item" id="cashTypeName_3" href="#">Arçelik</a></li>
+                                            <li><a class="dropdown-item" id="cashTypeName_4" href="#">Profilo</a></li>
+                                            <li><a class="dropdown-item" id="cashTypeName_5" href="#">Turpak</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -509,15 +506,15 @@
                                 <div class="col-md-4">
                                     <label class="form-label" id="updateOtherLabel_2">Kasa türü</label>
                                     <div class="dropdown">
-                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="updateOtherCashNumber" name="cashNumber" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="updateOtherCashTypeName" name="cashTypeName" data-bs-toggle="dropdown" aria-expanded="false">
                                             Choose
                                         </a>
-                                        <ul class="dropdown-menu" id="updateOtherCashNumberMenu" aria-labelledby="cashNumber">
-                                            <li><a class="dropdown-item" id="cashNumber_1" href="#">Beko</a></li>
-                                            <li><a class="dropdown-item" id="cashNumber_2" href="#">Mepsan</a></li>
-                                            <li><a class="dropdown-item" id="cashNumber_3" href="#">Arçelik</a></li>
-                                            <li><a class="dropdown-item" id="cashNumber_4" href="#">Profilo</a></li>
-                                            <li><a class="dropdown-item" id="cashNumber_5" href="#">Turpak</a></li>
+                                        <ul class="dropdown-menu" id="updateOtherCashTypeNameMenu" aria-labelledby="cashTypeName">
+                                            <li><a class="dropdown-item" id="cashTypeName_1" href="#">Beko</a></li>
+                                            <li><a class="dropdown-item" id="cashTypeName_2" href="#">Mepsan</a></li>
+                                            <li><a class="dropdown-item" id="cashTypeName_3" href="#">Arçelik</a></li>
+                                            <li><a class="dropdown-item" id="cashTypeName_4" href="#">Profilo</a></li>
+                                            <li><a class="dropdown-item" id="cashTypeName_5" href="#">Turpak</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -638,55 +635,6 @@
                             </div>
                             <div class="row mb-3 d-grid">
                                 <button type="submit" class="btn btn-primary col-md-12" id="searchPlateButton" aria-label="Close">Ara</button>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="massPaymentModal" tabindex="-1" aria-labelledby="massPaymentModal" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Toplu Fatura Kes</h5>
-                        <button type="button" id="massPayment" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post" asp-page-handler="masspayment">
-                            <div class="mb-3">
-                                <label class="form-label" id="MassPaymentLabel_1">Plaka no</label>
-                                <input type="text" name="plateNumber" class="form-control" id="MassPaymentInput_1">
-                            </div>
-                            <div class="mb-3">
-                                <table class="table project-list-table table-nowrap align-middle table-borderless">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Benzin istasyonu adı</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @{
-                                            for (int i = 0; i < allElements.Count; i++)
-                                            {
-                                                <tr id="massPaymentContent_@i">
-                                                    <td>
-                                                        <label class="form-check-label" for="massPaymentCheck_@i">
-                                                            <input type="checkbox" class="massPaymentChecks form-check-input" id="massPaymentCheck_@i"/>
-                                                            <a class="mb-0 taxNumberLink text-dark" id="taxNumber_@i">
-                                                                @allElements[i].GasStationName[0]
-                                                            </a>
-                                                        </label>
-                                                    </td>
-                                                </tr>
-                                            }
-                                        }
-                                    <tbody>
-                                </table>
-                            </div>
-                            <div class="row mb-3 d-grid">
-                                <button type="submit" class="btn btn-primary col-md-12" id="massPaymentButton" aria-label="Close">Sayfayı Yükle</button>
                             </div>
 
                         </form>
@@ -837,7 +785,7 @@
         $("#addCash").click(function () {
             var baslangicTarih = $("#input_1").val();
             var taxNumber = $("#input_2").val();
-            var cashNumber = $("#cashNumber").text();
+            var cashTypeName = $("#cashTypeName").text();
             var gasStationName = $("#input_31").val() + "µ" + $("#input_32").val() + "µ" + $("#input_33").val() +
                 $("#input_34").val() + "µ" + $("#input_35").val() + "µ" + $("#input_36").val() + "µ" + $("#input_37").val() + "µ" +
                 $("#input_38").val() + "µ" + $("#input_39").val() + "µ" + $("#input_310").val();
@@ -858,7 +806,7 @@
                 data: {
                     StartDate: baslangicTarih,
                     TaxNumber: taxNumber,
-                    CashNumber: cashNumber,
+                    CashTypeName: cashTypeName,
                     GasStationName: gasStationName,
                     GasType: gasType,
                     CashLetters: cashLetters,
@@ -886,7 +834,7 @@
         //Updates the cash.
         $("#updateCash").click(function () {
             var taxNumber = $("#updateInput_1").val();
-            var cashTypeName = $("#updateCashNumber").text();
+            var cashTypeName = $("#updateCashTypeName").text();
             var cashLetters = $("#updateInput_3").val();
             var cashId = $("#updateInput_4").val();
             var zerosInEku = $("#updateInput_5").val();
@@ -924,7 +872,7 @@
         //Updates other cash.
         $("#updateOtherCash").click(function () {
             var taxNumber = $("#updateOtherInput_1").val();
-            var cashTypeName = $("#updateCashNumber").text();
+            var cashTypeName = $("#updateCashTypeName").text();
             var cashLetters = $("#updateOtherInput_3").val();
             var cashId = $("#updateOtherInput_4").val();
             var zerosInEku = $("#updateOtherInput_5").val();

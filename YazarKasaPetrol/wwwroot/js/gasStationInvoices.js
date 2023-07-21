@@ -1,11 +1,14 @@
 ﻿/**
  * 
  * @param {string} taxNumber
- * @param {int} i
+ * @param {index} i
  * @param {string} entrepriseName
  * @param {string} gasTypeName
+ * @param {string} invoiceCashLetters
+ * @param {string} invoiceCashNumbers
+ * @param {string} invoiceCashTypeName
  */
-function printInvoice(taxNumber, i, entrepriseName, gasTypeName) {
+function printInvoice(taxNumber, i, entrepriseName, gasTypeName, invoiceCashLetters, invoiceCashNumbers, invoiceCashTypeName) {
 
     var theEntrepriseName = entrepriseName.split("µ").join("\n");
 
@@ -52,13 +55,7 @@ function printInvoice(taxNumber, i, entrepriseName, gasTypeName) {
     $("#InvoiceEkuSection").text("EKU NO : " + txt6);
     $("#InvoiceZReportSection").text("Z NO : " + txt5);
     $("#InvoiceGasTypeSection").text(gasTypeName);
+    $("#InvoiceCashLettersAndNumbersSection").text(invoiceCashLetters + " " + invoiceCashNumbers);
 
-    var qr = new QRious({
-        value: taxNumber,
-        size: 200
-    });
-
-    document.getElementById("InvoiceQRCodeSection").src = qr.toDataURL();
-    document.getElementById("InvoiceQRCodeSection").style.width = "100%";
-    document.getElementById("InvoiceQRCodeSection").style.height = "100%";
+    createQRCode(invoiceCashTypeName, taxNumber, txt2, txt3, gasTypeName, addPoint(txt8), txt4, "InvoiceQRCodeSection");
 }

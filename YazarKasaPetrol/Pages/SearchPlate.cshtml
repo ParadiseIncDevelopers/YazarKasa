@@ -17,9 +17,19 @@
             <h5 class="card-title">
                 @SearchPlateModel.PlateNumber kodlu plakanın bütün faturaları
             </h5>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group input-group-icon">
+                            <label class="form-label text-info" id="searchInvoicesLabel">Faturalar içinden ara</label>
+                            <input class="form-control" type="text" id="searchInvoicesFilter" placeholder="Ara...">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="table-responsive">
-            <table class="table project-list-table table-nowrap align-middle table-borderless">
+            <table class="table project-list-table table-nowrap align-middle table-borderless" id="invoicesTable">
                 <thead>
                     <tr>
                         <th scope="col">Plaka</th>
@@ -178,7 +188,7 @@
                         </div>
 
                         <div>
-                            <img id="InvoiceQRCodeSection" src="">
+                            <div id="InvoiceQRCodeSection"></div>
                         </div>
                         <div class="row-texts">
                             <div class="row-text">İYİ YOLCULUKLAR DİLERİZ</div>
@@ -207,6 +217,17 @@
 <script src="~/js/SearchPlate.js"></script>
 
 <script>
+    let options = {
+        numberPerPage: 50,
+        goBar: true,
+        pageCounter: true
+    };
+
+    let filterOptions = {
+        el: '#searchInvoicesFilter'
+    };
+
+    paginate.init('#invoicesTable', options, filterOptions);
     $(document).ready(function () {
         $("#printInvoiceFromPlate").click(function () {
             $("#page").printThis();

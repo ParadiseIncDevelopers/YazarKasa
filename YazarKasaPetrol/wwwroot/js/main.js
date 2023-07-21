@@ -203,12 +203,12 @@ $(document).ready(function () {
     });
 
     //Input 3 Regex check
-    $("#cashNumberMenu li a").click(function () {
+    $("#cashTypeNameMenu li a").click(function () {
         var item = $(this).attr("id");
         var itemText = $("#" + item).text();
-        $("#cashNumber").text(itemText);
+        $("#cashTypeName").text(itemText);
 
-        if (listElementsRegex(["Beko", "Mepsan", "Arçelik", "Profilo", "Turpak"], $("#cashNumber").text())) {
+        if (listElementsRegex(["Beko", "Mepsan", "Arçelik", "Profilo", "Turpak"], $("#cashTypeName").text())) {
             inputAreTrue("#label_3");
             var inputsAreTrue = allInputsAreTrue("label", 14);
             if (inputsAreTrue) {
@@ -304,12 +304,12 @@ $(document).ready(function () {
     });
 
     //Update input 2 Regex check
-    $("#updateCashNumberMenu li a").click(function () {
+    $("#updateCashTypeNameMenu li a").click(function () {
         var item = $(this).attr("id");
         var itemText = $("#" + item).text();
-        $("#updateCashNumber").text(itemText);
+        $("#updateCashTypeName").text(itemText);
 
-        if (listElementsRegex(["Beko", "Mepsan", "Arçelik", "Profilo", "Turpak"], $("#updateCashNumber").text())) {
+        if (listElementsRegex(["Beko", "Mepsan", "Arçelik", "Profilo", "Turpak"], $("#updateCashTypeName").text())) {
             inputAreTrue("#updateLabel_2");
             var inputsAreTrue = allInputsAreTrue("updateLabel", 11);
             if (inputsAreTrue) {
@@ -392,12 +392,12 @@ $(document).ready(function () {
     });
 
     //Update input 2 Regex check
-    $("#updateOtherCashNumberMenu li a").click(function () {
+    $("#updateOtherCashTypeNameMenu li a").click(function () {
         var item = $(this).attr("id");
         var itemText = $("#" + item).text();
-        $("#updateCashNumber").text(itemText);
+        $("#updateOtherCashTypeName").text(itemText);
 
-        if (listElementsRegex(["Beko", "Mepsan", "Arçelik", "Profilo", "Turpak"], $("#updateCashNumber").text())) {
+        if (listElementsRegex(["Beko", "Mepsan", "Arçelik", "Profilo", "Turpak"], $("#updateCashTypeName").text())) {
             inputAreTrue("#updateOtherLabel_2");
             var inputsAreTrue = allInputsAreTrue("updateOtherLabel", 11);
             if (inputsAreTrue) {
@@ -575,7 +575,7 @@ function getTheTaxNumber(zerosUrl, url, taxNumber, index) {
 
                 if (document.getElementById("DraftInvoiceSection").children.length == 0) {
 
-                    $("#DraftInvoiceSection").append('<div id="page"><div class="row-texts"><div class="row-text" id="InvoiceTaxNumberSection">Firma ismi</div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left" id="InvoiceDateSection">00-00-0000</div><div class="row-text text-left" id="InvoiceNoSection">FİŞ NO: 0000</div></div><div class="row-texts row-texts2"><div class="row-text text-right" id="InvoiceHourSection">00:00</div></div></div><div class="row-texts"><div class="row-text row-texts-big" id="InvoicePlateSection">10AAA123</div></div><div class="col-texts"><div class="row-texts"><div class="col-texts row-text text-left"><div class="row-text" id="InvoiceLitreSection">1,00</div> x <div class="row-text" id="InvoicePriceSection">1,00</div></div></div></div><div class="col-texts"><div class="row-texts row-texts2"><div class="row-text text-left" id="InvoiceGasTypeSection">' + cashData.GasType.toString() + '</div><div class="row-text text-right">%18</div></div><div class="row-texts row-texts2"><div class="row-text text-right InvoiceTotalPriceSection">*200</div></div></div><hr id="line"><div class="col-texts"><div class="row-texts"><div class="row-text text-left row-texts-big">TOPKDV</div><div class="row-text text-left row-texts-big">TOPLAM</div></div><div class="row-texts row-texts-right"><div class="row-text text-right row-texts-big" id="InvoiceVatPriceSection">*10,00</div><div class="row-text text-right row-texts-big InvoiceTotalPriceSection">*200,00</div></div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left">NAKİT</div></div><div class="row-texts row-texts-right"><div class="row-text text-right InvoiceTotalPriceSection">*200,00</div></div></div><div><img id="InvoiceQRCodeSection" src=""></div><div class="row-texts"><div class="row-text">İYİ YOLCULUKLAR DİLERİZ</div></div><div class="col-texts col-texts-spaced"><div class="row-texts"><div class="row-text text-left" id="InvoiceEkuSection">EKU NO: 0001</div></div><div class="row-texts row-texts-right"><div class="row-text text-right" id="InvoiceZReportSection">Z NO: 0001</div></div></div><div class="row-texts"><div class="row-text">MFAU 000000000000</div></div></div>');
+                    $("#DraftInvoiceSection").append('<div id="page"><div class="row-texts"><div class="row-text" id="InvoiceTaxNumberSection">Firma ismi</div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left" id="InvoiceDateSection">00-00-0000</div><div class="row-text text-left" id="InvoiceNoSection">FİŞ NO: 0000</div></div><div class="row-texts row-texts2"><div class="row-text text-right" id="InvoiceHourSection">00:00</div></div></div><div class="row-texts"><div class="row-text row-texts-big" id="InvoicePlateSection">10AAA123</div></div><div class="col-texts"><div class="row-texts"><div class="col-texts row-text text-left"><div class="row-text" id="InvoiceLitreSection">1,00</div> x <div class="row-text" id="InvoicePriceSection">1,00</div></div></div></div><div class="col-texts"><div class="row-texts row-texts2"><div class="row-text text-left" id="InvoiceGasTypeSection">' + cashData.GasType.toString() + '</div><div class="row-text text-right">%18</div></div><div class="row-texts row-texts2"><div class="row-text text-right InvoiceTotalPriceSection">*200</div></div></div><hr id="line"><div class="col-texts"><div class="row-texts"><div class="row-text text-left row-texts-big">TOPKDV</div><div class="row-text text-left row-texts-big">TOPLAM</div></div><div class="row-texts row-texts-right"><div class="row-text text-right row-texts-big" id="InvoiceVatPriceSection">*10,00</div><div class="row-text text-right row-texts-big InvoiceTotalPriceSection">*200,00</div></div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left">NAKİT</div></div><div class="row-texts row-texts-right"><div class="row-text text-right InvoiceTotalPriceSection">*200,00</div></div></div><div><div id="InvoiceQRCodeSection"></div></div><div class="row-texts"><div class="row-text">İYİ YOLCULUKLAR DİLERİZ</div></div><div class="col-texts col-texts-spaced"><div class="row-texts"><div class="row-text text-left" id="InvoiceEkuSection">EKU NO: 0001</div></div><div class="row-texts row-texts-right"><div class="row-text text-right" id="InvoiceZReportSection">Z NO: 0001</div></div></div><div class="row-texts"><div class="row-text">MFAU 000000000000</div></div></div>');
                 }
 
                 var allElements = document.getElementById("tableElements").children.length;
@@ -599,13 +599,7 @@ function getTheTaxNumber(zerosUrl, url, taxNumber, index) {
 
                 $("#InvoiceTaxNumberSection").text(cashData.GasStationName.join("\n"));
 
-
-                var size = 200;
-                var qrCodeData = generateQRCode(theTaxNumber, size);
-
-                document.getElementById("InvoiceQRCodeSection").src = qrCodeData;
-                document.getElementById("InvoiceQRCodeSection").style.width = "100%";
-                document.getElementById("InvoiceQRCodeSection").style.height = "100%";
+                createQRCode(cashData.CashTypeName, theTaxNumber, "text1", "text2", "text3", "text4", "text5", "InvoiceQRCodeSection");
             }
         }
     });
@@ -621,14 +615,6 @@ function getTheTaxNumber(zerosUrl, url, taxNumber, index) {
             $("#InvoiceGasTypeSection").text(cashData.GasType);
         }
     });
-}
-
-function generateQRCode(content, size) {
-    var qr = new QRious({
-        value: content,
-        size: size
-    });
-    return qr.toDataURL();
 }
 
 function deleteRow(index) {
@@ -661,7 +647,7 @@ function updateApiKey(taxNumber, link)
             $("#updateInput_4").val(obj.CashId);
             $("#updateInput_5").val(obj.ZerosInEku);
             $("#updateInput_6").val(obj.ZerosInZReports);
-            $("#updateCashNumber").text(obj.CashTypeName);
+            $("#updateCashTypeName").text(obj.CashTypeName);
             $("#updateInput_7").val(obj.ZerosInInvoices);
             $("#updateInput_8").val(obj.GasType);
             $("#updateInput_9").val(obj.WeaponNumber);
@@ -703,7 +689,7 @@ function updateApiKey_2(taxNumber, link)
             $("#updateOtherInput_4").val(obj.CashId);
             $("#updateOtherInput_5").val(obj.ZerosInEku);
             $("#updateOtherInput_6").val(obj.ZerosInZReports);
-            $("#updateOtherCashNumber").text(obj.CashTypeName);
+            $("#updateOtherCashTypeName").text(obj.CashTypeName);
             $("#updateOtherInput_7").val(obj.ZerosInInvoices);
             $("#updateOtherInput_8").val(obj.GasType);
             $("#updateOtherInput_9").val(obj.WeaponNumber);

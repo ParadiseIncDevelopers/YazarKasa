@@ -1,0 +1,48 @@
+﻿<div class="modal fade" id="massPaymentModal" tabindex="-1" aria-labelledby="massPaymentModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Toplu Fatura Kes</h5>
+                        <button type="button" id="massPayment" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" asp-page-handler="masspayment">
+                            <div class="mb-3">
+                                <label class="form-label" id="MassPaymentLabel_1">Plaka no</label>
+                                <input type="text" name="plateNumber" class="form-control" id="MassPaymentInput_1">
+                            </div>
+                            <div class="mb-3">
+                                <table class="table project-list-table table-nowrap align-middle table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Benzin istasyonu adı</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            for (int i = 0; i < allElements.Count; i++)
+                                            {
+                                                <tr id="massPaymentContent_@i">
+                                                    <td>
+                                                        <label class="form-check-label" for="massPaymentCheck_@i">
+                                                            <input type="checkbox" class="massPaymentChecks form-check-input" id="massPaymentCheck_@i"/>
+                                                            <a class="mb-0 taxNumberLink text-dark" id="taxNumber_@i">
+                                                                @allElements[i].GasStationName[0]
+                                                            </a>
+                                                        </label>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    <tbody>
+                                </table>
+                            </div>
+                            <div class="row mb-3 d-grid">
+                                <button type="submit" class="btn btn-primary col-md-12" id="massPaymentButton" aria-label="Close">Sayfayı Yükle</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>

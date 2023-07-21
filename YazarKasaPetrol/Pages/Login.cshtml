@@ -46,15 +46,15 @@
                     <div class="mb-3">
                         <label class="form-label" id="label_3">Kasa numarası</label>
                         <div class="dropdown">
-                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="cashNumber" name="cashNumber" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="cashTypeName" name="cashTypeName" data-bs-toggle="dropdown" aria-expanded="false">
                                 Choose
                             </a>
-                            <ul class="dropdown-menu" id="cashNumberMenu" aria-labelledby="cashNumber">
-                                <li><a class="dropdown-item" id="cashNumber_1" href="#">Beko</a></li>
-                                <li><a class="dropdown-item" id="cashNumber_2" href="#">Mepsan</a></li>
-                                <li><a class="dropdown-item" id="cashNumber_3" href="#">Arçelik</a></li>
-                                <li><a class="dropdown-item" id="cashNumber_3" href="#">Profilo</a></li>
-                                <li><a class="dropdown-item" id="cashNumber_3" href="#">Turpak</a></li>
+                            <ul class="dropdown-menu" id="cashTypeNameMenu" aria-labelledby="cashTypeName">
+                                <li><a class="dropdown-item" id="cashTypeName_1" href="#">Beko</a></li>
+                                <li><a class="dropdown-item" id="cashTypeName_2" href="#">Mepsan</a></li>
+                                <li><a class="dropdown-item" id="cashTypeName_3" href="#">Arçelik</a></li>
+                                <li><a class="dropdown-item" id="cashTypeName_3" href="#">Profilo</a></li>
+                                <li><a class="dropdown-item" id="cashTypeName_3" href="#">Turpak</a></li>
                             </ul>
                         </div>
                     </div>
@@ -149,7 +149,7 @@
         $("#addCash").click(function () {
             var taxNumber = $("#input_1").val();
             var password = $("#input_2").val();
-            var cashNumber = $("#cashNumber").text();
+            var cashTypeName = $("#cashTypeName").text();
             var gasStationName = $("#input_31").val() + "-" + $("#input_32").val() + "-" + $("#input_33").val() +
                 $("#input_34").val() + "-" + $("#input_35").val() + "-" + $("#input_36").val() + "-" + $("#input_37").val() + "-" +
                 $("#input_38").val() + "-" + $("#input_39").val() + "-" + $("#input_310").val();
@@ -166,7 +166,7 @@
                 data: {
                     TaxNumber: taxNumber,
                     Password: password,
-                    CashNumber: cashNumber,
+                    CashTypeName: cashTypeName,
                     GasStationName: gasStationName,
                     GasType: gasType,
                     CashLetters: cashLetters,

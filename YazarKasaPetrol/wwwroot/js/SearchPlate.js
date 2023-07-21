@@ -26,14 +26,7 @@
     $("#InvoiceEkuSection").text("EKU NO : " + txt7);
     $("#InvoiceZReportSection").text("Z NO : " + txt6);
 
-    var qr = new QRious({
-        value: taxNumber,
-        size: 200
-    });
-
-    document.getElementById("InvoiceQRCodeSection").src = qr.toDataURL();
-    document.getElementById("InvoiceQRCodeSection").style.width = "100%";
-    document.getElementById("InvoiceQRCodeSection").style.height = "100%";
+    createQRCode(cashData.CashTypeName, taxNumber, txt3, txt4, cashData.GasType, txt9, txt5, "InvoiceQRCodeSection");
 }
 
 $(document).ready(function () {
