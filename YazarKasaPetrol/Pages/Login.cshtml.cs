@@ -9,7 +9,7 @@ namespace YazarKasaPetrol.Pages
 {
     public class LoginModel : PageModel
     {
-        public IActionResult OnGet() 
+        public IActionResult OnGet()
         {
             List<LoginLog> logs = Retriever.RetrieveLogs();
             DateTime? lastLoginDate = logs.Last().LoginDate;
