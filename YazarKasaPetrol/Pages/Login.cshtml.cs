@@ -11,7 +11,29 @@ namespace YazarKasaPetrol.Pages
     {
         public IActionResult OnGet() 
         {
-            return Page();
+            List<LoginLog> logs = Retriever.RetrieveLogs();
+            DateTime? lastLoginDate = logs.Last().LoginDate;
+            bool isLoginSuccessful = (bool)logs.Last().IsLoginSuccessful;
+            string? AppId = Retriever.RetrieveAppId();
+            List<SuperAdmin>? db1 = ((CashContent)Retriever.RetrieveTables(Utilities.PATH)).DataContent;
+
+            if (isLoginSuccessful && lastLoginDate.Value.AddHours(1) > DateTime.Now)
+            {
+                AuthType auth = new()
+                {
+                    IsAdmin = false,
+                    IsSuperAdmin = true,
+                    IsUser = false,
+                    UserCredentialsForInvoice = db1.Find(x => x.TaxNumber == AppId)
+                };
+                auth.CreateAuth();
+
+                return RedirectToPage("Index");
+            }
+            else 
+            {
+                return Page();
+            }
         }
 
         public static void WriteLoginContent() 

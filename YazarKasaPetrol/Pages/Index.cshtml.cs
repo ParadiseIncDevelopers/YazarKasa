@@ -458,7 +458,7 @@ namespace YazarKasaPetrol.Pages
         public IActionResult OnGetUpdateAdmin(string TaxNumber, string GasType, string CashTypeName, string UpdateCashStationName, string CashLetters, string CashId, string ZerosInEku, string ZerosInZReports, string ZerosInInvoices, string WeaponNumber, string PumpNumber)
         {
             List<Admin> table = (Retriever.RetrieveTables(Utilities.PATH1) as CashContent).DataContent_1;
-            Admin theCash = table.Where(x => x.AdminTaxNumber == TaxNumber).ToList()[0];
+            Admin theCash = table.Where(x => x.AdminModel.TaxNumber == TaxNumber).ToList()[0];
 
             AdminModel mod = theCash.AdminModel;
 

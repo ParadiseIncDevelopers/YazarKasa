@@ -20,10 +20,20 @@ function createQRCode(CashTypeName, taxNumber, date, time, gasType, litre, invoi
             radius: 0.0,
             ecLevel: 'H',
             fill: '#000000',
-            background: null,
-            size: 150
+            background: "#FFFFFF",
+            size: 75
         }, document.querySelector("#" + element));
-        $("#" + element).css({ "max-width": "100%", "max-height": "100%" });
+
+        $("#" + element).css({ "max-width": "50%", "max-height": "50%", "position": "relative", "left": "25%" });
+
+        var canvasElement = document.getElementsByTagName("canvas")[0];
+        var MIME_TYPE = "image/png";
+        var imgURL = canvasElement.toDataURL(MIME_TYPE);
+        var dlLink = document.createElement('img');
+        dlLink.src = imgURL;
+
+        document.querySelector("#" + element).appendChild(dlLink);
+        document.querySelector("#" + element).removeChild(canvasElement);
     }
     else if (CashTypeName == "Profilo")
     {
@@ -34,10 +44,20 @@ function createQRCode(CashTypeName, taxNumber, date, time, gasType, litre, invoi
             radius: 0.5,
             ecLevel: 'H',
             fill: '#000000',
-            background: null,
-            size: 150
+            background: "#FFFFFF",
+            size: 75
         }, document.querySelector("#" + element));
-        $("#" + element).css({ "max-width": "100%", "max-height": "100%" });
+
+        $("#" + element).css({ "max-width": "50%", "max-height": "50%", "position": "relative", "left": "25%" });
+
+        var canvasElement = document.getElementsByTagName("canvas")[0];
+        var MIME_TYPE = "image/png";
+        var imgURL = canvasElement.toDataURL(MIME_TYPE);
+        var dlLink = document.createElement('img');
+        dlLink.src = imgURL;
+
+        document.querySelector("#" + element).appendChild(dlLink);
+        document.querySelector("#" + element).removeChild(canvasElement);
     }
     else if (CashTypeName == "Turpak")
     {
@@ -48,10 +68,20 @@ function createQRCode(CashTypeName, taxNumber, date, time, gasType, litre, invoi
             radius: 0.0,
             ecLevel: 'H',
             fill: '#000000',
-            background: null,
-            size: 150
+            background: "#FFFFFF",
+            size: 75
         }, document.querySelector("#" + element));
-        $("#" + element).css({ "max-width": "100%", "max-height": "100%" });
+
+        $("#" + element).css({ "max-width": "50%", "max-height": "50%", "position": "relative", "left": "25%" });
+
+        var canvasElement = document.getElementsByTagName("canvas")[0];
+        var MIME_TYPE = "image/png";
+        var imgURL = canvasElement.toDataURL(MIME_TYPE);
+        var dlLink = document.createElement('img');
+        dlLink.src = imgURL;
+
+        document.querySelector("#" + element).appendChild(dlLink);
+        document.querySelector("#" + element).removeChild(canvasElement);
     }
     else
     {
@@ -62,11 +92,19 @@ function createQRCode(CashTypeName, taxNumber, date, time, gasType, litre, invoi
             radius: 0.0,
             ecLevel: 'H',
             fill: '#000000',
-            background: null,
-            size: 150
+            background: "#FFFFFF",
+            size: 75
         }, document.querySelector("#" + element));
-        $("#" + element).css({ "max-width": "100%", "max-height": "100%" });
-    }
 
-    alert(qrCodeString);
+        $("#" + element).css({ "max-width": "50%", "max-height": "50%", "position": "relative", "left": "25%" });
+
+        var canvasElement = document.getElementsByTagName("canvas")[0];
+        var MIME_TYPE = "image/png";
+        var imgURL = canvasElement.toDataURL(MIME_TYPE);
+        var dlLink = document.createElement('img');
+        dlLink.src = imgURL;
+
+        document.querySelector("#" + element).appendChild(dlLink);
+        document.querySelector("#" + element).removeChild(canvasElement);
+    }
 }

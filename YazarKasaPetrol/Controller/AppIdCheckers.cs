@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace YazarKasaPetrol.Controller
 {
@@ -18,8 +20,23 @@ namespace YazarKasaPetrol.Controller
 
         public bool AppIdEnvironmentKeyIsNotCheck() 
         {
-            string? retrievedValue = "7210849484";
-            return retrievedValue != AppId;
+            string? retrievedValue = Environment.GetEnvironmentVariable("YAZAR_KASA", EnvironmentVariableTarget.User);
+            return retrievedValue != ComputeSha256Hash(AppId);
+        }
+
+        private static string ComputeSha256Hash(string rawData)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
+                StringBuilder builder = new();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
         }
     }
 }

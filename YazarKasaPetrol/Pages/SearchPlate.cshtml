@@ -51,7 +51,18 @@
 
                         string plakaNo = SearchPlateModel.PlateNumber;
 
-                        List<UserInvoiceContainer>? filteredInvoices = allInvoices.FindAll(x => x.Invoices.Any(y => y.PlakaNo == plakaNo));
+                        var groupedTaxNumbers = allInvoices.Select(x => x.TaxId).ToList();
+                        var groupedInvoices = allInvoices.Select(x => x.Invoices).ToList();
+
+                        Dictionary<string, List<Invoice>> allFilteredInvoices = new();
+                        List<Invoice> plateFilteredInvoices; 
+
+
+                        for(int i = 0; i < groupedTaxNumbers.Count; i++)
+                        {
+                            plateFilteredInvoices = groupedInvoices[i].Where(y => y.PlakaNo == plakaNo).ToList();
+                            allFilteredInvoices.Add(groupedTaxNumbers[i], plateFilteredInvoices);
+                        }
 
                         List<string> cashNames(string taxNumber)
                         {
@@ -81,13 +92,15 @@
                             return names;
                         }
 
-                        for (int i = 0; i < filteredInvoices.Count; i++)
+                        for(int i = 0; i < allFilteredInvoices.Count; i++)
                         {
-                            for (int j = 0; j < filteredInvoices[i].Invoices.Count; j++)
+                            var item = allFilteredInvoices.Keys.ToList()[i];
+                            var item2 = allFilteredInvoices.Values.ToList()[i];
+                            for (int j = 0; j < item2.Count; j++)
                             {
-                                var theCash = cashNames(filteredInvoices[i].TaxId);
+                                var theCash = cashNames(item);
 
-                                string[] theDateFull = allInvoices[i].Invoices[j].Tarih.Value.ToString().Split(" ");
+                                var theDateFull = item2[j].Tarih.Value.ToString().Split(" ");
                                 string[] theDate = theDateFull[0].Split("-");
                                 string[] theHour = theDateFull[1].Split(":");
                                 string dateDisplayer = theDate[0] + "/" + theDate[1] + "/" + allInvoices[i].Invoices[j].Tarih.Value.Year;
@@ -95,20 +108,20 @@
                                 string entrepriseName = theCash[0];
 
                                 <tr id="searchPlateContent_@i">
-                                    <td id="inv_1_@(i)_@(j)">@filteredInvoices[i].Invoices[j].PlakaNo</td>
+                                    <td id="inv_1_@(i)_@(j)">@item2[j].PlakaNo</td>
                                     <td id="inv_2_@(i)_@(j)">@entrepriseName</td>
                                     <td id="inv_3_@(i)_@(j)">@dateDisplayer</td>
                                     <td id="inv_4_@(i)_@(j)">@hourDisplayer</td>
-                                    <td id="inv_5_@(i)_@(j)">@filteredInvoices[i].Invoices[j].FisNo</td>
-                                    <td id="inv_6_@(i)_@(j)">@filteredInvoices[i].Invoices[j].ZRaporuNo</td>
-                                    <td id="inv_7_@(i)_@(j)">@filteredInvoices[i].Invoices[j].EkuNo</td>
-                                    <td id="inv_8_@(i)_@(j)">@filteredInvoices[i].Invoices[j].BirimFiyat.ToString("0.00")</td>
-                                    <td id="inv_9_@(i)_@(j)">@filteredInvoices[i].Invoices[j].Litre.ToString("0.00")</td>
-                                    <td id="inv_10_@(i)_@(j)">@filteredInvoices[i].Invoices[j].TotalFiyat.ToString("0.00")</td>
+                                    <td id="inv_5_@(i)_@(j)">@item2[j].FisNo</td>
+                                    <td id="inv_6_@(i)_@(j)">@item2[j].ZRaporuNo</td>
+                                    <td id="inv_7_@(i)_@(j)">@item2[j].EkuNo</td>
+                                    <td id="inv_8_@(i)_@(j)">@item2[j].BirimFiyat.ToString("0.00")</td>
+                                    <td id="inv_9_@(i)_@(j)">@item2[j].Litre.ToString("0.00")</td>
+                                    <td id="inv_10_@(i)_@(j)">@item2[j].TotalFiyat.ToString("0.00")</td>
                                     <td>
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item">
-                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@filteredInvoices[i].TaxId', @(i), @(j))" title="Print this invoice" class="px-2 text-info">
+                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@item', @(i), @(j))" title="Print this invoice" class="px-2 text-info">
                                                     <i class='bx bx-printer font-size-1'></i>
                                                 </a>
                                             </li>

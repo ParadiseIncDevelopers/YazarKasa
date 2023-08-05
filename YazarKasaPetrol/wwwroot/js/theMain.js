@@ -730,6 +730,10 @@ function ekuAddPlusOneButtonConfirm(link) {
             if (theMessage.includes("Bugün ekü yenilendi.")) {
                 alert(theMessage);
             }
+            else
+            {
+                alert("Yeni ekü sayısı eklenmiştir.");
+            }
         }
     });
 }
