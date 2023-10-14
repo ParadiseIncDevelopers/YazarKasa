@@ -340,7 +340,7 @@ namespace YazarKasaPetrol.Controller
         public List<InvoiceZReportSystem>? DataContent { get; set; }
     }
 
-    public class LogContent 
+    public class LogContent : IUtilityContent
     {
         public string? Path { get; set; }
         public AppLogs? DataContent { get; set; }

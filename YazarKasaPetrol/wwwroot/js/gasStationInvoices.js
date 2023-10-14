@@ -55,7 +55,29 @@ function printInvoice(taxNumber, i, entrepriseName, gasTypeName, invoiceCashLett
     $("#InvoiceEkuSection").text("EKU NO : " + txt6);
     $("#InvoiceZReportSection").text("Z NO : " + txt5);
     $("#InvoiceGasTypeSection").text(gasTypeName);
-    $("#InvoiceCashLettersAndNumbersSection").text(invoiceCashLetters + " " + invoiceCashNumbers);
+
+    $("#InvoiceCashLettersAndNumbersSection").html("");
+    /**
+     * 
+     * @param {string} letters
+     */
+    var cashLettersMaker = (letters) => {
+        if (letters.includes("MF")) {
+            letters = letters.substring(2);
+
+            var imageElement = document.createElement("img");
+            imageElement.src = "../images/MF_logo.svg";
+            imageElement.style.width = "16px";
+            document.getElementById("InvoiceCashLettersAndNumbersSection").appendChild(imageElement);
+            document.getElementById("InvoiceCashLettersAndNumbersSection").append(letters);
+
+        }
+        else {
+            document.getElementById("InvoiceCashLettersAndNumbersSection").append(letters);
+        }
+    };
+    cashLettersMaker(invoiceCashLetters);
+    $("#InvoiceCashLettersAndNumbersSection").append(" " + invoiceCashNumbers);
 
     createQRCode(invoiceCashTypeName, taxNumber, txt2, txt3, gasTypeName, addPoint(txt8), txt4, "InvoiceQRCodeSection");
 }

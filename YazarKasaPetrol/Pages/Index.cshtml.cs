@@ -416,21 +416,6 @@ namespace YazarKasaPetrol.Pages
             return new JsonResult(serialized);
         }
 
-        /*
-         TaxNumber: taxNumber,
-                    GasType: gasType,
-                    CashTypeName: cashTypeName,
-                    UpdateCashStationName: updateCashStationName,
-                    CashLetters: cashLetters,
-                    CashId: cashId,
-                    ZerosInEku: zerosInEku,
-                    ZerosInZReports: zerosInZReports,
-                    ZerosInInvoices: zerosInInvoices,
-                    WeaponNumber: weaponNumber,
-                    PumpNumber: pumpNumber
-         
-         */
-
         public IActionResult OnGetUpdateSuperAdmin(string TaxNumber, string GasType, string CashTypeName, string UpdateCashStationName, string CashLetters, string CashId,  string ZerosInEku, string ZerosInZReports, string ZerosInInvoices, string WeaponNumber, string PumpNumber)
         {
             List<SuperAdmin> table = (Retriever.RetrieveTables(Utilities.PATH) as CashContent).DataContent;

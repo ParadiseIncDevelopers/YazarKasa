@@ -9,6 +9,7 @@
 @model YazarKasaPetrol.Pages.SearchPlateModel
 @{
     Layout = "_FilterPage";
+    string cashLetters, cashNumbers, cashTypeName, gasType;
 }
 
 <div class="container">
@@ -57,7 +58,6 @@
                         Dictionary<string, List<Invoice>> allFilteredInvoices = new();
                         List<Invoice> plateFilteredInvoices; 
 
-
                         for(int i = 0; i < groupedTaxNumbers.Count; i++)
                         {
                             plateFilteredInvoices = groupedInvoices[i].Where(y => y.PlakaNo == plakaNo).ToList();
@@ -75,6 +75,10 @@
                                 foreach (var item in ad1)
                                 {
                                     names.Add(item.GasStationName[0]);
+                                    names.Add(item.CashLetters);
+                                    names.Add(item.CashId);
+                                    names.Add(item.CashTypeName);
+                                    names.Add(item.GasType);
                                 }
                             }
                             else if (ad2.Count != 0)
@@ -82,6 +86,10 @@
                                 foreach (var item in ad2)
                                 {
                                     names.Add(item.AdminModel.GasStationName[0]);
+                                    names.Add(item.AdminModel.CashLetters);
+                                    names.Add(item.AdminModel.CashId);
+                                    names.Add(item.AdminModel.CashTypeName);
+                                    names.Add(item.AdminModel.GasType);
                                 }
                             }
                             else
@@ -106,6 +114,10 @@
                                 string dateDisplayer = theDate[0] + "/" + theDate[1] + "/" + allInvoices[i].Invoices[j].Tarih.Value.Year;
                                 string hourDisplayer = theHour[0] + ":" + theHour[1];
                                 string entrepriseName = theCash[0];
+                                cashLetters = theCash[1];
+                                cashNumbers = theCash[2];
+                                cashTypeName = theCash[3];
+                                gasType = theCash[4];
 
                                 <tr id="searchPlateContent_@i">
                                     <td id="inv_1_@(i)_@(j)">@item2[j].PlakaNo</td>
@@ -121,7 +133,7 @@
                                     <td>
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item">
-                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@item', @(i), @(j))" title="Print this invoice" class="px-2 text-info">
+                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#printInvoiceModal" onclick="printInvoice('@gasType', '@cashTypeName ','@cashLetters','@cashNumbers','@item', @(i), @(j))" title="Print this invoice" class="px-2 text-info">
                                                     <i class='bx bx-printer font-size-1'></i>
                                                 </a>
                                             </li>
@@ -215,7 +227,7 @@
                             </div>
                         </div>
                         <div class="row-texts">
-                            <div class="row-text">MFAU 000000000000</div>
+                            <div class="row-text" id="InvoiceCashLettersAndNumbersSection">MFAU 000000000000</div>
                         </div>
                     </div>
                 </div>
@@ -227,7 +239,7 @@
     </div>
 </div>
 
-<script src="~/js/SearchPlate.js"></script>
+<script src="~/js/searchPlate.js"></script>
 
 <script>
     let options = {

@@ -1,4 +1,4 @@
-﻿function printInvoice(taxNumber, i, j)
+﻿function printInvoice(gasType, cashTypeName, cashLetters, cashNumbers, taxNumber, i, j)
 {
     var txt1 = $("#inv_1_" + i + "_" + j).text();
     var txt2 = $("#inv_2_" + i + "_" + j).text();
@@ -26,7 +26,32 @@
     $("#InvoiceEkuSection").text("EKU NO : " + txt7);
     $("#InvoiceZReportSection").text("Z NO : " + txt6);
 
-    createQRCode(cashData.CashTypeName, taxNumber, txt3, txt4, cashData.GasType, txt9, txt5, "InvoiceQRCodeSection");
+    $("#InvoiceCashLettersAndNumbersSection").html("");
+
+    /**
+     * 
+     * @param {string} letters
+     */
+    var cashLettersMaker = (letters) => {
+        if (letters.includes("MF")) {
+            letters = letters.substring(2);
+
+            var imageElement = document.createElement("img");
+            imageElement.src = "../images/MF_logo.svg";
+            imageElement.style.width = "16px";
+            document.getElementById("InvoiceCashLettersAndNumbersSection").appendChild(imageElement);
+            document.getElementById("InvoiceCashLettersAndNumbersSection").append(letters);
+
+        }
+        else {
+            document.getElementById("InvoiceCashLettersAndNumbersSection").append(letters);
+        }
+    };
+
+    cashLettersMaker(cashLetters);
+    $("#InvoiceCashLettersAndNumbersSection").append(" " + cashNumbers);
+
+    createQRCode(cashTypeName, taxNumber, txt3, txt4, gasType, txt9, txt5, "InvoiceQRCodeSection");
 }
 
 $(document).ready(function () {

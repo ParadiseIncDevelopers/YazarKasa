@@ -59,7 +59,7 @@ var gasStationNameRegex = /^(.){10,}$/;
 var gasTypeRegex = /^(.){5,}$/;
 
 //Input 6 regex
-var cashLettersRegex = /^([A-Z]){1,3}$/;
+var cashLettersRegex = /^([A-Z]){1,5}$/;
 
 //Input 7 regex
 var cashIdRegex = /^(\d){10}$/;
@@ -575,7 +575,7 @@ function getTheTaxNumber(zerosUrl, url, taxNumber, index) {
 
                 if (document.getElementById("DraftInvoiceSection").children.length == 0) {
 
-                    $("#DraftInvoiceSection").append('<div id="page"><div class="row-texts"><div class="row-text" id="InvoiceTaxNumberSection">Firma ismi</div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left" id="InvoiceDateSection">00-00-0000</div><div class="row-text text-left" id="InvoiceNoSection">FİŞ NO: 0000</div></div><div class="row-texts row-texts2"><div class="row-text text-right" id="InvoiceHourSection">00:00</div></div></div><div class="row-texts"><div class="row-text row-texts-big" id="InvoicePlateSection">10AAA123</div></div><div class="col-texts"><div class="row-texts"><div class="col-texts row-text text-left"><div class="row-text" id="InvoiceLitreSection">1,00</div> x <div class="row-text" id="InvoicePriceSection">1,00</div></div></div></div><div class="col-texts"><div class="row-texts row-texts2"><div class="row-text text-left" id="InvoiceGasTypeSection">' + cashData.GasType.toString() + '</div><div class="row-text text-right">%18</div></div><div class="row-texts row-texts2"><div class="row-text text-right InvoiceTotalPriceSection">*200</div></div></div><hr id="line"><div class="col-texts"><div class="row-texts"><div class="row-text text-left row-texts-big">TOPKDV</div><div class="row-text text-left row-texts-big">TOPLAM</div></div><div class="row-texts row-texts-right"><div class="row-text text-right row-texts-big" id="InvoiceVatPriceSection">*10,00</div><div class="row-text text-right row-texts-big InvoiceTotalPriceSection">*200,00</div></div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left">NAKİT</div></div><div class="row-texts row-texts-right"><div class="row-text text-right InvoiceTotalPriceSection">*200,00</div></div></div><div><div id="InvoiceQRCodeSection"></div></div><div class="row-texts"><div class="row-text">İYİ YOLCULUKLAR DİLERİZ</div></div><div class="col-texts col-texts-spaced"><div class="row-texts"><div class="row-text text-left" id="InvoiceEkuSection">EKU NO: 0001</div></div><div class="row-texts row-texts-right"><div class="row-text text-right" id="InvoiceZReportSection">Z NO: 0001</div></div></div><div class="row-texts"><div class="row-text">MFAU 000000000000</div></div></div>');
+                    $("#DraftInvoiceSection").append('<div id="page"><div class="row-texts"><div class="row-text" id="InvoiceTaxNumberSection">Firma ismi</div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left" id="InvoiceDateSection">00-00-0000</div><div class="row-text text-left" id="InvoiceNoSection">FİŞ NO: 0000</div></div><div class="row-texts row-texts2"><div class="row-text text-right" id="InvoiceHourSection">00:00</div></div></div><div class="row-texts"><div class="row-text row-texts-big" id="InvoicePlateSection">10AAA123</div></div><div class="col-texts"><div class="row-texts"><div class="col-texts row-text text-left"><div class="row-text" id="InvoiceLitreSection">1,00</div> x <div class="row-text" id="InvoicePriceSection">1,00</div></div></div></div><div class="col-texts"><div class="row-texts row-texts2"><div class="row-text text-left" id="InvoiceGasTypeSection">' + cashData.GasType.toString() + '</div><div class="row-text text-right">%18</div></div><div class="row-texts row-texts2"><div class="row-text text-right InvoiceTotalPriceSection">*200</div></div></div><hr id="line"><div class="col-texts"><div class="row-texts"><div class="row-text text-left row-texts-big">TOPKDV</div><div class="row-text text-left row-texts-big">TOPLAM</div></div><div class="row-texts row-texts-right"><div class="row-text text-right row-texts-big" id="InvoiceVatPriceSection">*10,00</div><div class="row-text text-right row-texts-big InvoiceTotalPriceSection">*200,00</div></div></div><div class="col-texts"><div class="row-texts"><div class="row-text text-left">NAKİT</div></div><div class="row-texts row-texts-right"><div class="row-text text-right InvoiceTotalPriceSection">*200,00</div></div></div><div><div id="InvoiceQRCodeSection"></div></div><div class="row-texts"><div class="row-text">İYİ YOLCULUKLAR DİLERİZ</div></div><div class="col-texts col-texts-spaced"><div class="row-texts"><div class="row-text text-left" id="InvoiceEkuSection">EKU NO: 0001</div></div><div class="row-texts row-texts-right"><div class="row-text text-right" id="InvoiceZReportSection">Z NO: 0001</div></div></div><div class="row-texts"><div class="row-text" id="InvoiceCashLettersAndNumbersSection"></div></div></div>');
                 }
 
                 var allElements = document.getElementById("tableElements").children.length;
@@ -598,6 +598,35 @@ function getTheTaxNumber(zerosUrl, url, taxNumber, index) {
                 jsonData = JSON.parse(JSON.stringify(theData));
 
                 $("#InvoiceTaxNumberSection").text(cashData.GasStationName.join("\n"));
+
+                $("#InvoiceCashLettersAndNumbersSection").html("");
+
+                /**
+                 * 
+                 * @param {string} letters
+                 */
+                var cashLettersMaker = (letters) =>
+                {
+                    if (letters.includes("MF"))
+                    {
+                        letters = letters.substring(2);
+
+                        var imageElement = document.createElement("img");
+                        imageElement.src = "../images/MF_logo.svg";
+                        imageElement.style.width = "16px";
+                        document.getElementById("InvoiceCashLettersAndNumbersSection").appendChild(imageElement);
+                        document.getElementById("InvoiceCashLettersAndNumbersSection").append(letters);
+
+                    }
+                    else
+                    {
+                        document.getElementById("InvoiceCashLettersAndNumbersSection").append(letters);
+                    }
+                };
+
+                cashLettersMaker(cashData.CashLetters);
+                $("#InvoiceCashLettersAndNumbersSection").append(" " + cashData.CashId);
+                
 
                 createQRCode(cashData.CashTypeName, theTaxNumber, "text1", "text2", "text3", "text4", "text5", "InvoiceQRCodeSection");
             }
