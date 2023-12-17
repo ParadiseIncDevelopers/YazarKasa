@@ -145,8 +145,10 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-        $("#addCash").click(function () {
+    $(document).ready(function () 
+    {
+        $("#addCash").click(function ()
+        {
             var taxNumber = $("#input_1").val();
             var password = $("#input_2").val();
             var cashTypeName = $("#cashTypeName").text();
@@ -163,7 +165,8 @@
             $.ajax({
                 type: 'GET',
                 url: '@Url.Page("login", "register")',
-                data: {
+                data: 
+                {
                     TaxNumber: taxNumber,
                     Password: password,
                     CashTypeName: cashTypeName,
