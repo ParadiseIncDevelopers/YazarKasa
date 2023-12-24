@@ -20,6 +20,31 @@
 @{
     if (AuthType.TheCurrentAuth != null && AuthType.TheCurrentAuth.IsSuperAdmin)
     {
+        List<InvoiceZReportSystem>? zreports = Retriever.RetrieveZReports();
+
+        int q = 0;
+        foreach (var item in zreports)
+        {
+            DateTime today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+
+            while (item.UserZReports?.Last().DateOfTheIndex != today)
+            {
+                UserZReport report = new UserZReport()
+                        {
+                            Index = item.UserZReports.Last().Index + 1,
+                            DateOfTheIndex = today
+                        };
+                item.UserZReports.Add(report);
+                today.AddDays(1);
+            }
+
+            zreports[q].UserZReports = item.UserZReports;
+            q++;
+        }
+
+        FileWriter writer = FileWriter.GetInstance();
+        writer.WriteData(zreports);
+
         <div class="row g-0 align-items-center">
             <div class="p-1">
                 <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCashModal">
@@ -171,7 +196,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <div class="form-group mb-3">
+                                                <div class="form-group mb-3 ">
                                                     <label class="form-label" id="invoiceLabel_6">Ekü no</label>
                                                     <input type="text" name="ekuNo" maxlength="6" class="form-control" id="invoiceText_6">
                                                 </div>
@@ -676,7 +701,7 @@
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
     }
     else
     {
@@ -699,7 +724,8 @@
         });
     }
 
-    $(document).ready(function () {
+    $(document).ready(function () 
+    {
 
         $.ajax({
             type: 'GET',
